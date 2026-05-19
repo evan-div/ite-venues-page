@@ -467,7 +467,6 @@
       position: absolute;
       inset: 0;
       pointer-events: none;
-      transition: background 0.1s;
       z-index: 1;
     }
     .page-header::before {
@@ -874,7 +873,7 @@
       overflow: hidden;
     }
     .cta-band .spotlight-overlay {
-      position: absolute; inset: 0; pointer-events: none; transition: background 0.1s; z-index: 1;
+      position: absolute; inset: 0; pointer-events: none; z-index: 1;
     }
     .cta-band .inner {
       position: relative; z-index: 2;
@@ -1644,19 +1643,24 @@
       React.useEffect(() => {
         const section = overlayRef.current && overlayRef.current.closest('.page-header');
         if (!section) return;
+        let rect = section.getBoundingClientRect();
+        const refreshRect = () => { rect = section.getBoundingClientRect(); };
+        window.addEventListener('resize', refreshRect, { passive: true });
+        window.addEventListener('scroll', refreshRect, { passive: true });
         const onMove = (e) => {
-          const r = section.getBoundingClientRect();
-          const x = e.clientX - r.left;
-          const y = e.clientY - r.top;
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
           overlayRef.current.style.background =
             `radial-gradient(600px circle at ${x}px ${y}px, rgba(160,200,255,0.12), transparent 70%)`;
         };
         const onLeave = () => { overlayRef.current.style.background = 'none'; };
-        section.addEventListener('mousemove', onMove);
+        section.addEventListener('mousemove', onMove, { passive: true });
         section.addEventListener('mouseleave', onLeave);
         return () => {
           section.removeEventListener('mousemove', onMove);
           section.removeEventListener('mouseleave', onLeave);
+          window.removeEventListener('resize', refreshRect);
+          window.removeEventListener('scroll', refreshRect);
         };
       }, []);
 
@@ -1844,19 +1848,24 @@
       React.useEffect(() => {
         const section = overlayRef.current && overlayRef.current.closest('.cta-band');
         if (!section) return;
+        let rect = section.getBoundingClientRect();
+        const refreshRect = () => { rect = section.getBoundingClientRect(); };
+        window.addEventListener('resize', refreshRect, { passive: true });
+        window.addEventListener('scroll', refreshRect, { passive: true });
         const onMove = (e) => {
-          const r = section.getBoundingClientRect();
-          const x = e.clientX - r.left;
-          const y = e.clientY - r.top;
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
           overlayRef.current.style.background =
             `radial-gradient(600px circle at ${x}px ${y}px, rgba(160,200,255,0.12), transparent 70%)`;
         };
         const onLeave = () => { overlayRef.current.style.background = 'none'; };
-        section.addEventListener('mousemove', onMove);
+        section.addEventListener('mousemove', onMove, { passive: true });
         section.addEventListener('mouseleave', onLeave);
         return () => {
           section.removeEventListener('mousemove', onMove);
           section.removeEventListener('mouseleave', onLeave);
+          window.removeEventListener('resize', refreshRect);
+          window.removeEventListener('scroll', refreshRect);
         };
       }, []);
 
