@@ -3,18 +3,19 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=1280" />
+  <meta name="description" content="Venues In The Event knows inside out — rigged, staged, and floraled across Salt Lake City, Utah County, and mountain resorts." />
   <title>Venues — In The Event</title>
   <link rel="stylesheet" href="kit.css" />
   <link rel="stylesheet" href="venues.css" />
-  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js" crossorigin="anonymous"></script>
 </head>
 <body>
   <div id="root"></div>
 
-  <script src="venues-data.js?v=2"></script>
+  <script src="venues-data.js"></script>
   <script type="text/babel" src="Shell.jsx"></script>
   <script type="text/babel" src="tweaks-panel.jsx"></script>
   <script type="text/babel" src="Venues.jsx"></script>
@@ -25,8 +26,7 @@
     const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "showFeatured": true,
       "headerStyle": "photo",
-      "cardLayout": "3col",
-      "showCapacityOnHover": true
+      "cardLayout": "3col"
     }/*EDITMODE-END*/;
 
     function App() {
@@ -46,7 +46,6 @@
         if (window.lucide) window.lucide.createIcons();
       });
 
-      // Apply tweaks
       useEffect(() => {
         const root = document.documentElement;
         root.style.setProperty(
@@ -56,9 +55,14 @@
         );
       }, [tweaks.cardLayout]);
 
+      // Prevent body scroll when modal is open
+      useEffect(() => {
+        document.body.style.overflow = selected ? 'hidden' : '';
+        return () => { document.body.style.overflow = ''; };
+      }, [selected]);
+
       return (
         <>
-          <Nav active="venues" />
           {tweaks.headerStyle !== 'minimal' && <VenuesHeader />}
           <FilterBar
             active={filter}
@@ -70,12 +74,11 @@
           )}
           <VenuesGrid list={filtered} onSelect={setSelected} />
           <VenueCTA />
-          <Footer />
 
           <VenueModal v={selected} onClose={() => setSelected(null)} />
 
           <TweaksPanel title="Tweaks">
-            <TweakSection title="Layout">
+            <TweakSection label="Layout">
               <TweakToggle
                 label="Show featured venue"
                 value={tweaks.showFeatured}
@@ -110,7 +113,6 @@
   </script>
 
   <style>
-    /* Tweak: grid column count */
     .venues-grid {
       grid-template-columns: repeat(var(--venues-grid-cols, 3), 1fr) !important;
     }

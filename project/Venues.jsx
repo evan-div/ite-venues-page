@@ -3,7 +3,7 @@ const VenuesHeader = () => (
   <header className="page-header">
     <div className="container">
       <div className="breadcrumb">
-        <a>Home</a>
+        <a href="/">Home</a>
         <span className="sep">/</span>
         <span>Venues</span>
       </div>
@@ -131,7 +131,14 @@ const FeaturedVenue = ({ v, onView }) => {
 
 // Single venue card
 const VenueCard = ({ v, onClick }) => (
-  <div className="venue-card" onClick={onClick}>
+  <div
+    className="venue-card"
+    onClick={onClick}
+    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(); } }}
+    tabIndex={0}
+    role="button"
+    aria-label={`View ${v.name}`}
+  >
     <div className="media" style={{ backgroundImage: `url(${v.photo})` }}>
       <div className="city-tag">{v.city}</div>
       <div className="cap-tag">
@@ -251,39 +258,53 @@ const VenueCTA = () => (
 );
 
 // Modal — venue detail
-const VenueModal = ({ v, onClose }) => (
-  <div className={`modal-backdrop ${v ? 'open' : ''}`} onClick={onClose}>
-    <div className="modal-wrap" onClick={(e) => e.stopPropagation()}>
-      <button className="close" onClick={onClose}>
-        <i data-lucide="x" style={{ width: 16, height: 16 }} />
-      </button>
-      {v && (
-        <div className="modal">
-          <div className="ph" style={{ backgroundImage: `url(${v.photo})` }} />
-          <div className="body">
-            <div className="eyebrow">{v.style}</div>
-            <h3>{v.name}</h3>
-            <div className="addr">
-              <i data-lucide="map-pin" />
-              <span>{v.address}</span>
-            </div>
-            <p className="desc">{v.desc}</p>
-            <div className="specs">
-              <div className="spec"><div className="l">Capacity</div><div className="v">Up to {v.capacity} guests</div></div>
-              <div className="spec"><div className="l">Footprint</div><div className="v">{v.sqft}</div></div>
-              <div className="spec"><div className="l">Ceiling</div><div className="v">{v.ceiling}</div></div>
-              <div className="spec"><div className="l">Region</div><div className="v">{v.city}</div></div>
-            </div>
-            <div className="actions">
-              <Button kind="primary">Plan an Event Here</Button>
-              <Button kind="ghost">Get Directions →</Button>
+const VenueModal = ({ v, onClose }) => {
+  React.useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    if (v) window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [v, onClose]);
+
+  return (
+    <div
+      className={`modal-backdrop ${v ? 'open' : ''}`}
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={v ? v.name : 'Venue detail'}
+    >
+      <div className="modal-wrap" onClick={(e) => e.stopPropagation()}>
+        <button className="close" onClick={onClose} aria-label="Close">
+          <i data-lucide="x" style={{ width: 16, height: 16 }} />
+        </button>
+        {v && (
+          <div className="modal">
+            <div className="ph" style={{ backgroundImage: `url(${v.photo})` }} />
+            <div className="body">
+              <div className="eyebrow">{v.style}</div>
+              <h3>{v.name}</h3>
+              <div className="addr">
+                <i data-lucide="map-pin" />
+                <span>{v.address}</span>
+              </div>
+              <p className="desc">{v.desc}</p>
+              <div className="specs">
+                <div className="spec"><div className="l">Capacity</div><div className="v">Up to {v.capacity} guests</div></div>
+                <div className="spec"><div className="l">Footprint</div><div className="v">{v.sqft}</div></div>
+                <div className="spec"><div className="l">Ceiling</div><div className="v">{v.ceiling}</div></div>
+                <div className="spec"><div className="l">Region</div><div className="v">{v.city}</div></div>
+              </div>
+              <div className="actions">
+                <Button kind="primary">Plan an Event Here</Button>
+                <Button kind="ghost">Get Directions →</Button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 Object.assign(window, {
   VenuesHeader, FilterBar, FeaturedVenue, VenueCard, VenuesGrid, VenueCTA, VenueModal,
