@@ -1639,34 +1639,8 @@
     // =========================================================
 
     const VenuesHeader = () => {
-      const overlayRef = React.useRef(null);
-      React.useEffect(() => {
-        const section = overlayRef.current && overlayRef.current.closest('.page-header');
-        if (!section) return;
-        let rect = section.getBoundingClientRect();
-        const refreshRect = () => { rect = section.getBoundingClientRect(); };
-        window.addEventListener('resize', refreshRect, { passive: true });
-        window.addEventListener('scroll', refreshRect, { passive: true });
-        const onMove = (e) => {
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
-          overlayRef.current.style.background =
-            `radial-gradient(600px circle at ${x}px ${y}px, rgba(160,200,255,0.12), transparent 70%)`;
-        };
-        const onLeave = () => { overlayRef.current.style.background = 'none'; };
-        section.addEventListener('mousemove', onMove, { passive: true });
-        section.addEventListener('mouseleave', onLeave);
-        return () => {
-          section.removeEventListener('mousemove', onMove);
-          section.removeEventListener('mouseleave', onLeave);
-          window.removeEventListener('resize', refreshRect);
-          window.removeEventListener('scroll', refreshRect);
-        };
-      }, []);
-
       return (
         <header className="page-header">
-          <div ref={overlayRef} className="spotlight-overlay" />
           <div className="container">
             <div className="eyebrow">Venues</div>
             <h1>Venues we <span className="accent">know inside out</span>.</h1>
