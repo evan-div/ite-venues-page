@@ -2012,7 +2012,6 @@
 
       return (
         <>
-          <Nav active="venues" />
           {tweaks.headerStyle !== 'minimal' && <VenuesHeader />}
           <FilterBar
             active={filter}
@@ -2024,7 +2023,6 @@
           )}
           <VenuesGrid list={filtered} onSelect={setSelected} />
           <VenueCTA />
-          <Footer />
 
           <VenueModal v={selected} onClose={() => setSelected(null)} />
 
