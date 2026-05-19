@@ -940,7 +940,26 @@
       transform: translateY(12px); transition: transform 280ms cubic-bezier(0.22,1,0.36,1);
     }
     .modal-backdrop.open .modal { transform: translateY(0); }
-    .modal .ph { min-height: 480px; background-size: cover; background-position: center; filter: brightness(0.72); }
+    /* Modal gallery */
+    .modal-gallery { position: relative; }
+    .modal-photo { min-height: 480px; background-size: cover; background-position: center; filter: brightness(0.72); }
+    .gal-prev, .gal-next {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 38px; height: 38px; border-radius: 50%;
+      background: rgba(8,8,9,0.7); border: 1px solid rgba(195,255,138,0.35);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: #C3FF8A; transition: background 150ms;
+    }
+    .gal-prev:hover, .gal-next:hover { background: rgba(195,255,138,0.15); }
+    .gal-prev { left: 12px; }
+    .gal-next { right: 12px; }
+    .gal-prev svg, .gal-next svg { width: 16px; height: 16px; }
+    .gal-counter {
+      position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+      font-size: 11px; letter-spacing: 0.12em; color: rgba(255,255,255,0.7);
+      background: rgba(8,8,9,0.6); padding: 3px 10px; border-radius: 20px;
+      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif;
+    }
     .modal .body { padding: 40px 40px 32px; display: flex; flex-direction: column; gap: 18px; }
     .modal .eyebrow {
       font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
@@ -956,10 +975,16 @@
     .modal .addr { font-size: 13px !important; color: #8a8d99; display: flex; gap: 6px; align-items: flex-start; font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important; }
     .modal .addr svg { width: 13px; height: 13px; color: #C3FF8A; margin-top: 2px; }
     .modal .desc { font-size: 13px !important; line-height: 1.7; color: rgba(255,255,255,0.78); font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important; }
-    .modal .specs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 4px; }
-    .modal .spec { padding: 12px; border: 1px solid rgba(195,255,138,0.18); border-radius: 6px; background: rgba(8,8,9,0.6); }
-    .modal .spec .l { font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important; font-weight: 500 !important; font-size: 10px !important; letter-spacing: 0.22em !important; text-transform: uppercase !important; color: #8a8d99; }
-    .modal .spec .v { font-size: 13px !important; color: #fff; margin-top: 4px; font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important; }
+    .modal .specs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
+    .modal .spec { padding: 16px; border: 1px solid rgba(195,255,138,0.18); border-radius: 8px; background: rgba(8,8,9,0.6); }
+    .modal .spec .l {
+      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+      font-weight: 500 !important; font-size: 10px !important; letter-spacing: 0.22em !important;
+      text-transform: uppercase !important; color: #8a8d99;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .modal .spec .l svg { width: 12px; height: 12px; color: #C3FF8A; flex-shrink: 0; }
+    .modal .spec .v { font-size: 15px !important; font-weight: 500 !important; color: #fff; margin-top: 6px; font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important; }
     .modal .close {
       position: absolute; top: 16px; right: 16px;
       background: rgba(28,31,46,0.9); border: 1px solid rgba(195,255,138,0.35);
@@ -980,7 +1005,7 @@
       .page-header h1 { font-size: 3rem !important; }
       .cta-band .inner { grid-template-columns: 1fr; gap: 40px; }
       .modal { grid-template-columns: 1fr; }
-      .modal .ph { min-height: 260px; }
+      .modal-photo { min-height: 260px; }
     }
 
     /* Responsive — mobile */
@@ -1205,10 +1230,10 @@
         <h2 className={`display ${size}`}>{title}</h2>
       </header>
     );
-    const Button = ({ kind = 'primary', children, onClick, href, style }) => {
+    const Button = ({ kind = 'primary', children, onClick, href, target, rel, style }) => {
       const Tag = href ? 'a' : 'button';
       return (
-        <Tag className={`btn ${kind}`} onClick={onClick} href={href} style={style}>
+        <Tag className={`btn ${kind}`} onClick={onClick} href={href} target={target} rel={rel} style={style}>
           {children}
         </Tag>
       );
@@ -1651,7 +1676,7 @@
             <div className="meta">
               <div className="item">
                 <div className="l">Curated</div>
-                <div className="v">13 Venues</div>
+                <div className="v">50+ Venues</div>
               </div>
               <div className="item">
                 <div className="l">Coverage</div>
@@ -1889,11 +1914,21 @@
     };
 
     const VenueModal = ({ v, onClose }) => {
+      const [photoIdx, setPhotoIdx] = React.useState(0);
+
+      React.useEffect(() => { setPhotoIdx(0); }, [v]);
+
       React.useEffect(() => {
         const onKey = (e) => { if (e.key === 'Escape') onClose(); };
         if (v) window.addEventListener('keydown', onKey);
         return () => window.removeEventListener('keydown', onKey);
       }, [v, onClose]);
+
+      const gallery = v
+        ? v.galleryStyles
+          ? v.galleryStyles.map(g => `assets/photos/${g}`)
+          : [v.photo]
+        : [];
 
       return (
         <div
@@ -1909,7 +1944,20 @@
             </button>
             {v && (
               <div className="modal">
-                <div className="ph" style={{ backgroundImage: `url(${v.photo})` }} />
+                <div className="modal-gallery">
+                  <div className="modal-photo" style={{ backgroundImage: `url(${gallery[photoIdx]})` }} />
+                  {gallery.length > 1 && (
+                    <>
+                      <button className="gal-prev" onClick={() => setPhotoIdx(i => (i - 1 + gallery.length) % gallery.length)}>
+                        <i data-lucide="chevron-left" />
+                      </button>
+                      <button className="gal-next" onClick={() => setPhotoIdx(i => (i + 1) % gallery.length)}>
+                        <i data-lucide="chevron-right" />
+                      </button>
+                      <div className="gal-counter">{photoIdx + 1} / {gallery.length}</div>
+                    </>
+                  )}
+                </div>
                 <div className="body">
                   <div className="eyebrow">{v.style}</div>
                   <h3>{v.name}</h3>
@@ -1919,14 +1967,36 @@
                   </div>
                   <p className="desc">{v.desc}</p>
                   <div className="specs">
-                    <div className="spec"><div className="l">Capacity</div><div className="v">Up to {v.capacity} guests</div></div>
-                    <div className="spec"><div className="l">Footprint</div><div className="v">{v.sqft}</div></div>
-                    <div className="spec"><div className="l">Ceiling</div><div className="v">{v.ceiling}</div></div>
-                    <div className="spec"><div className="l">Region</div><div className="v">{v.city}</div></div>
+                    <div className="spec">
+                      <div className="l"><i data-lucide="users" />Capacity</div>
+                      <div className="v">Up to {v.capacity} guests</div>
+                    </div>
+                    <div className="spec">
+                      <div className="l"><i data-lucide="ruler" />Footprint</div>
+                      <div className="v">{v.sqft}</div>
+                    </div>
+                    <div className="spec">
+                      <div className="l"><i data-lucide="move-vertical" />Ceiling</div>
+                      <div className="v">{v.ceiling}</div>
+                    </div>
+                    <div className="spec">
+                      <div className="l"><i data-lucide="map-pin" />Region</div>
+                      <div className="v">{v.city}</div>
+                    </div>
                   </div>
                   <div className="actions">
-                    <Button kind="filled">Plan an Event Here</Button>
-                    <Button kind="outline">Get Directions →</Button>
+                    <Button kind="filled" onClick={() => {
+                      onClose();
+                      setTimeout(() => {
+                        document.querySelector('.cta-band')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      }, 280);
+                    }}>Plan an Event Here</Button>
+                    <Button
+                      kind="outline"
+                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.address)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >Get Directions →</Button>
                   </div>
                 </div>
               </div>
