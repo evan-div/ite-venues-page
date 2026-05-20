@@ -866,6 +866,7 @@
     }
     .venue-card:hover .view { gap: 8px; }
     .venue-card .view svg { width: 11px; height: 11px; }
+    .venue-card .city-tag-mobile { display: none; }
 
     /* CTA band */
     .cta-band {
@@ -1065,7 +1066,16 @@
       .venue-card .name { text-align: center; font-size: 14px !important; }
       .venue-card .address,
       .venue-card .row-bottom,
-      .venue-card .cap-tag { display: none; }
+      .venue-card .cap-tag,
+      .venue-card .city-tag { display: none; }
+      .venue-card .city-tag-mobile {
+        display: inline-block; margin-top: 8px;
+        font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif;
+        font-size: 8px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase;
+        color: #fff; padding: 4px 10px;
+        background: rgba(0,0,0,0.45); backdrop-filter: blur(6px);
+        border-radius: 999px; border: 1px solid rgba(195,255,138,0.35);
+      }
     }
 
     /* Focus styles */
@@ -1675,6 +1685,7 @@
         </div>
         <div className="info">
           <h3 className="name">{v.name}</h3>
+          <div className="city-tag-mobile">{v.city}</div>
           <div className="address">
             <i data-lucide="map-pin" />
             <span>{v.address}</span>
