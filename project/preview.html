@@ -1049,6 +1049,22 @@
       .modal-backdrop { padding: 16px; }
       .modal .body { padding: 24px 20px 20px; }
       .container { padding: 0 20px !important; }
+      /* Venue card — full-bleed mobile */
+      .venue-card { position: relative; }
+      .venue-card .media {
+        flex: none; width: 100%; aspect-ratio: 4 / 3;
+        filter: brightness(0.48);
+      }
+      .venue-card .info {
+        position: absolute; inset: 0;
+        background: none; border-top: none;
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        padding: 20px; gap: 0;
+      }
+      .venue-card .name { text-align: center; font-size: 14px !important; }
+      .venue-card .address,
+      .venue-card .row-bottom { display: none; }
     }
 
     /* Focus styles */
