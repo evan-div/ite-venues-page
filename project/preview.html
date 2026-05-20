@@ -1665,7 +1665,9 @@
       </section>
     );
 
-    const VenueCTA = () => {
+    const VenueCTA = ({ prefillVenue = '' }) => {
+      const [venueVal, setVenueVal] = React.useState('');
+      React.useEffect(() => { if (prefillVenue) setVenueVal(prefillVenue); }, [prefillVenue]);
       const overlayRef = React.useRef(null);
       React.useEffect(() => {
         const section = overlayRef.current && overlayRef.current.closest('.cta-band');
@@ -1717,16 +1719,29 @@
                 <div className="eyebrow">Quick Inquiry</div>
                 <h3>Tell us about your event</h3>
                 <div className="fields">
-                  {[
-                    ['calendar', 'Event date'],
-                    ['users', 'Estimated guest count'],
-                    ['map-pin', 'Preferred venue or city'],
-                  ].map(([icon, label]) => (
-                    <div key={label} className="form-field">
-                      <i data-lucide={icon} />
-                      {label}
-                    </div>
-                  ))}
+                  <div className="form-field">
+                    <i data-lucide="calendar" />
+                    Event date
+                  </div>
+                  <div className="form-field">
+                    <i data-lucide="users" />
+                    Estimated guest count
+                  </div>
+                  <div className="form-field" onClick={() => document.getElementById('cta-venue-input').focus()}>
+                    <i data-lucide="map-pin" />
+                    <input
+                      id="cta-venue-input"
+                      value={venueVal}
+                      onChange={(e) => setVenueVal(e.target.value)}
+                      placeholder="Preferred venue or city"
+                      style={{
+                        background: 'none', border: 'none', outline: 'none',
+                        color: venueVal ? '#fff' : 'inherit',
+                        font: 'inherit', fontSize: 'inherit', flex: 1,
+                        cursor: 'text', width: '100%',
+                      }}
+                    />
+                  </div>
                   <Button kind="filled" style={{ marginTop: 4 }}>Request a Quote</Button>
                 </div>
               </div>
@@ -1736,7 +1751,7 @@
       );
     };
 
-    const VenueModal = ({ v, onClose }) => {
+    const VenueModal = ({ v, onClose, onPlanHere }) => {
       const [photoIdx, setPhotoIdx] = React.useState(0);
 
       React.useEffect(() => { setPhotoIdx(0); }, [v]);
@@ -1809,6 +1824,7 @@
                   </div>
                   <div className="actions">
                     <Button kind="filled" onClick={() => {
+                      onPlanHere(v.name);
                       onClose();
                       setTimeout(() => {
                         document.querySelector('.cta-band')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1844,6 +1860,7 @@
     function App() {
       const [filter, setFilter] = useState('all');
       const [selected, setSelected] = useState(null);
+      const [prefillVenue, setPrefillVenue] = useState('');
       const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
 
       const featured = window.VENUES.find((v) => v.featured);
@@ -1884,9 +1901,9 @@
             <FeaturedVenue v={featured} onView={setSelected} />
           )}
           <VenuesGrid list={filtered} onSelect={setSelected} />
-          <VenueCTA />
+          <VenueCTA prefillVenue={prefillVenue} />
 
-          <VenueModal v={selected} onClose={() => setSelected(null)} />
+          <VenueModal v={selected} onClose={() => setSelected(null)} onPlanHere={setPrefillVenue} />
 
           <TweaksPanel title="Tweaks">
             <TweakSection label="Layout">
