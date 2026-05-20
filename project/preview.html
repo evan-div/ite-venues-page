@@ -925,6 +925,9 @@
     }
     .cta-inquiry-card .form-field:hover { border-color: rgba(195,255,138,0.35); }
     .cta-inquiry-card .form-field svg { width: 15px; height: 15px; color: #C3FF8A; flex-shrink: 0; }
+    .cta-inquiry-card .form-field input { color: rgba(255,255,255,0.55); }
+    .cta-inquiry-card .form-field input:not(:placeholder-shown) { color: #fff; }
+    .cta-inquiry-card .form-field input::placeholder { color: rgba(255,255,255,0.55); }
 
     /* Modal */
     .modal-backdrop {
@@ -1719,13 +1722,29 @@
                 <div className="eyebrow">Quick Inquiry</div>
                 <h3>Tell us about your event</h3>
                 <div className="fields">
-                  <div className="form-field">
+                  <div className="form-field" onClick={() => document.getElementById('cta-date-input').focus()}>
                     <i data-lucide="calendar" />
-                    Event date
+                    <input
+                      id="cta-date-input"
+                      placeholder="Event date"
+                      style={{
+                        background: 'none', border: 'none', outline: 'none',
+                        color: 'inherit', font: 'inherit', fontSize: 'inherit',
+                        flex: 1, cursor: 'text', width: '100%',
+                      }}
+                    />
                   </div>
-                  <div className="form-field">
+                  <div className="form-field" onClick={() => document.getElementById('cta-guests-input').focus()}>
                     <i data-lucide="users" />
-                    Estimated guest count
+                    <input
+                      id="cta-guests-input"
+                      placeholder="Estimated guest count"
+                      style={{
+                        background: 'none', border: 'none', outline: 'none',
+                        color: 'inherit', font: 'inherit', fontSize: 'inherit',
+                        flex: 1, cursor: 'text', width: '100%',
+                      }}
+                    />
                   </div>
                   <div className="form-field" onClick={() => document.getElementById('cta-venue-input').focus()}>
                     <i data-lucide="map-pin" />
@@ -1736,7 +1755,7 @@
                       placeholder="Preferred venue or city"
                       style={{
                         background: 'none', border: 'none', outline: 'none',
-                        color: venueVal ? '#fff' : 'inherit',
+                        color: 'inherit',
                         font: 'inherit', fontSize: 'inherit', flex: 1,
                         cursor: 'text', width: '100%',
                       }}
