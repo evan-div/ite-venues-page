@@ -11,6 +11,8 @@
   <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
   <style>
     /* ITE Venues — dark design system
@@ -931,6 +933,26 @@
       font-size: 14px; color: #fff; caret-color: #C3FF8A;
     }
     .cta-input::placeholder { color: rgba(255,255,255,0.45); }
+    /* Flatpickr calendar — ITE dark theme */
+    .flatpickr-calendar { background: #1c1f2e !important; border: 1px solid rgba(195,255,138,0.25) !important; border-radius: 8px !important; box-shadow: 0 16px 48px rgba(0,0,0,0.7) !important; }
+    .flatpickr-calendar.arrowTop:before { border-bottom-color: rgba(195,255,138,0.25) !important; }
+    .flatpickr-calendar.arrowTop:after { border-bottom-color: #1c1f2e !important; }
+    .flatpickr-months { border-bottom: 1px solid rgba(255,255,255,0.08) !important; }
+    .flatpickr-month, .flatpickr-current-month, .flatpickr-monthDropdown-months, .cur-month, .cur-year { background: transparent !important; color: #fff !important; fill: #fff !important; }
+    .flatpickr-monthDropdown-months { border: none !important; }
+    .flatpickr-prev-month svg, .flatpickr-next-month svg { fill: #C3FF8A !important; }
+    .flatpickr-prev-month:hover, .flatpickr-next-month:hover { background: rgba(195,255,138,0.1) !important; }
+    .flatpickr-weekday { color: rgba(195,255,138,0.65) !important; background: transparent !important; }
+    .flatpickr-days { border-color: rgba(255,255,255,0.06) !important; }
+    .flatpickr-day { color: rgba(255,255,255,0.75) !important; border-radius: 6px !important; border-color: transparent !important; }
+    .flatpickr-day:hover { background: rgba(195,255,138,0.12) !important; color: #fff !important; }
+    .flatpickr-day.today { border-color: rgba(195,255,138,0.5) !important; }
+    .flatpickr-day.selected, .flatpickr-day.selected:hover { background: #C3FF8A !important; border-color: #C3FF8A !important; color: #080809 !important; font-weight: 600 !important; }
+    .flatpickr-day.flatpickr-disabled { color: rgba(255,255,255,0.2) !important; }
+    .numInputWrapper:hover { background: rgba(255,255,255,0.06) !important; }
+    .numInputWrapper span { border-color: rgba(255,255,255,0.15) !important; }
+    .numInputWrapper span:hover { background: rgba(195,255,138,0.12) !important; }
+    .numInputWrapper span svg { fill: rgba(255,255,255,0.5) !important; }
 
     /* Modal */
     .modal-backdrop {
@@ -1674,6 +1696,16 @@
     const VenueCTA = ({ prefillVenue = '' }) => {
       const [venueVal, setVenueVal] = React.useState('');
       React.useEffect(() => { if (prefillVenue) setVenueVal(prefillVenue); }, [prefillVenue]);
+      const dateInputRef = React.useRef(null);
+      React.useEffect(() => {
+        if (!dateInputRef.current || !window.flatpickr) return;
+        const fp = window.flatpickr(dateInputRef.current, {
+          dateFormat: 'F j, Y',
+          minDate: 'today',
+          disableMobile: true,
+        });
+        return () => fp.destroy();
+      }, []);
       const overlayRef = React.useRef(null);
       React.useEffect(() => {
         const section = overlayRef.current && overlayRef.current.closest('.cta-band');
@@ -1727,7 +1759,7 @@
                 <div className="fields">
                   <label className="form-field">
                     <i data-lucide="calendar" />
-                    <input className="cta-input" placeholder="Event date" />
+                    <input className="cta-input" placeholder="Event date" ref={dateInputRef} readOnly />
                   </label>
                   <label className="form-field">
                     <i data-lucide="users" />
