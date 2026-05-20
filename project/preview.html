@@ -969,8 +969,8 @@
     }
     .modal-backdrop.open .modal { transform: translateY(0); }
     /* Modal gallery */
-    .modal-gallery { position: relative; }
-    .modal-photo { min-height: 480px; background-size: cover; background-position: center; filter: brightness(0.72); }
+    .modal-gallery { position: relative; height: 100%; display: flex; flex-direction: column; }
+    .modal-photo { flex: 1; min-height: 320px; background-size: cover; background-position: center; filter: brightness(0.72); }
     .gal-prev, .gal-next {
       position: absolute; top: 50%; transform: translateY(-50%);
       width: 38px; height: 38px; border-radius: 50%;
@@ -1004,15 +1004,15 @@
     .modal .addr svg { width: 13px; height: 13px; color: #C3FF8A; margin-top: 2px; }
     .modal .desc { font-size: 13px !important; line-height: 1.7; color: rgba(255,255,255,0.78); font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important; }
     .modal .specs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
-    .modal .spec { padding: 16px; border: 1px solid rgba(195,255,138,0.18); border-radius: 8px; background: rgba(8,8,9,0.6); }
+    .modal .spec { padding: 16px; border: 1px solid rgba(195,255,138,0.18); border-radius: 8px; background: rgba(8,8,9,0.6); display: flex; flex-direction: column; align-items: center; text-align: center; }
     .modal .spec .l {
       font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
       font-weight: 500 !important; font-size: 10px !important; letter-spacing: 0.22em !important;
       text-transform: uppercase !important; color: #8a8d99;
-      display: flex; align-items: center; gap: 5px;
+      display: flex; align-items: center; justify-content: center; gap: 5px;
     }
     .modal .spec .l svg { width: 12px; height: 12px; color: #C3FF8A; flex-shrink: 0; }
-    .modal .spec .v { font-size: 15px !important; font-weight: 500 !important; color: #fff; margin-top: 6px; font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important; }
+    .modal .spec .v { font-size: 13px !important; font-weight: 500 !important; color: #fff; margin-top: 6px; font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important; }
     .modal .close {
       position: absolute; top: 16px; right: 16px;
       background: rgba(28,31,46,0.9); border: 1px solid rgba(195,255,138,0.35);
@@ -1794,10 +1794,15 @@
         return () => window.removeEventListener('keydown', onKey);
       }, [v, onClose]);
 
+      const PLACEHOLDERS = [
+        'assets/photos/lounge-white.jpg',
+        'assets/photos/rgb-tubes.jpg',
+        'assets/photos/stage-purple.jpg',
+      ];
       const gallery = v
         ? v.galleryStyles
           ? v.galleryStyles.map(g => `assets/photos/${g}`)
-          : [v.photo]
+          : [v.photo, ...PLACEHOLDERS]
         : [];
 
       return (
