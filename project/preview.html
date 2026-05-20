@@ -935,6 +935,26 @@
       font-size: 14px; color: #fff; caret-color: #C3FF8A;
     }
     .cta-input::placeholder { color: rgba(255,255,255,0.45); }
+    .cta-error {
+      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif;
+      font-size: 12px; color: #ff7070; margin: 0; line-height: 1.5;
+    }
+    .btn[disabled] { opacity: 0.55; cursor: not-allowed; pointer-events: none; }
+    .cta-success {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 10px; padding: 32px 16px; text-align: center;
+    }
+    .cta-success svg { width: 36px; height: 36px; color: #C3FF8A; }
+    .cta-success p {
+      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+      font-size: 18px !important; font-weight: 500 !important;
+      letter-spacing: 0.10em !important; text-transform: uppercase !important;
+      color: #fff !important; margin: 0 !important;
+    }
+    .cta-success span {
+      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif;
+      font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.6;
+    }
     /* Flatpickr calendar — ITE dark theme */
     .flatpickr-calendar { background: #1c1f2e !important; border: 1px solid rgba(195,255,138,0.25) !important; border-radius: 8px !important; box-shadow: 0 16px 48px rgba(0,0,0,0.7) !important; }
     .flatpickr-calendar.arrowTop:before { border-bottom-color: rgba(195,255,138,0.25) !important; }
@@ -1724,9 +1744,50 @@
     );
 
     const VenueCTA = ({ prefillVenue = '' }) => {
+      const FLUENT_FORM_ID = 'REPLACE_WITH_YOUR_FORM_ID';
+
+      const [nameVal, setNameVal] = React.useState('');
+      const [emailVal, setEmailVal] = React.useState('');
+      const [guestVal, setGuestVal] = React.useState('');
       const [venueVal, setVenueVal] = React.useState('');
-      React.useEffect(() => { if (prefillVenue) setVenueVal(prefillVenue); }, [prefillVenue]);
+      const [submitting, setSubmitting] = React.useState(false);
+      const [submitted, setSubmitted] = React.useState(false);
+      const [submitError, setSubmitError] = React.useState('');
       const dateInputRef = React.useRef(null);
+
+      React.useEffect(() => { if (prefillVenue) setVenueVal(prefillVenue); }, [prefillVenue]);
+
+      const handleSubmit = async () => {
+        if (!nameVal.trim() || !emailVal.trim()) {
+          setSubmitError('Please enter your name and email so we can follow up.');
+          return;
+        }
+        setSubmitError('');
+        setSubmitting(true);
+        try {
+          const body = new FormData();
+          body.append('action', 'fluentform_submit');
+          body.append('form_id', FLUENT_FORM_ID);
+          body.append('name', nameVal.trim());
+          body.append('email', emailVal.trim());
+          body.append('event_date', dateInputRef.current?.value || '');
+          body.append('guest_count', guestVal.trim());
+          body.append('venue', venueVal.trim());
+          const res = await fetch('https://intheevent.com/wp-admin/admin-ajax.php', {
+            method: 'POST', body,
+          });
+          const json = await res.json();
+          if (json.success) {
+            setSubmitted(true);
+          } else {
+            setSubmitError(json.message || 'Something went wrong. Please try again.');
+          }
+        } catch {
+          setSubmitError('Could not reach the server. Please try again.');
+        } finally {
+          setSubmitting(false);
+        }
+      };
       React.useEffect(() => {
         if (!dateInputRef.current || !window.flatpickr) return;
         const fp = window.flatpickr(dateInputRef.current, {
@@ -1786,26 +1847,40 @@
               <div className="cta-inquiry-card">
                 <div className="eyebrow">Quick Inquiry</div>
                 <h3>Tell us about your event</h3>
-                <div className="fields">
-                  <label className="form-field">
-                    <i data-lucide="calendar" />
-                    <input className="cta-input" placeholder="Event date" ref={dateInputRef} readOnly />
-                  </label>
-                  <label className="form-field">
-                    <i data-lucide="users" />
-                    <input className="cta-input" placeholder="Estimated guest count" />
-                  </label>
-                  <label className="form-field">
-                    <i data-lucide="map-pin" />
-                    <input
-                      className="cta-input"
-                      value={venueVal}
-                      onChange={(e) => setVenueVal(e.target.value)}
-                      placeholder="Preferred venue or city"
-                    />
-                  </label>
-                  <Button kind="filled" style={{ marginTop: 4 }}>Request a Quote</Button>
-                </div>
+                {submitted ? (
+                  <div className="cta-success">
+                    <i data-lucide="check-circle" />
+                    <p>We'll be in touch!</p>
+                    <span>Our team will reach out within one business day.</span>
+                  </div>
+                ) : (
+                  <div className="fields">
+                    <label className="form-field">
+                      <i data-lucide="user" />
+                      <input className="cta-input" placeholder="Your name" value={nameVal} onChange={(e) => setNameVal(e.target.value)} />
+                    </label>
+                    <label className="form-field">
+                      <i data-lucide="mail" />
+                      <input className="cta-input" type="email" placeholder="Email address" value={emailVal} onChange={(e) => setEmailVal(e.target.value)} />
+                    </label>
+                    <label className="form-field">
+                      <i data-lucide="calendar" />
+                      <input className="cta-input" placeholder="Event date" ref={dateInputRef} readOnly />
+                    </label>
+                    <label className="form-field">
+                      <i data-lucide="users" />
+                      <input className="cta-input" placeholder="Estimated guest count" value={guestVal} onChange={(e) => setGuestVal(e.target.value)} />
+                    </label>
+                    <label className="form-field">
+                      <i data-lucide="map-pin" />
+                      <input className="cta-input" value={venueVal} onChange={(e) => setVenueVal(e.target.value)} placeholder="Preferred venue or city" />
+                    </label>
+                    {submitError && <p className="cta-error">{submitError}</p>}
+                    <Button kind="filled" style={{ marginTop: 4 }} onClick={handleSubmit} disabled={submitting}>
+                      {submitting ? 'Sending…' : 'Request a Quote'}
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
