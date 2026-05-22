@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=1280" />
+  <meta name="description" content="Venues In The Event knows inside out — rigged, staged, and floraled across Salt Lake City, Utah County, and mountain resorts." />
+  <title>Venues — In The Event</title>
+  <link rel="stylesheet" href="kit.css" />
+  <link rel="stylesheet" href="venues.css" />
+  <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="venues-data.js"></script>
+  <script type="text/babel" src="Shell.jsx"></script>
+  <script type="text/babel" src="tweaks-panel.jsx"></script>
+  <script type="text/babel" src="Venues.jsx"></script>
+
+  <script type="text/babel">
+    const { useState, useEffect, useMemo } = React;
+
+    const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+      "showFeatured": true,
+      "headerStyle": "photo",
+      "cardLayout": "3col"
+    }/*EDITMODE-END*/;
+
+    function App() {
+      const [filter, setFilter] = useState('all');
+      const [selected, setSelected] = useState(null);
+      const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+      const featured = window.VENUES.find((v) => v.featured);
+      const others = window.VENUES.filter((v) => !v.featured);
+
+      const filtered = useMemo(() => {
+        if (filter === 'all') return others;
+        return others.filter((v) => v.region === filter);
+      }, [filter, others]);
+
+      useEffect(() => {
+        if (window.lucide) window.lucide.createIcons();
+      });
+
+      useEffect(() => {
+        const root = document.documentElement;
+        root.style.setProperty(
+          '--venues-grid-cols',
+          tweaks.cardLayout === '2col' ? '2' :
+          tweaks.cardLayout === '4col' ? '4' : '3'
+        );
+      }, [tweaks.cardLayout]);
+
+      // Prevent body scroll when modal is open
+      useEffect(() => {
+        document.body.style.overflow = selected ? 'hidden' : '';
+        return () => { document.body.style.overflow = ''; };
+      }, [selected]);
+
+      return (
+        <>
+          {tweaks.headerStyle !== 'minimal' && <VenuesHeader />}
+          <FilterBar
+            active={filter}
+            setActive={setFilter}
+            total={(tweaks.showFeatured && filter === 'all' ? 1 : 0) + filtered.length}
+          />
+          {tweaks.showFeatured && featured && filter === 'all' && (
+            <FeaturedVenue v={featured} onView={setSelected} />
+          )}
+          <VenuesGrid list={filtered} onSelect={setSelected} />
+          <VenueCTA />
+
+          <VenueModal v={selected} onClose={() => setSelected(null)} />
+
+          <TweaksPanel title="Tweaks">
+            <TweakSection label="Layout">
+              <TweakToggle
+                label="Show featured venue"
+                value={tweaks.showFeatured}
+                onChange={(v) => setTweak('showFeatured', v)}
+              />
+              <TweakRadio
+                label="Header style"
+                value={tweaks.headerStyle}
+                onChange={(v) => setTweak('headerStyle', v)}
+                options={[
+                  { value: 'photo', label: 'Photo' },
+                  { value: 'minimal', label: 'Off' },
+                ]}
+              />
+              <TweakRadio
+                label="Card grid"
+                value={tweaks.cardLayout}
+                onChange={(v) => setTweak('cardLayout', v)}
+                options={[
+                  { value: '2col', label: '2 col' },
+                  { value: '3col', label: '3 col' },
+                  { value: '4col', label: '4 col' },
+                ]}
+              />
+            </TweakSection>
+          </TweaksPanel>
+        </>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+
+  <style>
+    .venues-grid {
+      grid-template-columns: repeat(var(--venues-grid-cols, 3), 1fr) !important;
+    }
+  </style>
+</body>
+</html>

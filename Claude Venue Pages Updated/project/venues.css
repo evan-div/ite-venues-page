@@ -1,0 +1,925 @@
+/* =============================================================
+   venues.css — ITE Design System
+   Dark bg: #080809 · Navy bg: #1c1f2e · Green accent: #C3FF8A
+   Card bg: #111116 · Grey: #8a8d99
+   ============================================================= */
+
+/* ---- Scroll reveal ---- */
+#root.js-reveal-ready .reveal {
+  opacity: 0;
+  transform: translateY(56px);
+}
+.reveal.in-view {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ============================================================
+   Page header
+   ============================================================ */
+.page-header {
+  background: #080809;
+  color: #fff;
+  padding: 120px 0 96px;
+  position: relative;
+  overflow: hidden;
+}
+.page-header .spotlight-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: background 0.1s;
+  z-index: 1;
+}
+.page-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(180deg, rgba(8,8,9,0.60) 0%, rgba(8,8,9,0.94) 100%),
+    url('assets/photos/gala-green.jpg');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.7;
+  z-index: 0;
+}
+.page-header .container {
+  position: relative;
+  z-index: 2;
+}
+.page-header .eyebrow {
+  font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.32em !important;
+  text-transform: uppercase !important;
+  color: #C3FF8A !important;
+  margin-bottom: 20px;
+  display: block;
+}
+.page-header h1 {
+  font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+  font-weight: 500 !important;
+  font-size: clamp(3rem, 7vw, 84px) !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  line-height: 1.0 !important;
+  margin: 0 !important;
+  color: #fff !important;
+  max-width: 14ch;
+}
+.page-header h1 .accent {
+  color: #C3FF8A;
+}
+.page-header .lead {
+  color: rgba(255,255,255,0.88);
+  max-width: 60ch;
+  margin: 32px 0 0;
+  font-size: clamp(1.4rem, 2vw, 1.75rem) !important;
+  line-height: 1.5;
+  font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+}
+.page-header .meta {
+  margin-top: 48px;
+  display: flex;
+  gap: 64px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(255,255,255,0.18);
+}
+.page-header .meta .item .l {
+  font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 10px !important;
+  letter-spacing: 0.22em !important;
+  text-transform: uppercase !important;
+  color: #8a8d99;
+  margin-bottom: 6px;
+}
+.page-header .meta .item .v {
+  font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 16px !important;
+  letter-spacing: 0.10em !important;
+  text-transform: uppercase !important;
+  color: #fff;
+}
+
+/* ============================================================
+   Filter bar
+   ============================================================ */
+.filter-bar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: #1c1f2e;
+  border-bottom: 1px solid rgba(195,255,138,0.15);
+  padding: 16px 0;
+}
+.filter-bar .row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+}
+.filter-bar .chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.chip {
+  font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 10px !important;
+  letter-spacing: 0.22em !important;
+  text-transform: uppercase !important;
+  padding: 7px 16px;
+  border: 1px solid rgba(195,255,138,0.35);
+  border-radius: 999px;
+  color: #C3FF8A;
+  background: transparent;
+  cursor: pointer;
+  transition: all 160ms cubic-bezier(0.22,1,0.36,1);
+  white-space: nowrap;
+}
+.chip:hover {
+  background: rgba(195,255,138,0.08);
+  border-color: rgba(195,255,138,0.6);
+}
+.chip.active {
+  background: #C3FF8A;
+  color: #080809;
+  border-color: #C3FF8A;
+}
+.chip .ct {
+  margin-left: 6px;
+  font-size: 9px !important;
+  opacity: 0.65;
+}
+.chip.active .ct {
+  opacity: 0.55;
+}
+.filter-bar .count {
+  font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 11px !important;
+  letter-spacing: 0.22em !important;
+  text-transform: uppercase !important;
+  color: #8a8d99;
+  white-space: nowrap;
+}
+.filter-bar .count strong {
+  color: #C3FF8A;
+  font-weight: 500;
+}
+
+/* ============================================================
+   Featured venue section
+   ============================================================ */
+.featured-section {
+  padding: 80px 0 40px;
+  background: #080809;
+}
+.featured-card {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 0;
+  background: #1c1f2e;
+  color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(195,255,138,0.25);
+  box-shadow: 0 24px 80px -32px rgba(0,0,0,0.55);
+}
+.featured-card .photo {
+  position: relative;
+  min-height: 560px;
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.62);
+  transition: filter 0.4s ease;
+}
+.featured-card:hover .photo {
+  filter: brightness(0.85);
+}
+.featured-card .photo .overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(8,8,9,0.0) 40%, rgba(8,8,9,0.45) 100%);
+}
+.featured-card .photo .badge {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: #C3FF8A;
+  color: #080809;
+  font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 10px !important;
+  letter-spacing: 0.24em !important;
+  text-transform: uppercase !important;
+  border-radius: 4px;
+  z-index: 2;
+}
+.featured-card .photo .badge svg { width: 13px; height: 13px; }
+.featured-card .photo .thumbs {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  display: flex;
+  gap: 8px;
+  z-index: 2;
+}
+.featured-card .photo .thumb {
+  width: 60px;
+  height: 60px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 4px;
+  border: 1px solid rgba(195,255,138,0.35);
+  cursor: pointer;
+  opacity: 0.55;
+  transition: opacity 160ms, border-color 160ms;
+}
+.featured-card .photo .thumb:hover,
+.featured-card .photo .thumb.active {
+  opacity: 1;
+  border-color: #C3FF8A;
+}
+.featured-card .body {
+  padding: 56px 56px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background: #1c1f2e;
+  border-left: 1px solid rgba(255,255,255,0.08);
+}
+.featured-card .eyebrow {
+  font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.32em !important;
+  text-transform: uppercase !important;
+  color: #C3FF8A !important;
+  margin: 0;
+}
+.featured-card .heading-hairline {
+  height: 1px;
+  background: rgba(195,255,138,0.3);
+  width: 56px;
+}
+.featured-card h2 {
+  font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+  font-weight: 500 !important;
+  font-size: clamp(1.6rem, 2.5vw, 2.2rem) !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  line-height: 1.25 !important;
+  margin: 0 !important;
+  color: #fff !important;
+}
+.featured-card .desc {
+  font-size: 15px !important;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.78);
+}
+.featured-card .specs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 32px;
+  padding: 24px 0;
+  border-top: 1px solid rgba(255,255,255,0.12);
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+.featured-card .spec .l {
+  font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 10px !important;
+  letter-spacing: 0.22em !important;
+  text-transform: uppercase !important;
+  color: #8a8d99;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.featured-card .spec .l svg { width: 12px; height: 12px; color: #C3FF8A; }
+.featured-card .spec .v {
+  font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+  font-size: 14px !important;
+  color: #fff;
+}
+.featured-card .actions {
+  display: flex;
+  gap: 12px;
+  margin-top: auto;
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   ITE Buttons
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 13px !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+  padding: 10px 24px;
+  border-radius: 10px;
+  border: 2px solid #C3FF8A;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* Filled button */
+.btn.filled {
+  background: #C3FF8A;
+  color: #080809;
+}
+.btn.filled:hover {
+  background: transparent;
+  color: #C3FF8A;
+}
+/* Outline button */
+.btn.outline {
+  background: transparent;
+  color: #C3FF8A;
+}
+.btn.outline:hover {
+  background: #C3FF8A;
+  color: #080809;
+}
+/* Legacy aliases so existing calls still work */
+.btn.gradient {
+  background: #C3FF8A;
+  color: #080809;
+  border-color: #C3FF8A;
+}
+.btn.gradient:hover {
+  background: transparent;
+  color: #C3FF8A;
+}
+.btn.ghost {
+  background: transparent;
+  color: #C3FF8A;
+  border-color: #C3FF8A;
+  padding: 10px 24px;
+}
+.btn.ghost:hover {
+  background: #C3FF8A;
+  color: #080809;
+}
+.btn.primary {
+  background: #C3FF8A;
+  color: #080809;
+  border-color: #C3FF8A;
+}
+.btn.primary:hover {
+  background: transparent;
+  color: #C3FF8A;
+}
+.btn.secondary {
+  background: transparent;
+  color: #C3FF8A;
+  border-color: #C3FF8A;
+}
+.btn.secondary:hover {
+  background: #C3FF8A;
+  color: #080809;
+}
+
+/* ============================================================
+   Venue grid section
+   ============================================================ */
+.venues-section {
+  padding: 40px 0 80px;
+  background: #1c1f2e;
+}
+.venues-section .section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 40px;
+  gap: 32px;
+}
+.venues-section .section-head h2 {
+  font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+  font-weight: 500 !important;
+  font-size: clamp(1.6rem, 2.5vw, 2.2rem) !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  line-height: 1.25 !important;
+  color: #C3FF8A !important;
+  margin: 0 !important;
+}
+.venues-section .section-head .eyebrow {
+  font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.32em !important;
+  text-transform: uppercase !important;
+  color: #C3FF8A !important;
+  margin-bottom: 10px;
+  display: block;
+}
+.venues-section .section-head .heading-hairline {
+  height: 1px;
+  background: rgba(195,255,138,0.3);
+  width: 56px;
+  margin: 8px 0 16px;
+}
+.venues-section .section-head p {
+  color: #8a8d99 !important;
+  font-size: 14px !important;
+  line-height: 1.65;
+  max-width: 36ch;
+  margin: 0;
+}
+.venues-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+/* ============================================================
+   Venue card — bento style
+   ============================================================ */
+.venue-card {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(195,255,138,0.25);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #111116;
+  transition: border-color 220ms, box-shadow 220ms, transform 220ms cubic-bezier(0.22,1,0.36,1);
+}
+.venue-card:hover {
+  border-color: rgba(195,255,138,0.5);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  transform: translateY(-3px);
+}
+/* Image area */
+.venue-card .media {
+  flex: 1;
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background-color: #111116;
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.62);
+  transition: filter 300ms ease, transform 300ms ease;
+}
+.venue-card:hover .media {
+  filter: brightness(0.85);
+  transform: scale(1.05);
+}
+/* City tag */
+.venue-card .city-tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 9px !important;
+  letter-spacing: 0.24em !important;
+  text-transform: uppercase !important;
+  color: #fff;
+  padding: 5px 10px;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(6px);
+  border-radius: 999px;
+  border: 1px solid rgba(195,255,138,0.35);
+  z-index: 2;
+}
+/* Capacity tag */
+.venue-card .cap-tag {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 9px !important;
+  letter-spacing: 0.20em !important;
+  text-transform: uppercase !important;
+  color: #fff;
+  padding: 5px 10px;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(6px);
+  border-radius: 999px;
+  border: 1px solid rgba(195,255,138,0.35);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  z-index: 2;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 220ms, transform 220ms;
+}
+.venue-card:hover .cap-tag {
+  opacity: 1;
+  transform: translateY(0);
+}
+.venue-card .cap-tag svg { width: 10px; height: 10px; color: #C3FF8A; }
+/* Text panel */
+.venue-card .info {
+  background: #111116;
+  border-top: 1px solid rgba(255,255,255,0.22);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.venue-card .name {
+  font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 13px !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  color: #fff !important;
+  line-height: 1.25;
+  margin: 0;
+}
+.venue-card .address {
+  font-size: 12px !important;
+  color: #8a8d99 !important;
+  line-height: 1.5;
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+}
+.venue-card .address svg {
+  width: 12px;
+  height: 12px;
+  color: #C3FF8A;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.venue-card .row-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+/* Style pill tag */
+.venue-card .style-pill {
+  display: inline-flex;
+  align-items: center;
+  background: transparent;
+  border: 1px solid rgba(195,255,138,0.5);
+  border-radius: 999px;
+  color: #C3FF8A;
+  font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+  font-size: 10px !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  padding: 3px 10px;
+}
+.venue-card .view {
+  font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 10px !important;
+  letter-spacing: 0.22em !important;
+  text-transform: uppercase !important;
+  color: #C3FF8A;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: gap 180ms;
+}
+.venue-card:hover .view { gap: 8px; }
+.venue-card .view svg { width: 11px; height: 11px; }
+
+/* ============================================================
+   CTA band
+   ============================================================ */
+.cta-band {
+  background: #1c1f2e;
+  color: #fff;
+  padding: 80px 0;
+  position: relative;
+  overflow: hidden;
+}
+.cta-band .spotlight-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: background 0.1s;
+  z-index: 1;
+}
+.cta-band .inner {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+.cta-band .eyebrow {
+  font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.32em !important;
+  text-transform: uppercase !important;
+  color: #C3FF8A !important;
+  margin-bottom: 16px;
+  display: block;
+}
+.cta-band .heading-hairline {
+  height: 1px;
+  background: rgba(195,255,138,0.3);
+  width: 56px;
+  margin: 0 0 20px;
+}
+.cta-band h2 {
+  font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+  font-weight: 500 !important;
+  font-size: clamp(1.6rem, 2.5vw, 2.2rem) !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  line-height: 1.25 !important;
+  margin: 0 !important;
+  color: #C3FF8A !important;
+}
+.cta-band p {
+  color: rgba(255,255,255,0.78);
+  font-size: 16px !important;
+  line-height: 1.7;
+  margin: 20px 0 0;
+  max-width: 52ch;
+}
+.cta-band .actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 28px;
+}
+.cta-band .sister {
+  margin-top: 16px;
+  font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 11px !important;
+  letter-spacing: 0.22em !important;
+  text-transform: uppercase !important;
+  color: #8a8d99;
+}
+.cta-band .sister a {
+  color: #C3FF8A;
+  cursor: pointer;
+}
+/* Quick inquiry form card */
+.cta-inquiry-card {
+  padding: 32px;
+  border: 1px solid rgba(195,255,138,0.25);
+  border-radius: 8px;
+  background: rgba(195,255,138,0.03);
+}
+.cta-inquiry-card h3 {
+  font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 18px !important;
+  letter-spacing: 0.10em !important;
+  text-transform: uppercase !important;
+  line-height: 1.25 !important;
+  margin: 0 0 20px !important;
+  color: #fff !important;
+}
+.cta-inquiry-card .form-field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: #080809;
+  border: 1px solid rgba(195,255,138,0.18);
+  border-radius: 6px;
+  color: rgba(255,255,255,0.55);
+  font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+  font-size: 14px !important;
+  transition: border-color 160ms;
+  cursor: text;
+}
+.cta-inquiry-card .form-field:focus-within {
+  border-color: rgba(195,255,138,0.5);
+}
+.cta-inquiry-card .form-field svg {
+  width: 15px;
+  height: 15px;
+  color: #C3FF8A;
+  flex-shrink: 0;
+}
+.cta-inquiry-card .fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ============================================================
+   Modal
+   ============================================================ */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(8,8,9,0.96);
+  backdrop-filter: blur(8px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 220ms;
+}
+.modal-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.modal {
+  background: #1c1f2e;
+  border: 1px solid rgba(195,255,138,0.25);
+  border-radius: 8px;
+  max-width: 880px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  transform: translateY(12px);
+  transition: transform 280ms cubic-bezier(0.22,1,0.36,1);
+}
+.modal-backdrop.open .modal {
+  transform: translateY(0);
+}
+.modal .ph {
+  min-height: 480px;
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.72);
+}
+.modal .body {
+  padding: 40px 40px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.modal .eyebrow {
+  font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.32em !important;
+  text-transform: uppercase !important;
+  color: #C3FF8A !important;
+}
+.modal h3 {
+  font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 22px !important;
+  letter-spacing: 0.10em !important;
+  text-transform: uppercase !important;
+  margin: 0 !important;
+  line-height: 1.25 !important;
+  color: #fff !important;
+}
+.modal .addr {
+  font-size: 13px !important;
+  color: #8a8d99;
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+}
+.modal .addr svg { width: 13px; height: 13px; color: #C3FF8A; margin-top: 2px; }
+.modal .desc {
+  font-size: 13px !important;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.78);
+  font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+}
+.modal .specs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 4px;
+}
+.modal .spec {
+  padding: 12px;
+  border: 1px solid rgba(195,255,138,0.18);
+  border-radius: 6px;
+  background: rgba(8,8,9,0.6);
+}
+.modal .spec .l {
+  font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 10px !important;
+  letter-spacing: 0.22em !important;
+  text-transform: uppercase !important;
+  color: #8a8d99;
+}
+.modal .spec .v {
+  font-size: 13px !important;
+  color: #fff;
+  margin-top: 4px;
+  font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+}
+.modal .close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(28,31,46,0.9);
+  border: 1px solid rgba(195,255,138,0.35);
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  color: #C3FF8A;
+  transition: background 160ms, border-color 160ms;
+}
+.modal .close:hover {
+  background: rgba(195,255,138,0.12);
+  border-color: rgba(195,255,138,0.6);
+}
+.modal .actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+.modal-wrap {
+  position: relative;
+  max-width: 880px;
+  width: 100%;
+}
+
+/* ============================================================
+   Container & global base
+   ============================================================ */
+.container {
+  max-width: 1200px !important;
+  margin: 0 auto;
+  padding: 0 40px !important;
+}
+
+/* ============================================================
+   Responsive — tablet
+   ============================================================ */
+@media (max-width: 1024px) {
+  .featured-card { grid-template-columns: 1fr; }
+  .featured-card .photo { min-height: 360px; }
+  .venues-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .page-header h1 { font-size: 3rem !important; }
+  .cta-band .inner { grid-template-columns: 1fr; gap: 40px; }
+  .modal { grid-template-columns: 1fr; }
+  .modal .ph { min-height: 260px; }
+}
+
+/* ============================================================
+   Responsive — mobile
+   ============================================================ */
+@media (max-width: 640px) {
+  .page-header { padding: 80px 0 64px; }
+  .page-header h1 { font-size: 2.4rem !important; }
+  .page-header .meta { gap: 28px; flex-wrap: wrap; }
+  .featured-card .body { padding: 32px 24px 28px; }
+  .featured-card h2 { font-size: 1.5rem !important; }
+  .venues-grid { grid-template-columns: 1fr !important; }
+  .cta-band h2 { font-size: 1.5rem !important; }
+  .modal-backdrop { padding: 16px; }
+  .modal .body { padding: 24px 20px 20px; }
+  .container { padding: 0 20px !important; }
+}
+
+/* ============================================================
+   Focus styles
+   ============================================================ */
+.venue-card:focus-visible {
+  outline: 2px solid #C3FF8A;
+  outline-offset: 2px;
+}
+.chip:focus-visible {
+  outline: 2px solid #C3FF8A;
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   Dynamic grid columns via CSS var
+   ============================================================ */
+.venues-grid {
+  grid-template-columns: repeat(var(--venues-grid-cols, 3), 1fr) !important;
+}
