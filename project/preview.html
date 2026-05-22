@@ -3,449 +3,63 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=1280" />
-  <meta name="description" content="Venues In The Event knows inside out — rigged, staged, and floraled across Salt Lake City, Utah County, and mountain resorts." />
+  <meta name="description" content="Venues In The Event knows inside out — rigged, staged, and floraled across Salt Lake City, Utah County, mountain resorts, and beyond." />
   <title>Venues — In The Event</title>
 
-  <!-- CDN dependencies (require internet, no server needed) -->
+  <!-- CDN: React 18, Babel, Lucide, Flatpickr -->
   <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css" />
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
   <style>
-    /* ITE Venues — dark design system
-       #080809 dark · #1c1f2e navy · #C3FF8A green · #111116 card bg
-    */
+    /* ITC Avant Garde Gothic — local WOFF2 (path relative to project/) */
+    @font-face { font-family: 'ITC-AvantGarde-Local'; src: url('../../fonts/BT-Book.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'ITC-AvantGarde-Local'; src: url('../../fonts/BT-BookItalic.woff2') format('woff2'); font-weight: 400; font-style: italic; font-display: swap; }
+    @font-face { font-family: 'ITC-AvantGarde-Local'; src: url('../../fonts/AvantGarde-Medium.woff2') format('woff2'); font-weight: 500; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'ITC-AvantGarde-Local'; src: url('../../fonts/BT-Demi.woff2') format('woff2'); font-weight: 600; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'ITC-AvantGarde-Local'; src: url('../../fonts/BT-Medium.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
     @import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&display=swap');
 
+    /* ═══════════════════════════════════════════════════════════
+       DESIGN TOKENS
+       Dark:  #080809  ·  Navy:  #1c1f2e  ·  Green: #C3FF8A
+       Card:  #111116  ·  Grey:  #8a8d99
+    ═══════════════════════════════════════════════════════════ */
     :root {
       --dark:    #080809;
       --navy:    #1c1f2e;
       --green:   #C3FF8A;
       --grey:    #8a8d99;
       --card-bg: #111116;
-      --font-display: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif;
-      --font-body:    'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif;
-      --ite-nav-height: 0px;
+      --font:    'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif;
       --venues-grid-cols: 3;
-      /* legacy aliases */
-      --ite-midnight-navy: #1c1f2e;
-      --ite-tea-green:     #C3FF8A;
-      --ite-sage-green:    #C3FF8A;
-      --ite-green-gradient: linear-gradient(135deg, #C3FF8A 0%, #8acc40 100%);
-      --ite-green-gradient-v: linear-gradient(180deg, #C3FF8A 0%, #8acc40 100%);
-
-      --fg2:           #8a8d99;
-      --divider:       rgba(195,255,138,0.3);
-
-      --link:       #C3FF8A;
-      --link-hover: #fff;
-
-      --fw-book:   400;
-      --fw-medium: 500;
-      --fw-bold:   700;
-      --fs-h1: clamp(2rem, 5vw, 2.5rem);
-      --fs-h2: clamp(1.4rem, 2.5vw, 2rem);
-      --fs-h3: 1.25rem;
-      --fs-eyebrow: 11px;
-
-      --lh-tight:  1.05;
-      --lh-snug:   1.2;
-      --lh-normal: 1.5;
-      --lh-loose:  1.7;
-
-      --tracking-wide:    0.22em;
-      --tracking-medium:  0.12em;
-      --tracking-normal:  0.01em;
-      --tracking-tight:   -0.01em;
-
-      --space-0:   0;
-      --space-1:   4px;
-      --space-2:   8px;
-      --space-3:   12px;
-      --space-4:   16px;
-      --space-5:   24px;
-      --space-6:   32px;
-      --space-7:   48px;
-      --space-8:   64px;
-      --space-9:   96px;
-      --space-10: 128px;
-
-      --radius-none: 0;
-      --radius-sm:   2px;
-      --radius-md:   4px;
-      --radius-lg:   8px;
-      --radius-xl:  16px;
-      --radius-pill: 999px;
-
-      --shadow-sm:  0 1px 2px rgba(24, 25, 48, 0.06);
-      --shadow-md:  0 4px 12px rgba(24, 25, 48, 0.08);
-      --shadow-lg:  0 12px 32px rgba(24, 25, 48, 0.12);
-      --shadow-xl:  0 24px 60px rgba(24, 25, 48, 0.18);
-      --shadow-inset: inset 0 1px 0 rgba(255,255,255,0.08);
-
-      --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
-      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-      --dur-fast:   120ms;
-      --dur-base:   220ms;
-      --dur-slow:   420ms;
-
-      --container-max: 1240px;
-      --container-gutter: 32px;
+      --green-faint:  rgba(195,255,138,0.15);
+      --green-mid:    rgba(195,255,138,0.30);
+      --green-strong: rgba(195,255,138,0.50);
+      --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
     }
 
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     html, body {
-      background: #080809;
+      background: var(--dark);
       color: #fff;
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif;
+      font-family: var(--font);
       font-size: 17px;
-      line-height: 1.78;
-      font-weight: 400;
+      line-height: 1.7;
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
     }
 
-    h1, .h1 {
-      font-family: var(--font-display);
-      font-weight: var(--fw-medium);
-      font-size: var(--fs-h1);
-      line-height: var(--lh-tight);
-      letter-spacing: var(--tracking-medium);
-      text-transform: uppercase;
-      color: var(--fg1);
-      margin: 0;
-    }
-    h2, .h2 {
-      font-family: var(--font-display);
-      font-weight: var(--fw-medium);
-      font-size: var(--fs-h2);
-      line-height: var(--lh-snug);
-      letter-spacing: var(--tracking-medium);
-      text-transform: uppercase;
-      color: var(--fg1);
-      margin: 0;
-    }
-    h3, .h3 {
-      font-family: var(--font-display);
-      font-weight: var(--fw-medium);
-      font-size: var(--fs-h3);
-      line-height: var(--lh-snug);
-      letter-spacing: var(--tracking-wide);
-      text-transform: uppercase;
-      color: var(--fg1);
-      margin: 0;
-    }
-    h4, .h4 {
-      font-family: var(--font-display);
-      font-weight: var(--fw-medium);
-      font-size: var(--fs-h4);
-      line-height: var(--lh-snug);
-      letter-spacing: var(--tracking-wide);
-      text-transform: uppercase;
-      color: var(--fg1);
-      margin: 0;
-    }
-
-    .display-xl {
-      font-family: var(--font-display);
-      font-weight: var(--fw-medium);
-      font-size: var(--fs-display-xl);
-      line-height: var(--lh-tight);
-      letter-spacing: var(--tracking-medium);
-      text-transform: uppercase;
-    }
-    .display-l {
-      font-family: var(--font-display);
-      font-weight: var(--fw-medium);
-      font-size: var(--fs-display-l);
-      line-height: var(--lh-tight);
-      letter-spacing: var(--tracking-medium);
-      text-transform: uppercase;
-    }
-    .display-m {
-      font-family: var(--font-display);
-      font-weight: var(--fw-medium);
-      font-size: var(--fs-display-m);
-      line-height: var(--lh-tight);
-      letter-spacing: var(--tracking-medium);
-      text-transform: uppercase;
-    }
-
-    .eyebrow {
-      font-family: var(--font-display);
-      font-weight: var(--fw-medium);
-      font-size: var(--fs-eyebrow);
-      letter-spacing: var(--tracking-wide);
-      text-transform: uppercase;
-      color: var(--fg2);
-    }
-
-    p, .body {
-      font-family: var(--font-body);
-      font-weight: var(--fw-book);
-      font-size: var(--fs-body);
-      line-height: var(--lh-loose);
-      color: var(--fg1);
-      margin: 0;
-    }
-    .body-l { font-size: var(--fs-body-l); line-height: var(--lh-loose); }
-    .body-s { font-size: var(--fs-body-s); line-height: var(--lh-normal); color: var(--fg2); }
-    .caption { font-size: var(--fs-caption); line-height: var(--lh-normal); color: var(--fg3); }
-
-    a {
-      color: var(--link);
-      text-decoration: none;
-      transition: color var(--dur-fast) var(--ease-out);
-    }
-    a:hover { color: var(--link-hover); }
-
-    code, pre, .mono {
-      font-family: var(--font-mono);
-      font-size: 0.92em;
-    }
-
-    .uppercase { text-transform: uppercase; letter-spacing: var(--tracking-wide); }
-    .on-dark   { color: var(--fg-inverse); }
-    .on-dark .eyebrow,
-    .on-dark p { color: rgba(255,255,255,0.78); }
-    .gradient-text {
-      background: var(--ite-green-gradient);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    /* =========================================================
-       kit.css
-       ========================================================= */
-    * { box-sizing: border-box; }
-    body { margin: 0; }
+    a { color: var(--green); text-decoration: none; transition: color 120ms var(--ease-out); }
+    a:hover { color: #fff; }
 
     .container { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
 
-    .section { padding: 96px 0; }
-    .section.tight { padding: 64px 0; }
-    .section.dark { background: var(--ite-midnight-navy); color: #fff; }
-    .section.subtle { background: #F5F6EE; }
-
-    .eyebrow {
-      font-family: var(--font-display);
-      font-weight: 500;
-      font-size: 11px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--fg2);
-      margin: 0 0 8px;
-    }
-    .section.dark .eyebrow { color: var(--ite-tea-green); }
-
-    .heading-hairline {
-      height: 1px;
-      background: var(--divider);
-      margin: 8px 0 18px;
-      width: 72px;
-    }
-    .section.dark .heading-hairline { background: rgba(255,255,255,0.3); }
-
-    .display {
-      font-family: var(--font-display);
-      font-weight: 500;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      line-height: 1.05;
-      margin: 0;
-    }
-    .display.xl { font-size: 72px; }
-    .display.l  { font-size: 56px; }
-    .display.m  { font-size: 40px; }
-    .display.s  { font-size: 28px; }
-
-    .body-l { font-size: 18px; line-height: 1.7; color: var(--fg1); max-width: 60ch; }
-    .section.dark .body-l { color: rgba(255,255,255,0.8); }
-
-    /* Buttons */
-    .btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-family: var(--font-display);
-      font-weight: 500; font-size: 12px;
-      letter-spacing: 0.22em; text-transform: uppercase;
-      padding: 16px 28px;
-      border-radius: 4px; border: 1px solid transparent;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 180ms cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .btn.primary { background: var(--ite-midnight-navy); color: #fff; }
-    .btn.primary:hover { background: #000; transform: translateY(-1px); }
-    .btn.secondary { background: transparent; color: var(--ite-midnight-navy); border-color: var(--ite-midnight-navy); }
-    .btn.secondary:hover { background: var(--ite-midnight-navy); color: #fff; }
-    .btn.gradient { background: transparent; color: #fff; border-color: rgba(255,255,255,0.8); }
-    .btn.gradient:hover { background: #fff; color: var(--ite-midnight-navy); border-color: #fff; }
-    .btn.ghost { background: transparent; color: var(--ite-sage-green); padding: 0; letter-spacing: 0.2em; border: 0; }
-    .btn.ghost:hover { color: var(--ite-midnight-navy); }
-    .section.dark .btn.secondary,
-    .hero .btn.secondary { color: #fff; border-color: rgba(255,255,255,0.7); }
-    .section.dark .btn.secondary:hover,
-    .hero .btn.secondary:hover { background: #fff; color: var(--ite-midnight-navy); border-color: #fff; }
-
-    /* Navigation */
-    .nav {
-      position: sticky; top: 0; z-index: 40;
-      padding: 18px 32px;
-      display: flex; align-items: center; justify-content: space-between;
-      background: rgba(8,8,9,0.96);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid rgba(195,255,138,0.12);
-    }
-    .nav.dark {
-      background: rgba(8,8,9,0.96);
-      border-bottom-color: rgba(195,255,138,0.15);
-    }
-    .nav .brand { display: flex; align-items: center; gap: 12px; cursor: pointer; }
-    .nav .brand img { height: 26px; display: block; }
-    .nav .links { display: flex; gap: 28px; }
-    .nav a {
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
-      font-weight: 500 !important; font-size: 11px !important;
-      letter-spacing: 0.22em !important; text-transform: uppercase !important;
-      color: rgba(255,255,255,0.75); cursor: pointer;
-    }
-    .nav.dark a { color: rgba(255,255,255,0.8); }
-    .nav a.active { color: #C3FF8A; }
-    .nav.dark a.active { color: #C3FF8A; }
-    .nav a:hover { color: #C3FF8A; }
-
-    /* Hero */
-    .hero {
-      position: relative;
-      min-height: 620px;
-      display: flex; align-items: center;
-      background: var(--ite-midnight-navy);
-      overflow: hidden;
-    }
-    .hero .photo {
-      position: absolute; inset: 0;
-      background-image:
-        linear-gradient(180deg, rgba(24,25,48,0.25) 0%, rgba(24,25,48,0.70) 100%),
-        url('assets/photos/stage-purple.jpg');
-      background-size: cover;
-      background-position: center;
-    }
-    .hero .container { position: relative; color: #fff; padding-top: 80px; padding-bottom: 80px; }
-    .hero .display { color: #fff; max-width: 16ch; }
-    .hero .lead { color: rgba(255,255,255,0.78); max-width: 56ch; margin: 24px 0 36px; font-size: 19px; line-height: 1.6; }
-    .hero .eyebrow { color: var(--ite-tea-green); }
-    .hero .actions { display: flex; gap: 14px; flex-wrap: wrap; }
-    .hero .stats {
-      display: grid; grid-template-columns: repeat(3, auto);
-      gap: 56px;
-      margin-top: 80px;
-      padding-top: 40px;
-      border-top: 1px solid rgba(255,255,255,0.15);
-    }
-    .hero .stats .n { font-family: var(--font-display); font-weight: 500; font-size: 44px; letter-spacing: 0.04em; color: #fff; }
-    .hero .stats .n .grad { background: var(--ite-green-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .hero .stats .l { font-family: var(--font-display); font-weight: 500; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-top: 4px; }
-
-    /* Services */
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      margin-top: 48px;
-    }
-    .service {
-      background: #fff;
-      padding: 32px 24px 36px;
-      min-height: 220px;
-      display: flex; flex-direction: column; gap: 12px;
-      cursor: pointer;
-      transition: background 200ms;
-    }
-    .service:hover { background: #F5F6EE; }
-    .service .icon { width: 28px; height: 28px; color: var(--ite-sage-green); }
-    .service .name { font-family: var(--font-display); font-weight: 500; font-size: 14px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg1); }
-    .service .desc { font-size: 14px; line-height: 1.6; color: var(--fg2); }
-    .service .more { font-family: var(--font-display); font-weight: 500; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ite-sage-green); margin-top: auto; }
-
-    /* Work grid */
-    .work-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 40px; }
-    .work-card { cursor: pointer; transition: transform 220ms; }
-    .work-card:hover { transform: translateY(-4px); }
-    .work-card .media { height: 360px; border-radius: 4px; overflow: hidden; position: relative; }
-    .work-card .media { background-size: cover; background-position: center; }
-    .work-card.a .media { background-image: url('assets/photos/stage-purple.jpg'); }
-    .work-card.b .media { background-image: url('assets/photos/gala-green.jpg'); }
-    .work-card.c .media { background-image: url('assets/photos/lounge-white.jpg'); }
-    .work-card.d .media { background-image: url('assets/photos/rgb-tubes.jpg'); }
-    .work-card .tag { position: absolute; top: 16px; left: 16px; font-family: var(--font-display); font-weight: 500; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: #fff; padding: 6px 12px; background: rgba(0,0,0,0.28); border-radius: 2px; }
-    .work-card .meta { padding-top: 16px; display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
-    .work-card .title { font-family: var(--font-display); font-weight: 500; font-size: 18px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .work-card .year { font-family: var(--font-mono); font-size: 12px; color: var(--fg3); flex-shrink: 0; }
-    .work-card .desc { color: var(--fg2); font-size: 14px; margin-top: 8px; }
-
-    /* Case detail */
-    .case-hero { height: 480px; border-radius: 4px; overflow: hidden; display:flex; align-items:flex-end; padding: 32px; color: #fff; position: relative; background-size: cover; background-position: center; }
-    .case-hero::before { content:''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(24,25,48,0.1) 0%, rgba(24,25,48,0.75) 100%); }
-    .case-hero > * { position: relative; z-index: 1; }
-    .case-hero.a { background-image: url('assets/photos/stage-purple.jpg'); }
-    .case-hero.b { background-image: url('assets/photos/gala-green.jpg'); }
-    .case-hero.c { background-image: url('assets/photos/lounge-white.jpg'); }
-    .case-hero.d { background-image: url('assets/photos/rgb-tubes.jpg'); }
-    .case-hero .tag { background: var(--ite-tea-green); color: var(--ite-midnight-navy); padding: 6px 12px; border-radius: 2px; font-family: var(--font-display); font-weight: 500; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; display: inline-block; margin-bottom: 16px; }
-    .case-hero h1 { font-family: var(--font-display); font-weight: 500; font-size: 56px; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.05; margin: 0; color: #fff; max-width: 18ch; }
-
-    .case-details { display: grid; grid-template-columns: 1fr 2fr; gap: 64px; margin-top: 48px; }
-    .case-specs { display: flex; flex-direction: column; gap: 16px; }
-    .spec { display: grid; grid-template-columns: 120px 1fr; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--divider); font-size: 14px; }
-    .spec dt { font-family: var(--font-display); font-weight: 500; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--fg3); }
-    .spec dd { margin: 0; color: var(--fg1); }
-
-    /* Testimonial */
-    .testimonial { text-align: center; max-width: 900px; margin: 0 auto; }
-    .testimonial .quote { font-family: var(--font-display); font-weight: 500; font-size: 32px; letter-spacing: 0.04em; line-height: 1.3; color: #fff; text-transform: none; }
-    .testimonial .attrib { margin-top: 32px; font-family: var(--font-display); font-weight: 500; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ite-tea-green); }
-
-    /* Form */
-    .form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 760px; margin-top: 32px; }
-    .form .full { grid-column: 1 / -1; }
-    .field { display: flex; flex-direction: column; gap: 6px; }
-    .field label { font-family: var(--font-display); font-weight: 500; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--fg2); }
-    .field input, .field select, .field textarea {
-      font-family: var(--font-body); font-size: 15px;
-      padding: 14px 16px; border: 1px solid var(--border); border-radius: 4px;
-      background: #fff; color: var(--fg1);
-      transition: border-color 120ms;
-    }
-    .field input:focus, .field select:focus, .field textarea:focus {
-      outline: none; border-color: var(--ite-midnight-navy);
-    }
-
-    /* Footer */
-    .footer { background: #080809; color: #fff; padding: 80px 0 40px; border-top: 1px solid rgba(195,255,138,0.12); }
-    .footer .cols { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; }
-    .footer h4 { font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important; font-weight: 500 !important; font-size: 11px !important; letter-spacing: 0.22em !important; text-transform: uppercase !important; color: #C3FF8A; margin: 0 0 18px; }
-    .footer ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
-    .footer a { color: rgba(255,255,255,0.75); font-size: 14px !important; }
-    .footer a:hover { color: #C3FF8A; }
-    .footer .brand-block img { height: 48px; margin-bottom: 16px; }
-    .footer .lead { color: rgba(255,255,255,0.7); font-size: 14px; line-height: 1.7; max-width: 36ch; }
-    .footer .fine { margin-top: 56px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.12); display: flex; justify-content: space-between; font-size: 12px; color: rgba(255,255,255,0.5); font-family: var(--font-mono); }
-
-    /* Utility */
-    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
-    .inline { display: inline; }
-
-    /* =========================================================
-       venues.css — ITE Design System (inlined)
-       Dark bg: #080809 · Navy bg: #1c1f2e · Green: #C3FF8A
-       ========================================================= */
-
-    /* ---- Scroll reveal ---- */
+    /* ── Scroll reveal ── */
     #root.js-reveal-ready .reveal {
       opacity: 0;
       transform: translateY(56px);
@@ -457,363 +71,364 @@
                   transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* Page header */
+    /* ── Glass fade-in — plays with the upward bump on scroll-in ── */
+    @keyframes cardGlassIn {
+      from {
+        backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px);
+        background: rgba(255,255,255,0);
+      }
+      to {
+        backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+        background: rgba(255,255,255,0.08);
+      }
+    }
+    .venue-card.in-view .info {
+      animation: cardGlassIn 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       NAV
+    ═══════════════════════════════════════════════════════════ */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 40;
+      padding: 0 32px;
+      height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(8,8,9,0.94);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(195,255,138,0.12);
+      transition: background 0.3s;
+    }
+    .nav .brand { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+    .nav .brand img { height: 26px; display: block; }
+    .nav .links { display: flex; gap: 28px; }
+    .nav .links a {
+      font-family: var(--font);
+      font-weight: 500; font-size: 11px;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: rgba(255,255,255,0.72); cursor: pointer;
+      transition: color 160ms;
+    }
+    .nav .links a:hover,
+    .nav .links a.active { color: var(--green); }
+
+    /* ═══════════════════════════════════════════════════════════
+       BUTTONS — ITE spec: 10px radius, 2px green border, 13px
+    ═══════════════════════════════════════════════════════════ */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font);
+      font-weight: 500; font-size: 13px;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 10px 24px;
+      border-radius: 10px; border: 2px solid var(--green);
+      cursor: pointer; text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+      white-space: nowrap;
+    }
+    .btn.filled  { background: var(--green); color: var(--dark); }
+    .btn.filled:hover  { background: transparent; color: var(--green); }
+    .btn.outline { background: transparent; color: var(--green); }
+    .btn.outline:hover { background: var(--green); color: var(--dark); }
+    .btn[disabled] { opacity: 0.55; cursor: not-allowed; pointer-events: none; }
+
+    /* ═══════════════════════════════════════════════════════════
+       PAGE HEADER
+    ═══════════════════════════════════════════════════════════ */
     .page-header {
-      background: #080809;
+      background: var(--dark);
       color: #fff;
       padding: 120px 0 96px;
       position: relative;
       overflow: hidden;
     }
-    .page-header .spotlight-overlay {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      z-index: 1;
-    }
     .page-header::before {
       content: '';
-      position: absolute;
-      inset: 0;
+      position: absolute; inset: 0;
       background-image:
-        linear-gradient(180deg, rgba(8,8,9,0.60) 0%, rgba(8,8,9,0.94) 100%),
+        linear-gradient(180deg, rgba(8,8,9,0.55) 0%, rgba(8,8,9,0.92) 100%),
         url('assets/photos/gala-green.jpg');
-      background-size: cover;
-      background-position: center;
-      opacity: 0.7;
-      z-index: 0;
+      background-size: cover; background-position: center;
+      opacity: 0.72; z-index: 0;
+    }
+    .page-header .spotlight-overlay {
+      position: absolute; inset: 0; pointer-events: none;
+      transition: background 0.1s; z-index: 1;
     }
     .page-header .container { position: relative; z-index: 2; }
     .page-header .eyebrow {
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
-      font-size: 14px !important;
-      font-weight: 500 !important;
-      letter-spacing: 0.32em !important;
-      text-transform: uppercase !important;
-      color: #C3FF8A !important;
-      margin-bottom: 20px;
       display: block;
+      font-family: var(--font); font-weight: 500; font-size: 13px;
+      letter-spacing: 0.32em; text-transform: uppercase;
+      color: var(--green); margin-bottom: 20px;
     }
     .page-header h1 {
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
-      font-weight: 500 !important;
-      font-size: clamp(3rem, 7vw, 84px) !important;
-      letter-spacing: 0.06em !important;
-      text-transform: uppercase !important;
-      line-height: 1.0 !important;
-      margin: 0 !important;
-      color: #fff !important;
-      max-width: 14ch;
+      font-family: var(--font); font-weight: 500;
+      font-size: clamp(3rem, 7vw, 84px);
+      letter-spacing: 0.06em; text-transform: uppercase;
+      line-height: 1.0; color: #fff; max-width: 14ch;
     }
-    .page-header h1 .accent { color: #C3FF8A; }
+    .page-header h1 .accent { color: var(--green); }
     .page-header .lead {
-      color: rgba(255,255,255,0.88);
-      max-width: 60ch;
-      margin: 32px 0 0;
-      font-size: clamp(1.4rem, 2vw, 1.75rem) !important;
-      line-height: 1.5;
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+      font-family: var(--font);
+      font-size: clamp(1.1rem, 1.8vw, 1.4rem); line-height: 1.55;
+      color: rgba(255,255,255,0.85); max-width: 58ch; margin-top: 28px;
     }
     .page-header .meta {
-      margin-top: 48px;
-      display: flex;
-      gap: 64px;
-      padding-top: 32px;
-      border-top: 1px solid rgba(255,255,255,0.18);
+      margin-top: 48px; display: flex; gap: 64px;
+      padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.18);
     }
     .page-header .meta .item .l {
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
-      font-weight: 500 !important;
-      font-size: 10px !important;
-      letter-spacing: 0.22em !important;
-      text-transform: uppercase !important;
-      color: #8a8d99;
-      margin-bottom: 6px;
+      font-family: var(--font); font-weight: 500; font-size: 10px;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--grey); margin-bottom: 6px;
     }
     .page-header .meta .item .v {
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
-      font-weight: 500 !important;
-      font-size: 16px !important;
-      letter-spacing: 0.10em !important;
-      text-transform: uppercase !important;
-      color: #fff;
+      font-family: var(--font); font-weight: 500; font-size: 15px;
+      letter-spacing: 0.10em; text-transform: uppercase; color: #fff;
     }
 
-    /* Filter bar */
+    /* ═══════════════════════════════════════════════════════════
+       FILTER BAR
+    ═══════════════════════════════════════════════════════════ */
     .filter-bar {
-      position: sticky;
-      top: 0;
-      z-index: 30;
-      background: #1c1f2e;
+      position: sticky; top: 64px; z-index: 30;
+      background: var(--navy);
       border-bottom: 1px solid rgba(195,255,138,0.15);
-      padding: 16px 0;
+      padding: 14px 0;
     }
     .filter-bar .row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 32px;
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 32px;
     }
-    .filter-bar .chips {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
+    .filter-bar .chips { display: flex; gap: 8px; flex-wrap: wrap; }
     .chip {
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
-      font-weight: 500 !important;
-      font-size: 10px !important;
-      letter-spacing: 0.22em !important;
-      text-transform: uppercase !important;
+      font-family: var(--font); font-weight: 500; font-size: 10px;
+      letter-spacing: 0.22em; text-transform: uppercase;
       padding: 7px 16px;
       border: 1px solid rgba(195,255,138,0.35);
-      border-radius: 999px;
-      color: #C3FF8A;
-      background: transparent;
-      cursor: pointer;
-      transition: all 160ms cubic-bezier(0.22,1,0.36,1);
+      border-radius: 999px; color: var(--green);
+      background: transparent; cursor: pointer;
+      transition: all 160ms var(--ease-out);
       white-space: nowrap;
     }
-    .chip:hover { background: rgba(195,255,138,0.08); border-color: rgba(195,255,138,0.6); }
-    .chip.active { background: #C3FF8A; color: #080809; border-color: #C3FF8A; }
-    .chip .ct { margin-left: 6px; font-size: 9px !important; opacity: 0.65; }
+    .chip:hover { background: rgba(195,255,138,0.08); border-color: rgba(195,255,138,0.60); }
+    .chip.active { background: var(--green); color: var(--dark); border-color: var(--green); }
+    .chip:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+    .chip .ct { margin-left: 6px; font-size: 9px; opacity: 0.65; }
     .chip.active .ct { opacity: 0.55; }
     .filter-bar .count {
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
-      font-weight: 500 !important;
-      font-size: 11px !important;
-      letter-spacing: 0.22em !important;
-      text-transform: uppercase !important;
-      color: #8a8d99;
-      white-space: nowrap;
+      font-family: var(--font); font-weight: 500; font-size: 11px;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--grey); white-space: nowrap; flex-shrink: 0;
     }
-    .filter-bar .count strong { color: #C3FF8A; font-weight: 500; }
+    .filter-bar .count strong { color: var(--green); font-weight: 500; }
 
-    /* Featured venue */
-    .featured-section { padding: 80px 0 40px; background: #080809; }
+    /* ═══════════════════════════════════════════════════════════
+       FEATURED CARD
+    ═══════════════════════════════════════════════════════════ */
+    .featured-section { padding: 80px 0 40px; background: var(--dark); }
     .featured-card {
-      display: grid;
-      grid-template-columns: 1.4fr 1fr;
-      gap: 0;
-      background: #1c1f2e;
-      color: #fff;
-      border-radius: 8px;
-      overflow: hidden;
-      border: 1px solid rgba(195,255,138,0.25);
-      box-shadow: 0 24px 80px -32px rgba(0,0,0,0.55);
+      display: grid; grid-template-columns: 1.4fr 1fr;
+      background: var(--navy); color: #fff;
+      border-radius: 8px; overflow: hidden;
+      border: 1px solid rgba(195,255,138,0.22);
+      box-shadow: 0 24px 80px -32px rgba(0,0,0,0.6);
     }
-    .featured-card .photo {
-      position: relative;
-      min-height: 560px;
-      background-size: cover;
-      background-position: center;
+    .featured-card .photo-bg {
+      position: absolute; inset: 0;
+      background-size: cover; background-position: center;
       filter: brightness(0.62);
-      transition: filter 0.4s ease;
+      transition: filter 480ms cubic-bezier(0.22,1,0.36,1);
+      z-index: 0;
     }
-    .featured-card:hover .photo { filter: brightness(0.85); }
+    .featured-card:hover .photo-bg { filter: brightness(0.84); }
+    .featured-card .photo {
+      position: relative; min-height: 560px;
+      z-index: 1;
+    }
     .featured-card .photo .overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(8,8,9,0.0) 40%, rgba(8,8,9,0.45) 100%);
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, transparent 40%, rgba(8,8,9,0.42) 100%);
     }
-    .featured-card .photo .badge {
-      position: absolute;
-      top: 24px;
-      left: 24px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
+    .featured-card .badge {
+      position: absolute; top: 24px; left: 24px;
+      display: inline-flex; align-items: center; gap: 7px;
       padding: 8px 14px;
-      background: #C3FF8A;
-      color: #080809;
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
-      font-weight: 500 !important;
-      font-size: 10px !important;
-      letter-spacing: 0.24em !important;
-      text-transform: uppercase !important;
-      border-radius: 4px;
-      z-index: 2;
+      background: var(--green); color: var(--dark);
+      font-family: var(--font); font-weight: 500; font-size: 10px;
+      letter-spacing: 0.24em; text-transform: uppercase;
+      border-radius: 4px; z-index: 2;
     }
-    .featured-card .photo .badge svg { width: 13px; height: 13px; }
-    .featured-card .photo .thumbs {
-      position: absolute;
-      bottom: 24px;
-      left: 24px;
-      display: flex;
-      gap: 8px;
-      z-index: 2;
+    .featured-card .badge svg { width: 12px; height: 12px; }
+    .featured-card .thumbs {
+      position: absolute; bottom: 24px; left: 24px;
+      display: flex; gap: 8px; z-index: 2;
     }
-    .featured-card .photo .thumb {
-      width: 60px;
-      height: 60px;
-      background-size: cover;
-      background-position: center;
+    .featured-card .thumb {
+      width: 60px; height: 60px;
+      background-size: cover; background-position: center;
       border-radius: 4px;
       border: 1px solid rgba(195,255,138,0.35);
-      cursor: pointer;
-      opacity: 0.55;
+      cursor: pointer; opacity: 0.55;
       transition: opacity 160ms, border-color 160ms;
     }
-    .featured-card .photo .thumb:hover,
-    .featured-card .photo .thumb.active { opacity: 1; border-color: #C3FF8A; }
+    .featured-card .thumb:hover,
+    .featured-card .thumb.active { opacity: 1; border-color: var(--green); }
+    /* ── Featured card body panel — Featured glass ── */
     .featured-card .body {
-      padding: 56px 56px 48px;
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-      background: #1c1f2e;
-      border-left: 1px solid rgba(255,255,255,0.08);
+      padding: 56px 52px 48px;
+      display: flex; flex-direction: column; gap: 22px;
+      background: rgba(255,255,255,0.10);
+      backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
+      position: relative;
+      transition:
+        background 480ms cubic-bezier(0.22,1,0.36,1),
+        backdrop-filter 480ms cubic-bezier(0.22,1,0.36,1),
+        -webkit-backdrop-filter 480ms cubic-bezier(0.22,1,0.36,1);
+    }
+    .featured-card .body::before {
+      content: ''; position: absolute; inset: 0;
+      border: 1px solid transparent;
+      background: conic-gradient(
+        from 0deg,
+        rgba(195,255,138,0.28) 0deg,   rgba(160,200,255,0.28) 60deg,
+        rgba(255,200,160,0.28) 120deg, rgba(195,255,138,0.28) 180deg,
+        rgba(180,160,255,0.28) 240deg, rgba(255,230,140,0.28) 300deg,
+        rgba(195,255,138,0.28) 360deg
+      ) border-box;
+      -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: destination-out; mask-composite: exclude;
+      pointer-events: none;
+    }
+    .featured-card .body::after {
+      content: ''; position: absolute; inset: 0;
+      border: 1px solid transparent;
+      background: linear-gradient(
+        135deg,
+        rgba(255,255,255,0.62) 0%, rgba(255,255,255,0.10) 30%,
+        transparent 55%, rgba(0,0,0,0.12) 100%
+      ) border-box;
+      -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: destination-out; mask-composite: exclude;
+      pointer-events: none;
+    }
+    .featured-card:hover .body {
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      background: rgba(255,255,255,0.13);
+    }
+    .featured-card .body > * { position: relative; z-index: 1; }
+
+    @keyframes featuredGlassIn {
+      from { backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px); transform: translateX(16px); }
+      to   { backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px); transform: translateX(0); }
+    }
+    .featured-card.in-view .body {
+      animation: featuredGlassIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
     }
     .featured-card .eyebrow {
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
-      font-size: 14px !important;
-      font-weight: 500 !important;
-      letter-spacing: 0.32em !important;
-      text-transform: uppercase !important;
-      color: #C3FF8A !important;
-      margin: 0;
+      font-family: var(--font); font-weight: 500; font-size: 13px;
+      letter-spacing: 0.32em; text-transform: uppercase; color: var(--green);
     }
-    .featured-card .heading-hairline { height: 1px; background: rgba(195,255,138,0.3); width: 56px; }
+    .heading-hairline { height: 1px; background: rgba(195,255,138,0.28); width: 56px; }
     .featured-card h2 {
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
-      font-weight: 500 !important;
-      font-size: clamp(1.6rem, 2.5vw, 2.2rem) !important;
-      letter-spacing: 0.1em !important;
-      text-transform: uppercase !important;
-      line-height: 1.25 !important;
-      margin: 0 !important;
-      color: #fff !important;
+      font-family: var(--font); font-weight: 500;
+      font-size: clamp(1.5rem, 2.2vw, 2rem);
+      letter-spacing: 0.10em; text-transform: uppercase;
+      line-height: 1.2; color: #fff;
     }
-    .featured-card .desc { font-size: 15px !important; line-height: 1.7; color: rgba(255,255,255,0.78); }
+    .featured-card .desc {
+      font-size: 15px; line-height: 1.72; color: rgba(255,255,255,0.78);
+    }
     .featured-card .specs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px 32px;
-      padding: 24px 0;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 18px 28px;
+      padding: 18px 0;
     }
     .featured-card .spec { display: flex; flex-direction: column; align-items: center; text-align: center; }
-    .featured-card .spec:nth-child(n+3) { border-bottom: none; }
     .featured-card .spec .l {
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
-      font-weight: 500 !important;
-      font-size: 10px !important;
-      letter-spacing: 0.22em !important;
-      text-transform: uppercase !important;
-      color: #8a8d99;
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
+      font-family: var(--font); font-weight: 500; font-size: 10px;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--grey); margin-bottom: 6px;
+      display: flex; align-items: center; justify-content: center; gap: 5px;
     }
-    .featured-card .spec .l svg { width: 12px; height: 12px; color: #C3FF8A; }
-    .featured-card .spec .v { font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important; font-size: 14px !important; color: #fff; }
-    .featured-card .actions { display: flex; gap: 12px; margin-top: auto; flex-wrap: wrap; }
+    .featured-card .spec .l svg { width: 11px; height: 11px; color: var(--green); }
+    .featured-card .spec .v { font-size: 14px; color: #fff; }
+    .featured-card .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: auto; }
 
-    /* ITE Buttons */
-    .btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
-      font-weight: 500 !important; font-size: 13px !important;
-      letter-spacing: 0.14em !important; text-transform: uppercase !important;
-      padding: 10px 24px;
-      border-radius: 10px; border: 2px solid #C3FF8A;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 180ms cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .btn.filled  { background: #C3FF8A; color: #080809; }
-    .btn.filled:hover { background: transparent; color: #C3FF8A; }
-    .btn.outline { background: transparent; color: #C3FF8A; }
-    .btn.outline:hover { background: #C3FF8A; color: #080809; }
-    .btn.gradient { background: #C3FF8A; color: #080809; border-color: #C3FF8A; }
-    .btn.gradient:hover { background: transparent; color: #C3FF8A; }
-    .btn.ghost { background: transparent; color: #C3FF8A; border-color: #C3FF8A; }
-    .btn.ghost:hover { background: #C3FF8A; color: #080809; }
-    .btn.primary { background: #C3FF8A; color: #080809; border-color: #C3FF8A; }
-    .btn.primary:hover { background: transparent; color: #C3FF8A; }
-    .btn.secondary { background: transparent; color: #C3FF8A; border-color: #C3FF8A; }
-    .btn.secondary:hover { background: #C3FF8A; color: #080809; }
-
-    /* Venues grid */
-    .venues-section { padding: 40px 0 80px; background: #1c1f2e; }
+    /* ═══════════════════════════════════════════════════════════
+       VENUES SECTION + GRID
+    ═══════════════════════════════════════════════════════════ */
+    .venues-section { padding: 40px 0 80px; background: var(--navy); }
     .venues-section .section-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      margin-bottom: 40px;
-      gap: 32px;
-    }
-    .venues-section .section-head h2 {
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
-      font-weight: 500 !important;
-      font-size: clamp(1.6rem, 2.5vw, 2.2rem) !important;
-      letter-spacing: 0.1em !important;
-      text-transform: uppercase !important;
-      line-height: 1.25 !important;
-      color: #C3FF8A !important;
-      margin: 0 !important;
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 40px; gap: 32px;
     }
     .venues-section .section-head .eyebrow {
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
-      font-size: 14px !important; font-weight: 500 !important;
-      letter-spacing: 0.32em !important; text-transform: uppercase !important;
-      color: #C3FF8A !important; margin-bottom: 10px; display: block;
+      display: block;
+      font-family: var(--font); font-weight: 500; font-size: 13px;
+      letter-spacing: 0.32em; text-transform: uppercase;
+      color: var(--green); margin-bottom: 10px;
     }
-    .venues-section .section-head .heading-hairline {
-      height: 1px; background: rgba(195,255,138,0.3); width: 56px; margin: 8px 0 16px;
+    .venues-section .section-head h2 {
+      font-family: var(--font); font-weight: 500;
+      font-size: clamp(1.5rem, 2.2vw, 2rem);
+      letter-spacing: 0.10em; text-transform: uppercase;
+      color: var(--green); line-height: 1.2;
     }
-    .venues-section .section-head p { color: #8a8d99 !important; font-size: 14px !important; line-height: 1.65; max-width: 36ch; margin: 0; }
+    .venues-section .section-head p {
+      font-size: 14px; color: var(--grey); line-height: 1.65; max-width: 36ch;
+    }
     .venues-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 28px;
+      grid-template-columns: repeat(var(--venues-grid-cols, 3), 1fr);
+      gap: 24px;
     }
 
-    /* Venue card — bento style */
+    /* ── Venue card ── */
     .venue-card {
       cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      border: 1px solid rgba(195,255,138,0.25);
-      border-radius: 8px;
-      overflow: hidden;
-      background: #111116;
-      transition: border-color 220ms, box-shadow 220ms, transform 220ms cubic-bezier(0.22,1,0.36,1);
+      display: flex; flex-direction: column;
+      border: 1px solid rgba(195,255,138,0.22);
+      border-radius: 8px; overflow: hidden;
+      background: var(--card-bg);
+      position: relative;
+      transition:
+        border-color 480ms cubic-bezier(0.22,1,0.36,1),
+        box-shadow 480ms cubic-bezier(0.22,1,0.36,1),
+        transform 480ms cubic-bezier(0.22,1,0.36,1);
     }
     .venue-card:hover {
-      border-color: rgba(195,255,138,0.5);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-      transform: translateY(-3px);
+      border-color: rgba(195,255,138,0.50);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+      transform: translateY(-4px);
     }
-    .venue-card .media {
-      flex: 1;
-      position: relative;
-      aspect-ratio: 4 / 3;
-      overflow: hidden;
-      background-color: #111116;
-      background-size: cover;
-      background-position: center;
+    .venue-card:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+    /* Full-card photo bg — extends behind glass info panel so backdrop-filter has content to blur */
+    .venue-card .photo-bg {
+      position: absolute; inset: 0;
+      background-size: cover; background-position: center;
       filter: brightness(0.62);
-      transition: filter 300ms ease, transform 300ms ease;
+      transition: filter 480ms cubic-bezier(0.22,1,0.36,1);
+      z-index: 0;
     }
-    .venue-card:hover .media { filter: brightness(0.85); transform: scale(1.05); }
+    .venue-card:hover .photo-bg { filter: brightness(0.84); }
+    .venue-card .media {
+      position: relative; aspect-ratio: 4 / 3;
+      overflow: visible; z-index: 1;
+    }
     .venue-card .city-tag {
-      position: absolute;
-      top: 12px; left: 12px;
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
-      font-weight: 500 !important; font-size: 9px !important;
-      letter-spacing: 0.24em !important; text-transform: uppercase !important;
+      position: absolute; top: 12px; left: 12px;
+      font-family: var(--font); font-weight: 500; font-size: 9px;
+      letter-spacing: 0.24em; text-transform: uppercase;
       color: #fff; padding: 5px 10px;
       background: rgba(0,0,0,0.5); backdrop-filter: blur(6px);
       border-radius: 999px; border: 1px solid rgba(195,255,138,0.35); z-index: 2;
     }
     .venue-card .cap-tag {
-      position: absolute;
-      bottom: 12px; right: 12px;
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
-      font-weight: 500 !important; font-size: 9px !important;
-      letter-spacing: 0.20em !important; text-transform: uppercase !important;
+      position: absolute; bottom: 12px; right: 12px;
+      font-family: var(--font); font-weight: 500; font-size: 9px;
+      letter-spacing: 0.20em; text-transform: uppercase;
       color: #fff; padding: 5px 10px;
       background: rgba(0,0,0,0.5); backdrop-filter: blur(6px);
       border-radius: 999px; border: 1px solid rgba(195,255,138,0.35);
@@ -822,346 +437,466 @@
       transition: opacity 220ms, transform 220ms;
     }
     .venue-card:hover .cap-tag { opacity: 1; transform: translateY(0); }
-    .venue-card .cap-tag svg { width: 10px; height: 10px; color: #C3FF8A; }
+    .venue-card .cap-tag svg { width: 10px; height: 10px; color: var(--green); }
+    /* ── Venue card info panel — Standard glass ── */
     .venue-card .info {
-      background: #111116;
-      border-top: 1px solid rgba(255,255,255,0.22);
       padding: 14px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+      display: flex; flex-direction: column; gap: 8px;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      position: relative;
+      transition:
+        background 480ms cubic-bezier(0.22,1,0.36,1),
+        backdrop-filter 480ms cubic-bezier(0.22,1,0.36,1),
+        -webkit-backdrop-filter 480ms cubic-bezier(0.22,1,0.36,1);
     }
+    .venue-card .info::before {
+      content: ''; position: absolute; inset: 0;
+      border-radius: 0 0 8px 8px; border: 1px solid transparent;
+      background: conic-gradient(
+        from 0deg,
+        rgba(195,255,138,0.18) 0deg,   rgba(160,200,255,0.18) 60deg,
+        rgba(255,200,160,0.18) 120deg, rgba(195,255,138,0.18) 180deg,
+        rgba(180,160,255,0.18) 240deg, rgba(255,230,140,0.18) 300deg,
+        rgba(195,255,138,0.18) 360deg
+      ) border-box;
+      -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: destination-out; mask-composite: exclude;
+      pointer-events: none;
+    }
+    .venue-card .info::after {
+      content: ''; position: absolute; inset: 0;
+      border-radius: 0 0 8px 8px; border: 1px solid transparent;
+      background: linear-gradient(
+        135deg,
+        rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.08) 30%,
+        transparent 55%, rgba(0,0,0,0.12) 100%
+      ) border-box;
+      -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: destination-out; mask-composite: exclude;
+      pointer-events: none;
+    }
+    .venue-card:hover .info {
+      background: rgba(255,255,255,0.13);
+      backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px);
+    }
+    .venue-card .info > * { position: relative; z-index: 1; }
     .venue-card .name {
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
-      font-weight: 500 !important; font-size: 13px !important;
-      letter-spacing: 0.12em !important; text-transform: uppercase !important;
-      color: #fff !important; line-height: 1.25; margin: 0;
+      font-family: var(--font); font-weight: 500; font-size: 13px;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: #fff; line-height: 1.25;
     }
     .venue-card .address {
-      font-size: 12px !important; color: #8a8d99 !important; line-height: 1.5;
+      font-size: 12px; color: var(--grey); line-height: 1.5;
       display: flex; align-items: flex-start; gap: 5px;
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
+      transition: color 480ms cubic-bezier(0.22,1,0.36,1);
     }
-    .venue-card .address svg { width: 12px; height: 12px; color: #C3FF8A; flex-shrink: 0; margin-top: 2px; }
+    .venue-card:hover .address { color: rgba(255,255,255,0.88); }
+    .venue-card .address svg { width: 12px; height: 12px; color: var(--green); flex-shrink: 0; margin-top: 2px; }
     .venue-card .row-bottom {
       display: flex; justify-content: space-between; align-items: center;
       margin-top: 4px; flex-wrap: wrap; gap: 6px;
     }
     .venue-card .style-pill {
       display: inline-flex; align-items: center;
-      background: transparent;
-      border: 1px solid rgba(195,255,138,0.5); border-radius: 999px;
-      color: #C3FF8A;
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
-      font-size: 10px !important; letter-spacing: 0.1em !important; text-transform: uppercase !important;
+      border: 1px solid rgba(195,255,138,0.45); border-radius: 999px;
+      color: var(--green);
+      font-family: var(--font); font-size: 10px;
+      letter-spacing: 0.10em; text-transform: uppercase;
       padding: 3px 10px;
     }
     .venue-card .view {
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
-      font-weight: 500 !important; font-size: 10px !important;
-      letter-spacing: 0.22em !important; text-transform: uppercase !important;
-      color: #C3FF8A;
+      font-family: var(--font); font-weight: 500; font-size: 10px;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--green);
       display: inline-flex; align-items: center; gap: 4px;
       transition: gap 180ms;
     }
     .venue-card:hover .view { gap: 8px; }
     .venue-card .view svg { width: 11px; height: 11px; }
+    /* Mobile overlay style */
     .venue-card .city-tag-mobile { display: none; }
 
-    /* CTA band */
+    /* ═══════════════════════════════════════════════════════════
+       CTA BAND
+    ═══════════════════════════════════════════════════════════ */
     .cta-band {
-      background: #1c1f2e;
-      color: #fff;
-      padding: 80px 0;
-      position: relative;
-      overflow: hidden;
+      background: var(--navy); color: #fff;
+      padding: 80px 0; position: relative; overflow: hidden;
     }
     .cta-band .spotlight-overlay {
       position: absolute; inset: 0; pointer-events: none; z-index: 1;
     }
     .cta-band .inner {
       position: relative; z-index: 2;
-      display: grid; grid-template-columns: 1.2fr 1fr; gap: 64px; align-items: center;
+      display: grid; grid-template-columns: 1.2fr 1fr;
+      gap: 64px; align-items: start;
     }
     .cta-band .eyebrow {
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
-      font-size: 14px !important; font-weight: 500 !important;
-      letter-spacing: 0.32em !important; text-transform: uppercase !important;
-      color: #C3FF8A !important; margin-bottom: 16px; display: block;
+      display: block;
+      font-family: var(--font); font-weight: 500; font-size: 13px;
+      letter-spacing: 0.32em; text-transform: uppercase;
+      color: var(--green); margin-bottom: 16px;
     }
-    .cta-band .heading-hairline { height: 1px; background: rgba(195,255,138,0.3); width: 56px; margin: 0 0 20px; }
     .cta-band h2 {
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
-      font-weight: 500 !important; font-size: clamp(1.6rem, 2.5vw, 2.2rem) !important;
-      letter-spacing: 0.1em !important; text-transform: uppercase !important;
-      line-height: 1.25 !important; margin: 0 !important; color: #C3FF8A !important;
+      font-family: var(--font); font-weight: 500;
+      font-size: clamp(1.5rem, 2.2vw, 2rem);
+      letter-spacing: 0.10em; text-transform: uppercase;
+      line-height: 1.25; color: var(--green);
     }
     .cta-band p {
-      color: rgba(255,255,255,0.78); font-size: 16px !important; line-height: 1.7;
+      color: rgba(255,255,255,0.78); font-size: 16px; line-height: 1.7;
       margin: 20px 0 0; max-width: 52ch;
     }
     .cta-band .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px; }
     .cta-band .sister {
       margin-top: 16px;
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
-      font-weight: 500 !important; font-size: 11px !important;
-      letter-spacing: 0.22em !important; text-transform: uppercase !important; color: #8a8d99;
+      font-family: var(--font); font-weight: 500; font-size: 11px;
+      letter-spacing: 0.22em; text-transform: uppercase; color: var(--grey);
     }
-    .cta-band .sister a { color: #C3FF8A; cursor: pointer; }
+    .cta-band .sister a { color: var(--green); cursor: pointer; }
     .cta-inquiry-card {
-      padding: 32px; border: 1px solid rgba(195,255,138,0.25); border-radius: 8px;
+      padding: 32px;
+      border: 1px solid rgba(195,255,138,0.22); border-radius: 8px;
       background: rgba(195,255,138,0.03);
     }
+    .cta-inquiry-card .eyebrow {
+      font-family: var(--font); font-weight: 500; font-size: 12px;
+      letter-spacing: 0.32em; text-transform: uppercase; color: var(--green);
+    }
     .cta-inquiry-card h3 {
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
-      font-weight: 500 !important; font-size: 18px !important;
-      letter-spacing: 0.10em !important; text-transform: uppercase !important;
-      line-height: 1.25 !important; margin: 0 0 20px !important; color: #fff !important;
+      font-family: var(--font); font-weight: 500; font-size: 18px;
+      letter-spacing: 0.10em; text-transform: uppercase;
+      color: #fff; margin: 16px 0 20px;
     }
     .cta-inquiry-card .fields { display: flex; flex-direction: column; gap: 12px; }
     .cta-inquiry-card .form-field {
       display: flex; align-items: center; gap: 12px;
-      padding: 12px 14px; background: #080809;
+      padding: 12px 14px; background: var(--dark);
       border: 1px solid rgba(195,255,138,0.18); border-radius: 6px;
       color: rgba(255,255,255,0.55);
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
-      font-size: 14px !important; transition: border-color 160ms; cursor: text;
+      font-family: var(--font); font-size: 14px;
+      cursor: text; transition: border-color 160ms;
     }
     .cta-inquiry-card .form-field:hover { border-color: rgba(195,255,138,0.35); }
-    .cta-inquiry-card .form-field svg { width: 15px; height: 15px; color: #C3FF8A; flex-shrink: 0; }
+    .cta-inquiry-card .form-field svg { width: 15px; height: 15px; color: var(--green); flex-shrink: 0; }
     .cta-input {
       flex: 1; background: none; border: none; outline: none;
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif;
-      font-size: 14px; color: #fff; caret-color: #C3FF8A;
+      font-family: var(--font); font-size: 14px;
+      color: #fff; caret-color: var(--green);
     }
-    .cta-input::placeholder { color: rgba(255,255,255,0.45); }
-    .cta-error {
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif;
-      font-size: 12px; color: #ff7070; margin: 0; line-height: 1.5;
-    }
-    .btn[disabled] { opacity: 0.55; cursor: not-allowed; pointer-events: none; }
+    .cta-input::placeholder { color: rgba(255,255,255,0.40); }
+    .cta-error { font-size: 12px; color: #ff7070; line-height: 1.5; }
     .cta-success {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       gap: 10px; padding: 32px 16px; text-align: center;
     }
-    .cta-success svg { width: 36px; height: 36px; color: #C3FF8A; }
+    .cta-success svg { width: 36px; height: 36px; color: var(--green); }
     .cta-success p {
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
-      font-size: 18px !important; font-weight: 500 !important;
-      letter-spacing: 0.10em !important; text-transform: uppercase !important;
-      color: #fff !important; margin: 0 !important;
+      font-family: var(--font); font-size: 18px; font-weight: 500;
+      letter-spacing: 0.10em; text-transform: uppercase; color: #fff;
     }
     .cta-success span {
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif;
-      font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.6;
+      font-family: var(--font); font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.6;
     }
-    /* Flatpickr calendar — ITE dark theme */
-    .flatpickr-calendar { background: #1c1f2e !important; border: 1px solid rgba(195,255,138,0.25) !important; border-radius: 8px !important; box-shadow: 0 16px 48px rgba(0,0,0,0.7) !important; }
+
+    /* ═══════════════════════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════════════════════ */
+    .footer {
+      background: var(--dark); color: #fff;
+      padding: 80px 0 40px;
+      border-top: 1px solid rgba(195,255,138,0.12);
+    }
+    .footer .cols { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; }
+    .footer h4 {
+      font-family: var(--font); font-weight: 500; font-size: 11px;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--green); margin-bottom: 18px;
+    }
+    .footer ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer a { color: rgba(255,255,255,0.72); font-size: 14px; }
+    .footer a:hover { color: var(--green); }
+    .footer .brand-block img { height: 48px; margin-bottom: 16px; }
+    .footer .lead { color: rgba(255,255,255,0.7); font-size: 14px; line-height: 1.7; max-width: 36ch; }
+    .footer .fine {
+      margin-top: 56px; padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.12);
+      display: flex; justify-content: space-between;
+      font-size: 12px; color: rgba(255,255,255,0.45);
+      font-family: var(--font);
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       MODAL
+    ═══════════════════════════════════════════════════════════ */
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(8,8,9,0.95); backdrop-filter: blur(8px);
+      z-index: 100; display: flex; align-items: center; justify-content: center;
+      padding: 32px; opacity: 0; pointer-events: none; transition: opacity 220ms;
+    }
+    .modal-backdrop.open { opacity: 1; pointer-events: auto; }
+    .modal-wrap { position: relative; max-width: 880px; width: 100%; }
+    .modal {
+      background: var(--navy);
+      border: 1px solid rgba(195,255,138,0.22); border-radius: 8px;
+      max-height: 90vh; overflow: auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      transform: translateY(12px);
+      transition: transform 280ms var(--ease-out);
+    }
+    .modal-backdrop.open .modal { transform: translateY(0); }
+    .modal-gallery { position: relative; display: flex; flex-direction: column; }
+    .modal-photo {
+      flex: 1; min-height: 320px;
+      background-size: cover; background-position: center;
+      filter: brightness(0.75);
+    }
+    .gal-prev, .gal-next {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(8,8,9,0.72); border: 1px solid rgba(195,255,138,0.35);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--green); transition: background 150ms;
+    }
+    .gal-prev:hover, .gal-next:hover { background: rgba(195,255,138,0.15); }
+    .gal-prev { left: 12px; } .gal-next { right: 12px; }
+    .gal-prev svg, .gal-next svg { width: 15px; height: 15px; }
+    .gal-counter {
+      position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+      font-family: var(--font); font-size: 11px; letter-spacing: 0.12em;
+      color: rgba(255,255,255,0.7);
+      background: rgba(8,8,9,0.6); padding: 3px 10px; border-radius: 20px;
+    }
+    .modal .body { padding: 40px 40px 32px; display: flex; flex-direction: column; gap: 16px; }
+    .modal .eyebrow {
+      font-family: var(--font); font-size: 12px; font-weight: 500;
+      letter-spacing: 0.32em; text-transform: uppercase; color: var(--green);
+    }
+    .modal h3 {
+      font-family: var(--font); font-weight: 500; font-size: 20px;
+      letter-spacing: 0.10em; text-transform: uppercase;
+      line-height: 1.25; color: #fff;
+    }
+    .modal .addr {
+      font-size: 13px; color: var(--grey);
+      display: flex; gap: 6px; align-items: flex-start;
+    }
+    .modal .addr svg { width: 13px; height: 13px; color: var(--green); margin-top: 2px; }
+    .modal .desc { font-size: 14px; line-height: 1.72; color: rgba(255,255,255,0.78); }
+    .modal .specs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .modal .spec {
+      padding: 14px; border: 1px solid rgba(195,255,138,0.18);
+      border-radius: 6px; background: rgba(8,8,9,0.55);
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+    }
+    .modal .spec .l {
+      font-family: var(--font); font-weight: 500; font-size: 10px;
+      letter-spacing: 0.22em; text-transform: uppercase; color: var(--grey);
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+    }
+    .modal .spec .l svg { width: 11px; height: 11px; color: var(--green); }
+    .modal .spec .v { font-size: 13px; font-weight: 500; color: #fff; margin-top: 6px; }
+    .modal .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+    .modal .close {
+      position: absolute; top: 14px; right: 14px;
+      background: rgba(28,31,46,0.9); border: 1px solid rgba(195,255,138,0.35);
+      width: 34px; height: 34px; border-radius: 999px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 2; color: var(--green);
+      transition: background 160ms, border-color 160ms;
+    }
+    .modal .close:hover { background: rgba(195,255,138,0.12); border-color: rgba(195,255,138,0.6); }
+
+    /* ═══════════════════════════════════════════════════════════
+       FLATPICKR — ITE dark overrides
+    ═══════════════════════════════════════════════════════════ */
+    .flatpickr-calendar { background: var(--navy) !important; border: 1px solid rgba(195,255,138,0.25) !important; border-radius: 8px !important; box-shadow: 0 16px 48px rgba(0,0,0,0.7) !important; }
     .flatpickr-calendar.arrowTop:before { border-bottom-color: rgba(195,255,138,0.25) !important; }
-    .flatpickr-calendar.arrowTop:after { border-bottom-color: #1c1f2e !important; }
+    .flatpickr-calendar.arrowTop:after  { border-bottom-color: var(--navy) !important; }
     .flatpickr-months { border-bottom: 1px solid rgba(255,255,255,0.08) !important; }
-    .flatpickr-month, .flatpickr-current-month, .flatpickr-monthDropdown-months, .cur-month, .cur-year { background: transparent !important; color: #fff !important; fill: #fff !important; }
-    .flatpickr-monthDropdown-months { border: none !important; }
-    .flatpickr-prev-month svg, .flatpickr-next-month svg { fill: #C3FF8A !important; }
+    .flatpickr-month, .flatpickr-current-month, .cur-month, .cur-year { background: transparent !important; color: #fff !important; fill: #fff !important; }
+    .flatpickr-monthDropdown-months { border: none !important; background: transparent !important; color: #fff !important; }
+    .flatpickr-prev-month svg, .flatpickr-next-month svg { fill: var(--green) !important; }
     .flatpickr-prev-month:hover, .flatpickr-next-month:hover { background: rgba(195,255,138,0.1) !important; }
     .flatpickr-weekday { color: rgba(195,255,138,0.65) !important; background: transparent !important; }
     .flatpickr-days { border-color: rgba(255,255,255,0.06) !important; }
     .flatpickr-day { color: rgba(255,255,255,0.75) !important; border-radius: 6px !important; border-color: transparent !important; }
     .flatpickr-day:hover { background: rgba(195,255,138,0.12) !important; color: #fff !important; }
     .flatpickr-day.today { border-color: rgba(195,255,138,0.5) !important; }
-    .flatpickr-day.selected, .flatpickr-day.selected:hover { background: #C3FF8A !important; border-color: #C3FF8A !important; color: #080809 !important; font-weight: 600 !important; }
+    .flatpickr-day.selected, .flatpickr-day.selected:hover { background: var(--green) !important; border-color: var(--green) !important; color: var(--dark) !important; font-weight: 600 !important; }
     .flatpickr-day.flatpickr-disabled { color: rgba(255,255,255,0.2) !important; }
-    .numInputWrapper:hover { background: rgba(255,255,255,0.06) !important; }
-    .numInputWrapper span { border-color: rgba(255,255,255,0.15) !important; }
-    .numInputWrapper span:hover { background: rgba(195,255,138,0.12) !important; }
-    .numInputWrapper span svg { fill: rgba(255,255,255,0.5) !important; }
 
-    /* Modal */
-    .modal-backdrop {
-      position: fixed; inset: 0; background: rgba(8,8,9,0.96); backdrop-filter: blur(8px);
-      z-index: 100; display: flex; align-items: center; justify-content: center;
-      padding: 32px; opacity: 0; pointer-events: none; transition: opacity 220ms;
-    }
-    .modal-backdrop.open { opacity: 1; pointer-events: auto; }
-    .modal {
-      background: #1c1f2e; border: 1px solid rgba(195,255,138,0.25); border-radius: 8px;
-      max-width: 880px; width: 100%; max-height: 90vh; overflow: auto;
-      display: grid; grid-template-columns: 1fr 1fr;
-      transform: translateY(12px); transition: transform 280ms cubic-bezier(0.22,1,0.36,1);
-    }
-    .modal-backdrop.open .modal { transform: translateY(0); }
-    /* Modal gallery */
-    .modal-gallery { position: relative; height: 100%; display: flex; flex-direction: column; }
-    .modal-photo { flex: 1; min-height: 320px; background-size: cover; background-position: center; filter: brightness(0.72); }
-    .gal-prev, .gal-next {
-      position: absolute; top: 50%; transform: translateY(-50%);
-      width: 38px; height: 38px; border-radius: 50%;
-      background: rgba(8,8,9,0.7); border: 1px solid rgba(195,255,138,0.35);
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; color: #C3FF8A; transition: background 150ms;
-    }
-    .gal-prev:hover, .gal-next:hover { background: rgba(195,255,138,0.15); }
-    .gal-prev { left: 12px; }
-    .gal-next { right: 12px; }
-    .gal-prev svg, .gal-next svg { width: 16px; height: 16px; }
-    .gal-counter {
-      position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
-      font-size: 11px; letter-spacing: 0.12em; color: rgba(255,255,255,0.7);
-      background: rgba(8,8,9,0.6); padding: 3px 10px; border-radius: 20px;
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif;
-    }
-    .modal .body { padding: 40px 40px 32px; display: flex; flex-direction: column; gap: 18px; }
-    .modal .eyebrow {
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
-      font-size: 12px !important; font-weight: 500 !important;
-      letter-spacing: 0.32em !important; text-transform: uppercase !important; color: #C3FF8A !important;
-    }
-    .modal h3 {
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
-      font-weight: 500 !important; font-size: 22px !important;
-      letter-spacing: 0.10em !important; text-transform: uppercase !important;
-      margin: 0 !important; line-height: 1.25 !important; color: #fff !important;
-    }
-    .modal .addr { font-size: 13px !important; color: #8a8d99; display: flex; gap: 6px; align-items: flex-start; font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important; }
-    .modal .addr svg { width: 13px; height: 13px; color: #C3FF8A; margin-top: 2px; }
-    .modal .desc { font-size: 13px !important; line-height: 1.7; color: rgba(255,255,255,0.78); font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important; }
-    .modal .specs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
-    .modal .spec { padding: 16px; border: 1px solid rgba(195,255,138,0.18); border-radius: 8px; background: rgba(8,8,9,0.6); display: flex; flex-direction: column; align-items: center; text-align: center; }
-    .modal .spec .l {
-      font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important;
-      font-weight: 500 !important; font-size: 10px !important; letter-spacing: 0.22em !important;
-      text-transform: uppercase !important; color: #8a8d99;
-      display: flex; align-items: center; justify-content: center; gap: 5px;
-    }
-    .modal .spec .l svg { width: 12px; height: 12px; color: #C3FF8A; flex-shrink: 0; }
-    .modal .spec .v { font-size: 13px !important; font-weight: 500 !important; color: #fff; margin-top: 6px; font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif !important; }
-    .modal .close {
-      position: absolute; top: 16px; right: 16px;
-      background: rgba(28,31,46,0.9); border: 1px solid rgba(195,255,138,0.35);
-      width: 36px; height: 36px; border-radius: 999px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; z-index: 2; color: #C3FF8A;
-      transition: background 160ms, border-color 160ms;
-    }
-    .modal .close:hover { background: rgba(195,255,138,0.12); border-color: rgba(195,255,138,0.6); }
-    .modal .actions { display: flex; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
-    .modal-wrap { position: relative; max-width: 880px; width: 100%; }
-
-    /* Responsive — tablet */
+    /* ═══════════════════════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════════════════════ */
     @media (max-width: 1024px) {
       .featured-card { grid-template-columns: 1fr; }
       .featured-card .photo { min-height: 360px; }
       .venues-grid { grid-template-columns: repeat(2, 1fr) !important; }
-      .page-header h1 { font-size: 3rem !important; }
       .cta-band .inner { grid-template-columns: 1fr; gap: 40px; }
       .modal { grid-template-columns: 1fr; }
       .modal-photo { min-height: 260px; }
+      .footer .cols { grid-template-columns: 1fr 1fr; gap: 32px; }
     }
-
-    /* Responsive — mobile */
     @media (max-width: 640px) {
+      .container { padding: 0 20px !important; }
       .page-header { padding: 80px 0 64px; }
-      .page-header h1 { font-size: 2.4rem !important; }
       .page-header .meta { gap: 28px; flex-wrap: wrap; }
-      .featured-card .body { padding: 32px 24px 28px; }
-      .featured-card h2 { font-size: 1.5rem !important; }
+      .featured-card .body { padding: 28px 20px; }
       .venues-grid { grid-template-columns: 1fr !important; }
-      .cta-band h2 { font-size: 1.5rem !important; }
+      .cta-band h2 { font-size: 1.4rem; }
       .modal-backdrop { padding: 16px; }
       .modal .body { padding: 24px 20px 20px; }
-      .container { padding: 0 20px !important; }
-      /* Venue card — full-bleed mobile */
+      .footer .cols { grid-template-columns: 1fr; }
+      /* Mobile card: full-bleed overlay */
       .venue-card { position: relative; }
-      .venue-card .media {
-        flex: none; width: 100%; aspect-ratio: 4 / 3;
-        filter: brightness(0.48);
-      }
+      .venue-card .media { flex: none; width: 100%; aspect-ratio: 4/3; filter: brightness(0.48); }
       .venue-card .info {
-        position: absolute; inset: 0;
-        background: none; border-top: none;
-        display: flex; flex-direction: column;
-        align-items: center; justify-content: center;
+        position: absolute; inset: 0; background: none; border-top: none;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
         padding: 20px; gap: 0;
       }
-      .venue-card .name { text-align: center; font-size: 14px !important; }
+      .venue-card .name { text-align: center; font-size: 14px; }
       .venue-card .address,
       .venue-card .row-bottom,
       .venue-card .cap-tag,
       .venue-card .city-tag { display: none; }
       .venue-card .city-tag-mobile {
-        display: inline-flex; align-items: center; justify-content: center;
-        text-align: center; margin-top: 6px;
-        font-family: 'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif;
-        font-size: 7px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase;
+        display: inline-flex; margin-top: 6px;
+        font-family: var(--font); font-size: 8px; font-weight: 500;
+        letter-spacing: 0.18em; text-transform: uppercase;
         color: #fff; padding: 3px 8px;
         background: rgba(0,0,0,0.45); backdrop-filter: blur(6px);
         border-radius: 999px; border: 1px solid rgba(195,255,138,0.35);
       }
-    }
-
-    /* Focus styles */
-    .venue-card:focus-visible { outline: 2px solid #C3FF8A; outline-offset: 2px; }
-    .chip:focus-visible { outline: 2px solid #C3FF8A; outline-offset: 2px; }
-
-    /* Dynamic grid columns via CSS var */
-    .venues-grid {
-      grid-template-columns: repeat(var(--venues-grid-cols, 3), 1fr) !important;
     }
   </style>
 </head>
 <body>
   <div id="root"></div>
 
-  <!-- venue data loaded from external file -->
-  <script src="venues-data.js"></script>
+  <script>
+    // ── Venues data — 49 venues, WordPress photo URLs ──────────
+    window.VENUES = [
+      // FEATURED
+      {
+        id: 'grand-america',
+        name: 'The Grand America Hotel',
+        city: 'Salt Lake City, UT', region: 'slc',
+        address: '555 S Main St, Salt Lake City, UT 84111',
+        photo: 'https://intheevent.com/wp-content/uploads/2026/05/GrandAmerica1.png',
+        style: 'Luxury Ballroom', capacity: '1,200', sqft: '24,000 sq ft', ceiling: "21' clear",
+        desc: 'Five-star European-styled property anchoring downtown Salt Lake. The Grand Ballroom seats 1,200 for plated dinners and pairs with seven satellite ballrooms for breakouts, gala receptions, and multi-day conferences. We have rigged, staged, and floraled this room more than fifty times.',
+        gallery: [
+          'https://intheevent.com/wp-content/uploads/2026/05/GrandAmerica1.png',
+          'https://intheevent.com/wp-content/uploads/2026/05/HyattRegency2.jpg',
+          'https://intheevent.com/wp-content/uploads/2026/05/UCCU_Arena.png',
+          'https://intheevent.com/wp-content/uploads/2026/05/MonsonCenter.jpg',
+        ],
+        featured: true,
+      },
+      // SLC — CONVENTION
+      { id: 'salt-palace', name: 'Salt Palace Convention Center', city: 'Salt Lake City, UT', region: 'slc', address: '90 SW Temple, Salt Lake City, UT 84101', photo: 'https://intheevent.com/wp-content/uploads/2026/05/SaltPalaceConventionCenter2-scaled.jpg', style: 'Convention Center', capacity: '5,000+', sqft: '515,000 sq ft', ceiling: "30' clear", desc: "Utah's flagship convention space. We program the Salt Palace dozens of times a year — main stage, breakouts, exhibit halls, and outdoor activations on the plaza." },
+      // SLC — HOTELS
+      { id: 'hyatt-regency', name: 'Hyatt Regency Salt Lake City', city: 'Salt Lake City, UT', region: 'slc', address: '170 S West Temple St, Salt Lake City, UT 84101', photo: 'https://intheevent.com/wp-content/uploads/2026/05/HyattRegency2.jpg', style: 'Convention Hotel', capacity: '2,875', sqft: '60,000 sq ft', ceiling: "22' Regency Ballroom", desc: "Downtown SLC's newest convention hotel, connected to the Salt Palace. The Regency Ballroom spans 23,000 sq ft and pairs with 30 breakout rooms for multi-day conferences and signature galas." },
+      { id: 'little-america', name: 'Little America Hotel', city: 'Salt Lake City, UT', region: 'slc', address: '500 South Main St, Salt Lake City, UT 84101', photo: 'https://intheevent.com/wp-content/uploads/2026/05/LittleAmerica1.jpg', style: 'Full-Service Hotel', capacity: '1,200', sqft: '28,000 sq ft', ceiling: "16' ballroom", desc: 'Beloved SLC landmark with a grand ballroom, multiple salons, and garden courtyards. A reliable production partner for corporate dinners, award shows, and holiday galas.' },
+      { id: 'hilton-city-center', name: 'Hilton Salt Lake City Center', city: 'Salt Lake City, UT', region: 'slc', address: '255 S West Temple, Salt Lake City, UT 84101', photo: 'https://intheevent.com/wp-content/uploads/2026/05/SLC_Hilton1.jpg', style: 'Convention Hotel', capacity: '1,000', sqft: '25,000 sq ft', ceiling: "20' main hall", desc: 'High-capacity downtown property two blocks from the Salt Palace. Grand Ballroom and multi-room pre-function space ideal for breakout-heavy conferences and awards evenings.' },
+      { id: 'le-meridien', name: 'Le Méridien Salt Lake City', city: 'Salt Lake City, UT', region: 'slc', address: '131 S 300 W, Salt Lake City, UT 84101', photo: 'https://intheevent.com/wp-content/uploads/2026/05/LeMeridien1.jpeg', style: 'Boutique Hotel', capacity: '350', sqft: '12,000 sq ft', ceiling: "14' ballroom", desc: "Modern European-inspired hotel in downtown's creative core. Intimate ballroom, art-forward lobby, and rooftop terrace make it a favorite for brand activations and executive dinners." },
+      { id: 'marriott-downtown', name: 'Salt Lake Marriott Downtown', city: 'Salt Lake City, UT', region: 'slc', address: '75 South West Temple, Salt Lake City, UT 84101', photo: 'https://intheevent.com/wp-content/uploads/2026/05/MarriottDowntown1.jpeg', style: 'Full-Service Hotel', capacity: '800', sqft: '21,000 sq ft', ceiling: "18' ballroom", desc: 'Downtown anchor with a versatile ballroom and rooftop social spaces. Strong AV infrastructure and proximity to the convention district make it a proven conference hotel.' },
+      { id: 'hotel-monaco', name: 'Hotel Monaco Salt Lake City', city: 'Salt Lake City, UT', region: 'slc', address: '15 W 200 S, Salt Lake City, UT 84101', photo: 'https://intheevent.com/wp-content/uploads/2026/05/HotelMonaco2.jpg', style: 'Boutique Hotel', capacity: '250', sqft: '6,000 sq ft', ceiling: "12' ballroom", desc: 'Eclectic Kimpton boutique hotel in a restored 1924 Continental Bank building. Intimate ballrooms and a dramatic lobby set the stage for receptions, brand dinners, and small conferences.' },
+      { id: 'radisson-slc', name: 'Radisson Hotel Salt Lake City', city: 'Salt Lake City, UT', region: 'slc', address: '215 S Temple, Salt Lake City, UT 84101', photo: 'https://intheevent.com/wp-content/uploads/2026/05/RadissonHotel.jpeg', style: 'Full-Service Hotel', capacity: '600', sqft: '14,000 sq ft', ceiling: "16' ballroom", desc: 'Full-service hotel steps from Temple Square. Reliable ballroom footprint and central location make it a workhorse venue for corporate meetings, award luncheons, and receptions.' },
+      { id: 'asher-adams', name: 'Asher Adams Hotel', city: 'Salt Lake City, UT', region: 'slc', address: '2 400 W, Salt Lake City, UT 84101', photo: 'https://intheevent.com/wp-content/uploads/2026/05/AsherAdams.jpeg', style: 'Autograph Collection Hotel', capacity: '400', sqft: '10,000 sq ft', ceiling: 'Restored train station atrium', desc: 'Historic Union Pacific rail station reborn as a Marriott Autograph Collection hotel. Barrel-vaulted ceilings, original terrazzo floors, and contemporary event spaces create a cinematic backdrop near the airport corridor.' },
+      // SLC — ARTS & CULTURE
+      { id: 'kingsbury-hall', name: 'Kingsbury Hall', city: 'Salt Lake City, UT', region: 'slc', address: '1395 Presidents Cir, Salt Lake City, UT 84112', photo: 'https://intheevent.com/wp-content/uploads/2026/05/KingsburyHall1.jpg', style: 'Theater', capacity: '1,900', sqft: 'Proscenium house', ceiling: 'Fly tower', desc: "University of Utah's historic proscenium theater. House lighting, fly tower, and orchestra pit make this a natural fit for keynotes, performances, and award shows." },
+      { id: 'capitol-theatre', name: 'Capitol Theatre', city: 'Salt Lake City, UT', region: 'slc', address: '50 W 200 South, Salt Lake City, UT 84101', photo: 'https://intheevent.com/wp-content/uploads/2026/05/CapitolTheatre.jpeg', style: 'Historic Theater', capacity: '1,800', sqft: 'Proscenium house', ceiling: 'Fly tower', desc: 'Beautifully restored 1913 theater in the heart of downtown SLC. Grand lobby, ornate proscenium, and full fly tower — ideal for keynotes, award ceremonies, and theatrical galas.' },
+      { id: 'rose-wagner', name: 'Rose Wagner Performing Arts Center', city: 'Salt Lake City, UT', region: 'slc', address: '138 West 300 South, Salt Lake City, UT 84101', photo: 'https://intheevent.com/wp-content/uploads/2026/05/RoseWagner.jpg', style: 'Performing Arts Center', capacity: '500', sqft: 'Multi-stage complex', ceiling: 'Black-box grid', desc: 'Three intimate performance spaces in one building — black box, proscenium, and studio. Flexible for intimate brand events, film screenings, and panel-format conferences.' },
+      { id: 'hale-centre', name: 'Hale Centre Theatre', city: 'West Valley City, UT', region: 'slc', address: '3333 South Decker Lake Drive, West Valley City, UT 84119', photo: 'https://intheevent.com/wp-content/uploads/2026/05/HaleCenter.jpg', style: 'Theater', capacity: '900', sqft: 'Theater in the round', ceiling: 'Theatrical grid', desc: 'Award-winning theater-in-the-round with state-of-the-art staging. The intimate configuration and superior sightlines make it uniquely suited for immersive brand experiences and staged corporate productions.' },
+      { id: 'monson-center', name: 'The Thomas S. Monson Center', city: 'Salt Lake City, UT', region: 'slc', address: '411 E South Temple, Salt Lake City, UT 84111', photo: 'https://intheevent.com/wp-content/uploads/2026/05/MonsonCenter.jpg', style: 'Historic Mansion', capacity: '180', sqft: '6,400 sq ft', ceiling: "14' parlor", desc: 'Restored 1898 mansion with intimate parlors, a grand staircase, and a tented south lawn. Ideal for board dinners, private receptions, and editorial brand activations.' },
+      { id: 'natural-history-museum', name: 'Natural History Museum of Utah', city: 'Salt Lake City, UT', region: 'slc', address: '301 Wakara Way, Salt Lake City, UT 84108', photo: 'https://intheevent.com/wp-content/uploads/2026/05/NaturalHistoryMuseum.jpeg', style: 'Museum', capacity: '1,200', sqft: '15,000 sq ft rentable', ceiling: 'Atrium + galleries', desc: 'Award-winning copper-clad museum perched above the valley with panoramic mountain views. Dinosaur halls, canyon galleries, and a dramatic atrium create unforgettable event backdrops.' },
+      { id: 'red-butte-garden', name: 'Red Butte Garden', city: 'Salt Lake City, UT', region: 'slc', address: '300 Wakara Way, Salt Lake City, UT 84108', photo: 'https://intheevent.com/wp-content/uploads/2026/05/RedButteGarden.jpg', style: 'Botanical Garden', capacity: '5,000', sqft: '100-acre estate', ceiling: 'Open sky', desc: 'The Wasatch foothills as your backdrop. Terraced gardens, stone pavilion, and an outdoor amphitheater host summer receptions, charity galas, and brand activations under the stars.' },
+      // SLC — EVENT VENUES
+      { id: 'gallivan-center', name: 'Gallivan Center', city: 'Salt Lake City, UT', region: 'slc', address: '50 E 200 S, Salt Lake City, UT 84111', photo: 'https://intheevent.com/wp-content/uploads/2026/05/GallivanCenter.jpg', style: 'Urban Plaza', capacity: '3,000', sqft: 'Open-air plaza + amphitheater', ceiling: 'Open sky', desc: "Downtown SLC's premier outdoor event plaza, steps from the TRAX stop. Open-air stage, grass lawn, and surrounding hardscape handle concerts, festivals, and corporate outdoor activations." },
+      { id: 'the-complex', name: 'The Complex', city: 'Salt Lake City, UT', region: 'slc', address: '536 West 100 South, Salt Lake City, UT 84101', photo: 'https://intheevent.com/wp-content/uploads/2026/05/TheComplex.jpg', style: 'Concert & Event Venue', capacity: '1,500', sqft: '18,000 sq ft', ceiling: "26' clear", desc: "SLC's most flexible large-format event space — a former industrial complex with two main rooms, rooftop bar, and production-ready rigging and power infrastructure." },
+      { id: 'union-event-center', name: 'The Union Event Center', city: 'Salt Lake City, UT', region: 'slc', address: '235 North 500 West, Salt Lake City, UT 84116', photo: 'https://intheevent.com/wp-content/uploads/2026/05/UnionEventCenter-scaled.jpg', style: 'Ballroom', capacity: '1,800', sqft: '22,000 sq ft', ceiling: "20' ballroom", desc: 'Elegant ballroom venue north of downtown with a sweeping domed ceiling and hardwood floors. One of the most beautiful dedicated ballroom spaces in the region for galas and corporate dinners.' },
+      { id: 'falls-event-center', name: 'The Falls Event Center', city: 'Salt Lake City, UT', region: 'slc', address: '580 South 600 East, Salt Lake City, UT 84102', photo: 'https://intheevent.com/wp-content/uploads/2026/05/FallsEventCenter.jpg', style: 'Ballroom', capacity: '500', sqft: '10,000 sq ft', ceiling: "14' ballroom", desc: 'Turn-key ballroom venue with an elegant décor package, in-house catering coordination, and flexible layout for receptions, galas, and corporate events.' },
+      { id: 'viridian-event-center', name: 'Viridian Event Center', city: 'West Jordan, UT', region: 'slc', address: '8030 South 1825 West, West Jordan, UT 84088', photo: 'https://intheevent.com/wp-content/uploads/2026/05/ViridianEventCenter.jpg', style: 'Event Center', capacity: '1,800', sqft: '35,000 sq ft', ceiling: "28' main hall", desc: "South Valley's leading event center with a clear-span main hall, divisible ballroom, and extensive pre-function space. Strong rigging points and power make it a technical production favorite." },
+      // UTAH COUNTY
+      { id: 'uccu-center', name: 'UCCU Center', city: 'Orem, UT', region: 'utah-county', address: '800 W University Pkwy, Orem, UT 84058', photo: 'https://intheevent.com/wp-content/uploads/2026/05/UCCU_Arena.png', style: 'Arena', capacity: '8,500', sqft: 'Arena floor + concourse', ceiling: "55' grid", desc: "UVU's 8,500-seat arena. Black-out capable for full theatrical galas — we transformed the room for the President's Scholarship Ball with crystal rigging and a 360° runway." },
+      { id: 'utah-valley-convention', name: 'Utah Valley Convention Center', city: 'Provo, UT', region: 'utah-county', address: '220 W Center St, Provo, UT 84601', photo: 'https://intheevent.com/wp-content/uploads/2026/05/UtahValleyConventionCenter.jpg', style: 'Convention Center', capacity: '2,000', sqft: '83,578 sq ft', ceiling: "32' exhibit hall", desc: "Utah County's premier convention facility with mountain views. The Grand Ballroom seats 1,000 for galas; combined with a 19,600 sq ft exhibit hall it anchors major regional conferences and trade shows." },
+      { id: 'thanksgiving-point', name: 'Thanksgiving Point', city: 'Lehi, UT', region: 'utah-county', address: '3003 Thanksgiving Way, Lehi, UT 84043', photo: 'https://intheevent.com/wp-content/uploads/2026/05/ThanksgivingPoint.jpg', style: 'Event Campus', capacity: '3,000+', sqft: '55-acre grounds', ceiling: 'Pavilion + outdoor', desc: 'Fifty-five acres of manicured gardens, multiple indoor event halls, and a farm-themed venue campus. Handles everything from a 50-person board dinner to a 3,000-guest outdoor festival.' },
+      { id: 'scera-theater', name: 'SCERA Theater', city: 'Orem, UT', region: 'utah-county', address: '745 South State Street, Orem, UT 84058', photo: 'https://intheevent.com/wp-content/uploads/2026/05/SCERA_Center.jpg', style: 'Performing Arts Center', capacity: '600', sqft: 'Theater + lobby', ceiling: 'Theatrical grid', desc: "Orem's beloved community arts center with a proscenium theater, lobby, and outdoor shell amphitheater. Versatile for keynotes, award shows, concerts, and cultural galas." },
+      // MOUNTAIN — COTTONWOOD CANYONS
+      { id: 'snowbird', name: 'Snowbird Resort', city: 'Snowbird, UT', region: 'mountain', address: '9385 Snowbird Center Trail, Snowbird, UT 84092', photo: 'https://intheevent.com/wp-content/uploads/2026/05/Snowbird.jpg', style: 'Mountain Resort', capacity: '1,200', sqft: '80,000 sq ft', ceiling: "16' Cliff Ballroom + aerial tram", desc: 'Year-round mountain resort at the top of Little Cottonwood Canyon. The iconic Cliff Lodge, aerial tram arrival, and alpine meadows create a production canvas unlike anywhere in the Wasatch.' },
+      { id: 'snowpine-lodge', name: 'Snowpine Lodge', city: 'Alta, UT', region: 'mountain', address: '10420 Little Cottonwood Rd, Alta, UT 84092', photo: 'https://intheevent.com/wp-content/uploads/2026/05/SnowpineLodge.jpg', style: 'Mountain Lodge', capacity: '200', sqft: '5,000 sq ft', ceiling: 'Vaulted timber', desc: 'Boutique alpine lodge at the base of Alta ski area. Intimate and refined — the perfect setting for executive retreats, incentive dinners, and small destination events.' },
+      { id: 'solitude', name: 'Solitude Mountain Resort', city: 'Solitude, UT', region: 'mountain', address: '12000 Big Cottonwood Canyon Rd, Solitude, UT 84121', photo: 'https://intheevent.com/wp-content/uploads/2026/05/Solitude.jpg', style: 'Mountain Resort', capacity: '800', sqft: 'Inn + base lodge', ceiling: 'Vaulted timber', desc: 'Quiet and exclusive Big Cottonwood Canyon resort. The Inn at Solitude and ski-beach terrace offer a genuine mountain-village feel for incentive groups and intimate destination events.' },
+      { id: 'snowbasin', name: 'Snowbasin Resort', city: 'Huntsville, UT', region: 'mountain', address: '3925 Snow Basin Rd, Huntsville, UT 84317', photo: 'https://intheevent.com/wp-content/uploads/2026/05/Snowbasin.jpg', style: 'Ski Resort', capacity: '900', sqft: 'Needles Lodge + base', ceiling: 'Open timber', desc: 'Olympic-legacy ski resort. Mid-mountain Needles Lodge unlocks a gondola-arrival reception unlike anything else in the state.' },
+      // MOUNTAIN — HEBER / MIDWAY
+      { id: 'zermatt', name: 'Zermatt Resort', city: 'Midway, UT', region: 'mountain', address: '784 W Resort Dr, Midway, UT 84049', photo: 'https://intheevent.com/wp-content/uploads/2026/05/Zermatt.jpg', style: 'Mountain Resort', capacity: '1,500', sqft: '65,000 sq ft', ceiling: "18' ballroom", desc: "Swiss-themed resort in Midway's pastoral Heber Valley. Eighteen distinct event spaces totaling 65,000 sq ft — the largest dedicated event facility between SLC and Park City." },
+      { id: 'homestead-resort', name: 'Homestead Resort', city: 'Midway, UT', region: 'mountain', address: '700 Homestead Dr, Midway, UT 84049', photo: 'https://intheevent.com/wp-content/uploads/2026/05/Homestead.jpg', style: 'Historic Resort', capacity: '600', sqft: '18,000 sq ft', ceiling: "14' ballroom", desc: "Utah's oldest resort, anchored by a famous hot spring crater. Charming barn venues, garden spaces, and a grand ballroom — ideal for Western-themed galas and corporate retreats." },
+      { id: 'soldier-hollow', name: 'Soldier Hollow', city: 'Midway, UT', region: 'mountain', address: '2002 Olympic Drive, Midway, UT 84049', photo: 'https://intheevent.com/wp-content/uploads/2026/05/SoldierHollow.jpg', style: 'Olympic Venue', capacity: '2,000', sqft: 'Lodge + outdoor terrain', ceiling: 'Open timber', desc: 'Olympic legacy biathlon and cross-country venue in Heber Valley. The lodge, meadow, and sweeping Wasatch views make it a stunning backdrop for outdoor festivals and team-building events.' },
+      { id: 'high-west-distillery', name: 'High West Distillery', city: 'Wanship, UT', region: 'mountain', address: '27649 Old Lincoln Hwy, Wanship, UT 84017', photo: 'https://intheevent.com/wp-content/uploads/2026/05/HighWest.jpg', style: 'Distillery & Event Space', capacity: '250', sqft: '8,000 sq ft', ceiling: 'Barrel-house loft', desc: "Award-winning craft distillery perched above Parley's Canyon. Reclaimed wood, copper stills, and canyon views set a premium backdrop for brand dinners and incentive events." },
+      { id: 'sundance', name: 'Sundance Mountain Resort', city: 'Sundance, UT', region: 'mountain', address: 'N Fork Rd 8841, Sundance, UT 84604', photo: 'https://intheevent.com/wp-content/uploads/2026/05/Sundance.jpeg', style: 'Mountain Resort', capacity: '450', sqft: 'Tree Room + decks', ceiling: 'Open timber', desc: "Artist-driven retreat at the base of Mount Timpanogos. Multiple intimate venues spread across a creek-side campus — a perennial favorite for brand dinners and incentive events." },
+      // PARK CITY / DEER VALLEY
+      { id: 'grand-hyatt-deer-valley', name: 'Grand Hyatt Deer Valley', city: 'Park City, UT', region: 'mountain', address: '1702 Glencoe Mountain Way, Park City, UT 84060', photo: 'https://intheevent.com/wp-content/uploads/2026/05/GrandHyattDeerValley.jpg', style: 'Luxury Mountain Resort', capacity: '800', sqft: '30,000 sq ft', ceiling: "24' great room", desc: "Brand-new slopeside resort at Deer Valley's East Village. Expansive ballrooms, rooftop terraces, and true ski-in/ski-out access — setting a new standard for mountain event hospitality." },
+      { id: 'deer-valley-resort', name: 'Deer Valley Resort', city: 'Park City, UT', region: 'mountain', address: '2250 Deer Valley Drive South, Park City, UT 84060', photo: 'https://intheevent.com/wp-content/uploads/2026/05/DeerValleyResort.jpg', style: 'Ski Resort', capacity: '1,200', sqft: 'Mid-mountain + Snow Park Lodge', ceiling: 'Timber great room', desc: 'The crown jewel of Utah skiing, rated #1 resort in North America. Multiple mid-mountain and base lodges host everything from chairlift-arrival receptions to gala dinners with Wasatch panoramas.' },
+      { id: 'montage-deer-valley', name: 'Montage Deer Valley', city: 'Park City, UT', region: 'mountain', address: '9100 Marsac Ave, Park City, UT 84060', photo: 'https://intheevent.com/wp-content/uploads/2026/05/MontageDeerValley.jpeg', style: 'Mountain Resort', capacity: '650', sqft: '22,000 sq ft', ceiling: "20'", desc: 'Empire Pass mountain resort with the largest ballroom in Park City. We rig and floral the Empire Ballroom for galas and conferences nationally.' },
+      { id: 'st-regis-deer-valley', name: 'St. Regis Deer Valley', city: 'Park City, UT', region: 'mountain', address: '2300 Deer Valley Dr E, Park City, UT 84060', photo: 'https://intheevent.com/wp-content/uploads/2026/05/StRegisDeerValley.jpg', style: 'Mountain Resort', capacity: '400', sqft: '14,000 sq ft indoor + decks', ceiling: "18' great room", desc: "Slope-side luxury with a vaulted great room, multiple terraces, and unforgettable winter views. We've produced executive retreats and weddings here through every season." },
+      { id: 'pendry-park-city', name: 'Pendry Park City', city: 'Park City, UT', region: 'mountain', address: '2417 W High Mountain Rd, Park City, UT 84098', photo: 'https://intheevent.com/wp-content/uploads/2026/05/PendryParkCity.jpg', style: 'Luxury Resort', capacity: '500', sqft: '22,000 sq ft', ceiling: "20' ballroom", desc: "Canyons-slope luxury — the newest premier property in Park City. The Canyons Ballroom, rooftop deck, and slope-side terrace deliver a modern resort experience with world-class production access." },
+      { id: 'canyons-village', name: 'Canyons Village at PCMR', city: 'Park City, UT', region: 'mountain', address: '4000 Canyons Resort Dr, Park City, UT 84098', photo: 'https://intheevent.com/wp-content/uploads/2026/05/CanyonsVillage.jpeg', style: 'Resort Village', capacity: '2,500', sqft: 'Village + base lodges', ceiling: 'Open plaza + lodges', desc: 'A full resort village at the base of Park City Mountain. Gondola-arrival events, outdoor plazas, and multiple lodge venues make this the hub for large-scale mountain gatherings.' },
+      { id: 'waldorf-park-city', name: 'Waldorf Astoria Park City', city: 'Park City, UT', region: 'mountain', address: '2100 W Frostwood Blvd, Park City, UT 84098', photo: 'https://intheevent.com/wp-content/uploads/2026/05/WaldorfParkCity.jpeg', style: 'Mountain Resort', capacity: '300', sqft: '8,200 sq ft', ceiling: "16'", desc: 'Canyons-side property at the base of the gondola. Polished ballroom, exterior plazas, and a private lounge — strong for incentive trips and brand summits.' },
+      { id: 'stein-eriksen', name: 'Stein Eriksen Lodge', city: 'Park City, UT', region: 'mountain', address: '7700 Stein Way, Park City, UT 84060', photo: 'https://intheevent.com/wp-content/uploads/2026/05/SteinEriksen-scaled.jpg', style: 'Mountain Lodge', capacity: '350', sqft: '10,500 sq ft', ceiling: 'Vaulted timber', desc: 'Norwegian-style mountain lodge with timber-framed ballrooms and Silver Lake views. A perennial favorite for incentive groups and intimate galas.' },
+      { id: 'hotel-park-city', name: 'Hotel Park City', city: 'Park City, UT', region: 'mountain', address: '2001 Park Ave, Park City, UT 84060', photo: 'https://intheevent.com/wp-content/uploads/2026/05/HotelParkCity.jpg', style: 'Luxury Hotel', capacity: '350', sqft: '10,000 sq ft', ceiling: "16' ballroom", desc: 'All-suite luxury hotel minutes from Main Street and the ski slopes. Intimate ballroom, wraparound deck, and exceptional service make it a top choice for executive retreats and incentive groups.' },
+      { id: 'goldener-hirsch', name: 'Goldener Hirsch', city: 'Park City, UT', region: 'mountain', address: '7520 Royal St, Park City, UT 84060', photo: 'https://intheevent.com/wp-content/uploads/2026/05/GoldenerHirsch.jpg', style: 'Alpine Inn', capacity: '120', sqft: '3,000 sq ft', ceiling: 'Intimate timber', desc: 'Intimate Austrian-style inn nestled in Silver Lake Village at Deer Valley. Fireside dining rooms and a terrace overlooking the slopes create an exclusive setting for small destination events.' },
+      { id: 'kimball-art-center', name: 'Kimball Art Center', city: 'Park City, UT', region: 'mountain', address: '1401 Kearns Blvd, Park City, UT 84060', photo: 'https://intheevent.com/wp-content/uploads/2026/05/KimballArtCenter.jpeg', style: 'Arts Venue', capacity: '400', sqft: '8,000 sq ft', ceiling: 'Industrial loft', desc: 'Contemporary arts center in the heart of Park City. Gallery halls, outdoor sculpture garden, and a unique industrial loft aesthetic — a favorite for Sundance Film Festival activations and brand events.' },
+      // JACKSON HOLE
+      { id: 'four-seasons-jackson', name: 'Four Seasons Jackson Hole', city: 'Jackson, WY', region: 'jackson', address: '7680 Granite Loop Rd, Teton Village, WY 83025', photo: 'https://intheevent.com/wp-content/uploads/2026/05/JacksonFourSeasons.jpg', style: 'Mountain Resort', capacity: '500', sqft: '12,000 sq ft', ceiling: "22' great room", desc: 'Teton Village luxury, walking distance to the tram. We travel a full crew for incentive groups, brand summits, and destination events.' },
+      { id: 'amangani', name: 'Amangani', city: 'Jackson, WY', region: 'jackson', address: '5000 N Spring Gulch Rd, Jackson, WY 83001', photo: 'https://intheevent.com/wp-content/uploads/2026/05/Amangani.jpg', style: 'Resort', capacity: '180', sqft: 'Indoor + butte terrace', ceiling: 'Stone + glass', desc: 'Sandstone resort perched on a butte over Jackson Hole. Intimate scale, cinematic horizon — perfect for executive retreats and small destination events.' },
+      { id: 'jackson-hole-golf', name: 'Jackson Hole Golf & Tennis Club', city: 'Jackson, WY', region: 'jackson', address: '5000 N Spring Gulch Rd, Jackson, WY 83001', photo: 'https://intheevent.com/wp-content/uploads/2026/05/JacksonHoleGolfAndTennisClub.gif.jpeg', style: 'Golf Club & Event Venue', capacity: '300', sqft: '8,000 sq ft', ceiling: "14' clubhouse", desc: 'Iconic Robert Trent Jones Jr. course with a stunning clubhouse overlooking the Tetons. Outdoor pavilion, terrace dining, and mountain panoramas for outdoor receptions and incentive groups.' },
+    ];
+  </script>
 
-  <!-- All JSX: Shell, TweaksPanel, Venues, and App — in one Babel block -->
   <script type="text/babel">
-    // =========================================================
-    // Shell.jsx — Primitives, Nav, Footer
-    // =========================================================
-
-    const Eyebrow = ({ children }) => (<div className="eyebrow">{children}</div>);
-    const HeadingHairline = () => <div className="heading-hairline" />;
-    const SectionHeading = ({ eyebrow, title, size = 'm' }) => (
-      <header>
-        {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
-        <HeadingHairline />
-        <h2 className={`display ${size}`}>{title}</h2>
-      </header>
-    );
-    const Button = ({ kind = 'primary', children, onClick, href, target, rel, style }) => {
+    // ═══════════════════════════════════════════════════════════
+    // Primitives
+    // ═══════════════════════════════════════════════════════════
+    const Button = ({ kind = 'filled', children, onClick, href, target, rel, style, disabled }) => {
       const Tag = href ? 'a' : 'button';
       return (
-        <Tag className={`btn ${kind}`} onClick={onClick} href={href} target={target} rel={rel} style={style}>
+        <Tag className={`btn ${kind}`} onClick={onClick} href={href}
+             target={target} rel={rel} style={style} disabled={disabled}>
           {children}
         </Tag>
       );
     };
 
-    const NAV_ITEMS = [
-      ['services', 'Services'],
-      ['work', 'Work'],
-      ['venues', 'Venues'],
-      ['rentals', 'Rentals'],
-      ['about', 'About'],
-      ['contact', 'Contact'],
-    ];
+    const resolvePhoto = (p) => p && p.startsWith('http') ? p : `assets/photos/${p}`;
 
-    const Nav = ({ active = 'venues' }) => (
-      <nav className="nav dark">
+    // ═══════════════════════════════════════════════════════════
+    // Nav
+    // ═══════════════════════════════════════════════════════════
+    const NAV_ITEMS = [
+      ['services','Services'],['work','Work'],['venues','Venues'],
+      ['rentals','Rentals'],['about','About'],['contact','Contact'],
+    ];
+    const Nav = () => (
+      <nav className="nav">
         <div className="brand">
           <img src="assets/logo-horizontal-official.svg" alt="In The Event" />
         </div>
         <div className="links">
           {NAV_ITEMS.map(([key, label]) => (
-            <a key={key} className={active === key ? 'active' : ''}>{label}</a>
+            <a key={key} className={key === 'venues' ? 'active' : ''}>{label}</a>
           ))}
         </div>
-        <Button kind="filled">Start a project</Button>
+        <Button kind="filled">Start a Project</Button>
       </nav>
     );
 
+    // ═══════════════════════════════════════════════════════════
+    // Footer
+    // ═══════════════════════════════════════════════════════════
     const Footer = () => (
       <footer className="footer">
         <div className="container">
@@ -1169,9 +904,7 @@
             <div className="brand-block">
               <img src="assets/logo-stack-official.svg" alt="In The Event"
                    style={{ filter: 'invert(1) brightness(1.15)', height: 120 }} />
-              <p className="lead">
-                Bridging creative design and technical execution, from Salt Lake City to events nationwide.
-              </p>
+              <p className="lead">Bridging creative design and technical execution, from Salt Lake City to events nationwide.</p>
             </div>
             <div>
               <h4>Services</h4>
@@ -1205,367 +938,34 @@
       </footer>
     );
 
-    // =========================================================
-    // tweaks-panel.jsx — TweaksPanel and controls
-    // =========================================================
-
-    const __TWEAKS_STYLE = `
-      .twk-panel{position:fixed;right:16px;bottom:16px;z-index:2147483646;width:280px;
-        max-height:calc(100vh - 32px);display:flex;flex-direction:column;
-        background:rgba(250,249,247,.78);color:#29261b;
-        -webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);
-        border:.5px solid rgba(255,255,255,.6);border-radius:14px;
-        box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 12px 40px rgba(0,0,0,.18);
-        font:11.5px/1.4 ui-sans-serif,system-ui,-apple-system,sans-serif;overflow:hidden}
-      .twk-hd{display:flex;align-items:center;justify-content:space-between;
-        padding:10px 8px 10px 14px;cursor:move;user-select:none}
-      .twk-hd b{font-size:12px;font-weight:600;letter-spacing:.01em}
-      .twk-x{appearance:none;border:0;background:transparent;color:rgba(41,38,27,.55);
-        width:22px;height:22px;border-radius:6px;cursor:default;font-size:13px;line-height:1}
-      .twk-x:hover{background:rgba(0,0,0,.06);color:#29261b}
-      .twk-body{padding:2px 14px 14px;display:flex;flex-direction:column;gap:10px;
-        overflow-y:auto;overflow-x:hidden;min-height:0;
-        scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.15) transparent}
-      .twk-body::-webkit-scrollbar{width:8px}
-      .twk-body::-webkit-scrollbar-track{background:transparent;margin:2px}
-      .twk-body::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:4px;
-        border:2px solid transparent;background-clip:content-box}
-      .twk-body::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.25);
-        border:2px solid transparent;background-clip:content-box}
-      .twk-row{display:flex;flex-direction:column;gap:5px}
-      .twk-row-h{flex-direction:row;align-items:center;justify-content:space-between;gap:10px}
-      .twk-lbl{display:flex;justify-content:space-between;align-items:baseline;
-        color:rgba(41,38,27,.72)}
-      .twk-lbl>span:first-child{font-weight:500}
-      .twk-val{color:rgba(41,38,27,.5);font-variant-numeric:tabular-nums}
-      .twk-sect{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
-        color:rgba(41,38,27,.45);padding:10px 0 0}
-      .twk-sect:first-child{padding-top:0}
-      .twk-field{appearance:none;width:100%;height:26px;padding:0 8px;
-        border:.5px solid rgba(0,0,0,.1);border-radius:7px;
-        background:rgba(255,255,255,.6);color:inherit;font:inherit;outline:none}
-      .twk-field:focus{border-color:rgba(0,0,0,.25);background:rgba(255,255,255,.85)}
-      select.twk-field{padding-right:22px;
-        background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='rgba(0,0,0,.5)' d='M0 0h10L5 6z'/></svg>");
-        background-repeat:no-repeat;background-position:right 8px center}
-      .twk-slider{appearance:none;-webkit-appearance:none;width:100%;height:4px;margin:6px 0;
-        border-radius:999px;background:rgba(0,0,0,.12);outline:none}
-      .twk-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
-        width:14px;height:14px;border-radius:50%;background:#fff;
-        border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
-      .twk-slider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;
-        background:#fff;border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
-      .twk-seg{position:relative;display:flex;padding:2px;border-radius:8px;
-        background:rgba(0,0,0,.06);user-select:none}
-      .twk-seg-thumb{position:absolute;top:2px;bottom:2px;border-radius:6px;
-        background:rgba(255,255,255,.9);box-shadow:0 1px 2px rgba(0,0,0,.12);
-        transition:left .15s cubic-bezier(.3,.7,.4,1),width .15s}
-      .twk-seg.dragging .twk-seg-thumb{transition:none}
-      .twk-seg button{appearance:none;position:relative;z-index:1;flex:1;border:0;
-        background:transparent;color:inherit;font:inherit;font-weight:500;min-height:22px;
-        border-radius:6px;cursor:default;padding:4px 6px;line-height:1.2;
-        overflow-wrap:anywhere}
-      .twk-toggle{position:relative;width:32px;height:18px;border:0;border-radius:999px;
-        background:rgba(0,0,0,.15);transition:background .15s;cursor:default;padding:0}
-      .twk-toggle[data-on="1"]{background:#34c759}
-      .twk-toggle i{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;
-        background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
-      .twk-toggle[data-on="1"] i{transform:translateX(14px)}
-      .twk-num{display:flex;align-items:center;height:26px;padding:0 0 0 8px;
-        border:.5px solid rgba(0,0,0,.1);border-radius:7px;background:rgba(255,255,255,.6)}
-      .twk-num-lbl{font-weight:500;color:rgba(41,38,27,.6);cursor:ew-resize;
-        user-select:none;padding-right:8px}
-      .twk-num input{flex:1;min-width:0;height:100%;border:0;background:transparent;
-        font:inherit;font-variant-numeric:tabular-nums;text-align:right;padding:0 8px 0 0;
-        outline:none;color:inherit;-moz-appearance:textfield}
-      .twk-num input::-webkit-inner-spin-button,.twk-num input::-webkit-outer-spin-button{
-        -webkit-appearance:none;margin:0}
-      .twk-num-unit{padding-right:8px;color:rgba(41,38,27,.45)}
-      .twk-btn{appearance:none;height:26px;padding:0 12px;border:0;border-radius:7px;
-        background:rgba(0,0,0,.78);color:#fff;font:inherit;font-weight:500;cursor:default}
-      .twk-btn:hover{background:rgba(0,0,0,.88)}
-      .twk-btn.secondary{background:rgba(0,0,0,.06);color:inherit}
-      .twk-btn.secondary:hover{background:rgba(0,0,0,.1)}
-      .twk-swatch{appearance:none;-webkit-appearance:none;width:56px;height:22px;
-        border:.5px solid rgba(0,0,0,.1);border-radius:6px;padding:0;cursor:default;
-        background:transparent;flex-shrink:0}
-      .twk-swatch::-webkit-color-swatch-wrapper{padding:0}
-      .twk-swatch::-webkit-color-swatch{border:0;border-radius:5.5px}
-      .twk-swatch::-moz-color-swatch{border:0;border-radius:5.5px}
-    `;
-
-    function useTweaks(defaults) {
-      const [values, setValues] = React.useState(defaults);
-      const setTweak = React.useCallback((keyOrEdits, val) => {
-        const edits = typeof keyOrEdits === 'object' && keyOrEdits !== null
-          ? keyOrEdits : { [keyOrEdits]: val };
-        setValues((prev) => ({ ...prev, ...edits }));
-        window.parent.postMessage({ type: '__edit_mode_set_keys', edits }, '*');
-      }, []);
-      return [values, setTweak];
-    }
-
-    function TweaksPanel({ title = 'Tweaks', children }) {
-      const [open, setOpen] = React.useState(false);
-      const dragRef = React.useRef(null);
-      const offsetRef = React.useRef({ x: 16, y: 16 });
-      const PAD = 16;
-
-      const clampToViewport = React.useCallback(() => {
-        const panel = dragRef.current;
-        if (!panel) return;
-        const w = panel.offsetWidth, h = panel.offsetHeight;
-        const maxRight = Math.max(PAD, window.innerWidth - w - PAD);
-        const maxBottom = Math.max(PAD, window.innerHeight - h - PAD);
-        offsetRef.current = {
-          x: Math.min(maxRight, Math.max(PAD, offsetRef.current.x)),
-          y: Math.min(maxBottom, Math.max(PAD, offsetRef.current.y)),
-        };
-        panel.style.right = offsetRef.current.x + 'px';
-        panel.style.bottom = offsetRef.current.y + 'px';
-      }, []);
-
-      React.useEffect(() => {
-        if (!open) return;
-        clampToViewport();
-        if (typeof ResizeObserver === 'undefined') {
-          window.addEventListener('resize', clampToViewport);
-          return () => window.removeEventListener('resize', clampToViewport);
-        }
-        const ro = new ResizeObserver(clampToViewport);
-        ro.observe(document.documentElement);
-        return () => ro.disconnect();
-      }, [open, clampToViewport]);
-
-      React.useEffect(() => {
-        const onMsg = (e) => {
-          const t = e && e.data && e.data.type;
-          if (t === '__activate_edit_mode') setOpen(true);
-          else if (t === '__deactivate_edit_mode') setOpen(false);
-        };
-        window.addEventListener('message', onMsg);
-        window.parent.postMessage({ type: '__edit_mode_available' }, '*');
-        return () => window.removeEventListener('message', onMsg);
-      }, []);
-
-      const dismiss = () => {
-        setOpen(false);
-        window.parent.postMessage({ type: '__edit_mode_dismissed' }, '*');
-      };
-
-      const onDragStart = (e) => {
-        const panel = dragRef.current;
-        if (!panel) return;
-        const r = panel.getBoundingClientRect();
-        const sx = e.clientX, sy = e.clientY;
-        const startRight = window.innerWidth - r.right;
-        const startBottom = window.innerHeight - r.bottom;
-        const move = (ev) => {
-          offsetRef.current = {
-            x: startRight - (ev.clientX - sx),
-            y: startBottom - (ev.clientY - sy),
-          };
-          clampToViewport();
-        };
-        const up = () => {
-          window.removeEventListener('mousemove', move);
-          window.removeEventListener('mouseup', up);
-        };
-        window.addEventListener('mousemove', move);
-        window.addEventListener('mouseup', up);
-      };
-
-      if (!open) return null;
-      return (
-        <>
-          <style>{__TWEAKS_STYLE}</style>
-          <div ref={dragRef} className="twk-panel"
-               style={{ right: offsetRef.current.x, bottom: offsetRef.current.y }}>
-            <div className="twk-hd" onMouseDown={onDragStart}>
-              <b>{title}</b>
-              <button className="twk-x" aria-label="Close tweaks"
-                      onMouseDown={(e) => e.stopPropagation()}
-                      onClick={dismiss}>✕</button>
-            </div>
-            <div className="twk-body">{children}</div>
-          </div>
-        </>
-      );
-    }
-
-    function TweakSection({ label, children }) {
-      return (
-        <>
-          <div className="twk-sect">{label}</div>
-          {children}
-        </>
-      );
-    }
-
-    function TweakRow({ label, value, children, inline = false }) {
-      return (
-        <div className={inline ? 'twk-row twk-row-h' : 'twk-row'}>
-          <div className="twk-lbl">
-            <span>{label}</span>
-            {value != null && <span className="twk-val">{value}</span>}
-          </div>
-          {children}
-        </div>
-      );
-    }
-
-    function TweakSlider({ label, value, min = 0, max = 100, step = 1, unit = '', onChange }) {
-      return (
-        <TweakRow label={label} value={`${value}${unit}`}>
-          <input type="range" className="twk-slider" min={min} max={max} step={step}
-                 value={value} onChange={(e) => onChange(Number(e.target.value))} />
-        </TweakRow>
-      );
-    }
-
-    function TweakToggle({ label, value, onChange }) {
-      return (
-        <div className="twk-row twk-row-h">
-          <div className="twk-lbl"><span>{label}</span></div>
-          <button type="button" className="twk-toggle" data-on={value ? '1' : '0'}
-                  role="switch" aria-checked={!!value}
-                  onClick={() => onChange(!value)}><i /></button>
-        </div>
-      );
-    }
-
-    function TweakRadio({ label, value, options, onChange }) {
-      const trackRef = React.useRef(null);
-      const [dragging, setDragging] = React.useState(false);
-      const opts = options.map((o) => (typeof o === 'object' ? o : { value: o, label: o }));
-      const idx = Math.max(0, opts.findIndex((o) => o.value === value));
-      const n = opts.length;
-      const valueRef = React.useRef(value);
-      valueRef.current = value;
-
-      const segAt = (clientX) => {
-        const r = trackRef.current.getBoundingClientRect();
-        const inner = r.width - 4;
-        const i = Math.floor(((clientX - r.left - 2) / inner) * n);
-        return opts[Math.max(0, Math.min(n - 1, i))].value;
-      };
-
-      const onPointerDown = (e) => {
-        setDragging(true);
-        const v0 = segAt(e.clientX);
-        if (v0 !== valueRef.current) onChange(v0);
-        const move = (ev) => {
-          if (!trackRef.current) return;
-          const v = segAt(ev.clientX);
-          if (v !== valueRef.current) onChange(v);
-        };
-        const up = () => {
-          setDragging(false);
-          window.removeEventListener('pointermove', move);
-          window.removeEventListener('pointerup', up);
-        };
-        window.addEventListener('pointermove', move);
-        window.addEventListener('pointerup', up);
-      };
-
-      return (
-        <TweakRow label={label}>
-          <div ref={trackRef} role="radiogroup" onPointerDown={onPointerDown}
-               className={dragging ? 'twk-seg dragging' : 'twk-seg'}>
-            <div className="twk-seg-thumb"
-                 style={{ left: `calc(2px + ${idx} * (100% - 4px) / ${n})`,
-                          width: `calc((100% - 4px) / ${n})` }} />
-            {opts.map((o) => (
-              <button key={o.value} type="button" role="radio" aria-checked={o.value === value}>
-                {o.label}
-              </button>
-            ))}
-          </div>
-        </TweakRow>
-      );
-    }
-
-    function TweakSelect({ label, value, options, onChange }) {
-      return (
-        <TweakRow label={label}>
-          <select className="twk-field" value={value} onChange={(e) => onChange(e.target.value)}>
-            {options.map((o) => {
-              const v = typeof o === 'object' ? o.value : o;
-              const l = typeof o === 'object' ? o.label : o;
-              return <option key={v} value={v}>{l}</option>;
-            })}
-          </select>
-        </TweakRow>
-      );
-    }
-
-    function TweakText({ label, value, placeholder, onChange }) {
-      return (
-        <TweakRow label={label}>
-          <input className="twk-field" type="text" value={value} placeholder={placeholder}
-                 onChange={(e) => onChange(e.target.value)} />
-        </TweakRow>
-      );
-    }
-
-    function TweakNumber({ label, value, min, max, step = 1, unit = '', onChange }) {
-      const clamp = (n) => {
-        if (min != null && n < min) return min;
-        if (max != null && n > max) return max;
-        return n;
-      };
-      const startRef = React.useRef({ x: 0, val: 0 });
-      const onScrubStart = (e) => {
-        e.preventDefault();
-        startRef.current = { x: e.clientX, val: value };
-        const decimals = (String(step).split('.')[1] || '').length;
-        const move = (ev) => {
-          const dx = ev.clientX - startRef.current.x;
-          const raw = startRef.current.val + dx * step;
-          const snapped = Math.round(raw / step) * step;
-          onChange(clamp(Number(snapped.toFixed(decimals))));
-        };
-        const up = () => {
-          window.removeEventListener('pointermove', move);
-          window.removeEventListener('pointerup', up);
-        };
-        window.addEventListener('pointermove', move);
-        window.addEventListener('pointerup', up);
-      };
-      return (
-        <div className="twk-num">
-          <span className="twk-num-lbl" onPointerDown={onScrubStart}>{label}</span>
-          <input type="number" value={value} min={min} max={max} step={step}
-                 onChange={(e) => onChange(clamp(Number(e.target.value)))} />
-          {unit && <span className="twk-num-unit">{unit}</span>}
-        </div>
-      );
-    }
-
-    function TweakColor({ label, value, onChange }) {
-      return (
-        <div className="twk-row twk-row-h">
-          <div className="twk-lbl"><span>{label}</span></div>
-          <input type="color" className="twk-swatch" value={value}
-                 onChange={(e) => onChange(e.target.value)} />
-        </div>
-      );
-    }
-
-    function TweakButton({ label, onClick, secondary = false }) {
-      return (
-        <button type="button" className={secondary ? 'twk-btn secondary' : 'twk-btn'}
-                onClick={onClick}>{label}</button>
-      );
-    }
-
-    // =========================================================
-    // Venues.jsx — Page components
-    // =========================================================
-
+    // ═══════════════════════════════════════════════════════════
+    // Page Header
+    // ═══════════════════════════════════════════════════════════
     const VenuesHeader = () => {
+      const overlayRef = React.useRef(null);
+      React.useEffect(() => {
+        const section = overlayRef.current && overlayRef.current.closest('.page-header');
+        if (!section) return;
+        let rect = section.getBoundingClientRect();
+        const refreshRect = () => { rect = section.getBoundingClientRect(); };
+        window.addEventListener('resize', refreshRect, { passive: true });
+        const onMove = (e) => {
+          const x = e.clientX - rect.left, y = e.clientY - rect.top;
+          overlayRef.current.style.background =
+            `radial-gradient(600px circle at ${x}px ${y}px, rgba(160,200,255,0.10), transparent 70%)`;
+        };
+        const onLeave = () => { overlayRef.current.style.background = 'none'; };
+        section.addEventListener('mousemove', onMove, { passive: true });
+        section.addEventListener('mouseleave', onLeave);
+        return () => {
+          section.removeEventListener('mousemove', onMove);
+          section.removeEventListener('mouseleave', onLeave);
+          window.removeEventListener('resize', refreshRect);
+        };
+      }, []);
       return (
-        <header className="page-header">
+        <header className="page-header reveal">
+          <div ref={overlayRef} className="spotlight-overlay" />
           <div className="container">
             <div className="eyebrow">Venues</div>
             <h1>Venues we <span className="accent">know inside out</span>.</h1>
@@ -1574,29 +974,24 @@
               Pick the venue you love, and we'll bring the production playbook with us.
             </p>
             <div className="meta">
-              <div className="item">
-                <div className="l">Curated</div>
-                <div className="v">50+ Venues</div>
-              </div>
-              <div className="item">
-                <div className="l">Coverage</div>
-                <div className="v">Utah · Wyoming · Nationwide</div>
-              </div>
-              <div className="item">
-                <div className="l">Established</div>
-                <div className="v">2007 · ITE</div>
-              </div>
+              <div className="item"><div className="l">Curated</div><div className="v">49 Venues</div></div>
+              <div className="item"><div className="l">Coverage</div><div className="v">Utah · Wyoming · Nationwide</div></div>
+              <div className="item"><div className="l">Established</div><div className="v">2007 · ITE</div></div>
             </div>
           </div>
         </header>
       );
     };
 
+    // ═══════════════════════════════════════════════════════════
+    // Filter Bar
+    // ═══════════════════════════════════════════════════════════
     const FILTERS = [
-      { id: 'all',          label: 'All Venues' },
-      { id: 'slc',          label: 'Salt Lake City' },
-      { id: 'utah-county',  label: 'Utah County' },
-      { id: 'mountain',     label: 'Mountain Resorts' },
+      { id: 'all',         label: 'All Venues' },
+      { id: 'slc',         label: 'Salt Lake City' },
+      { id: 'utah-county', label: 'Utah County' },
+      { id: 'mountain',    label: 'Mountain' },
+      { id: 'jackson',     label: 'Jackson Hole' },
     ];
 
     const FilterBar = ({ active, setActive, total }) => {
@@ -1606,16 +1001,14 @@
         return map;
       }, []);
       return (
-        <div className="filter-bar reveal">
+        <div className="filter-bar">
           <div className="container">
             <div className="row">
               <div className="chips">
                 {FILTERS.map((f) => (
-                  <button
-                    key={f.id}
+                  <button key={f.id}
                     className={`chip ${active === f.id ? 'active' : ''}`}
-                    onClick={() => setActive(f.id)}
-                  >
+                    onClick={() => setActive(f.id)}>
                     {f.label}
                     <span className="ct">{counts[f.id] || 0}</span>
                   </button>
@@ -1630,27 +1023,30 @@
       );
     };
 
+    // ═══════════════════════════════════════════════════════════
+    // Featured Venue
+    // ═══════════════════════════════════════════════════════════
     const FeaturedVenue = ({ v, onView }) => {
       const [activeIdx, setActiveIdx] = React.useState(0);
-      const photo = `assets/photos/${v.galleryStyles[activeIdx]}`;
+      const gallery = v.gallery || [v.photo];
+      const photo = resolvePhoto(gallery[activeIdx]);
       return (
         <section className="featured-section">
           <div className="container">
             <div className="featured-card reveal">
-              <div className="photo" style={{ backgroundImage: `url(${photo})` }}>
+              <div className="photo-bg" style={{ backgroundImage: `url(${photo})` }} />
+              <div className="photo">
                 <div className="overlay" />
                 <div className="badge">
                   <i data-lucide="star" />
                   Featured Partner
                 </div>
                 <div className="thumbs">
-                  {v.galleryStyles.map((g, i) => (
-                    <div
-                      key={g}
+                  {gallery.map((g, i) => (
+                    <div key={i}
                       className={`thumb ${i === activeIdx ? 'active' : ''}`}
-                      style={{ backgroundImage: `url(assets/photos/${g})` }}
-                      onClick={() => setActiveIdx(i)}
-                    />
+                      style={{ backgroundImage: `url(${resolvePhoto(g)})` }}
+                      onClick={() => setActiveIdx(i)} />
                   ))}
                 </div>
               </div>
@@ -1688,16 +1084,16 @@
       );
     };
 
+    // ═══════════════════════════════════════════════════════════
+    // Venue Card
+    // ═══════════════════════════════════════════════════════════
     const VenueCard = ({ v, onClick }) => (
-      <div
-        className="venue-card reveal"
+      <div className="venue-card reveal"
         onClick={onClick}
         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(); } }}
-        tabIndex={0}
-        role="button"
-        aria-label={`View ${v.name}`}
-      >
-        <div className="media" style={{ backgroundImage: `url(${v.photo})` }}>
+        tabIndex={0} role="button" aria-label={`View ${v.name}`}>
+        <div className="photo-bg" style={{ backgroundImage: `url(${resolvePhoto(v.photo)})` }} />
+        <div className="media">
           <div className="city-tag">{v.city}</div>
           <div className="cap-tag">
             <i data-lucide="users" />
@@ -1713,26 +1109,25 @@
           </div>
           <div className="row-bottom">
             <span className="style-pill">{v.style}</span>
-            <span className="view">
-              View Venue →
-            </span>
+            <span className="view">View Venue →</span>
           </div>
         </div>
       </div>
     );
 
+    // ═══════════════════════════════════════════════════════════
+    // Venues Grid
+    // ═══════════════════════════════════════════════════════════
     const VenuesGrid = ({ list, onSelect }) => (
       <section className="venues-section">
         <div className="container">
           <div className="section-head">
             <div>
               <div className="eyebrow">The Full List</div>
-              <div className="heading-hairline" />
-              <h2>All venues</h2>
+              <div className="heading-hairline" style={{ margin: '8px 0 14px' }} />
+              <h2>All Venues</h2>
             </div>
-            <p style={{ margin: 0, maxWidth: '36ch', fontSize: 14, color: '#8a8d99', lineHeight: 1.65 }}>
-              Sorted by frequency of recent ITE production work. Don't see your venue? We work nationwide.
-            </p>
+            <p>Sorted by frequency of recent ITE production work. Don't see your venue? We work nationwide.</p>
           </div>
           <div className="venues-grid">
             {list.map((v) => (
@@ -1743,73 +1138,41 @@
       </section>
     );
 
+    // ═══════════════════════════════════════════════════════════
+    // CTA Band — with working Flatpickr date picker
+    // ═══════════════════════════════════════════════════════════
     const VenueCTA = ({ prefillVenue = '' }) => {
-      const FLUENT_FORM_ID = 'REPLACE_WITH_YOUR_FORM_ID';
-
-      const [nameVal, setNameVal] = React.useState('');
+      const FLUENT_FORM_ID = 'REPLACE_WITH_FORM_ID';
+      const [nameVal,  setNameVal]  = React.useState('');
       const [emailVal, setEmailVal] = React.useState('');
       const [guestVal, setGuestVal] = React.useState('');
       const [venueVal, setVenueVal] = React.useState('');
       const [submitting, setSubmitting] = React.useState(false);
-      const [submitted, setSubmitted] = React.useState(false);
+      const [submitted,  setSubmitted]  = React.useState(false);
       const [submitError, setSubmitError] = React.useState('');
       const dateInputRef = React.useRef(null);
+      const overlayRef   = React.useRef(null);
 
       React.useEffect(() => { if (prefillVenue) setVenueVal(prefillVenue); }, [prefillVenue]);
 
-      const handleSubmit = async () => {
-        if (!nameVal.trim() || !emailVal.trim()) {
-          setSubmitError('Please enter your name and email so we can follow up.');
-          return;
-        }
-        setSubmitError('');
-        setSubmitting(true);
-        try {
-          const body = new FormData();
-          body.append('action', 'fluentform_submit');
-          body.append('form_id', FLUENT_FORM_ID);
-          body.append('name', nameVal.trim());
-          body.append('email', emailVal.trim());
-          body.append('event_date', dateInputRef.current?.value || '');
-          body.append('guest_count', guestVal.trim());
-          body.append('venue', venueVal.trim());
-          const res = await fetch('https://intheevent.com/wp-admin/admin-ajax.php', {
-            method: 'POST', body,
-          });
-          const json = await res.json();
-          if (json.success) {
-            setSubmitted(true);
-          } else {
-            setSubmitError(json.message || 'Something went wrong. Please try again.');
-          }
-        } catch {
-          setSubmitError('Could not reach the server. Please try again.');
-        } finally {
-          setSubmitting(false);
-        }
-      };
       React.useEffect(() => {
         if (!dateInputRef.current || !window.flatpickr) return;
         const fp = window.flatpickr(dateInputRef.current, {
-          dateFormat: 'F j, Y',
-          minDate: 'today',
-          disableMobile: true,
+          dateFormat: 'F j, Y', minDate: 'today', disableMobile: true,
         });
         return () => fp.destroy();
       }, []);
-      const overlayRef = React.useRef(null);
+
       React.useEffect(() => {
         const section = overlayRef.current && overlayRef.current.closest('.cta-band');
         if (!section) return;
         let rect = section.getBoundingClientRect();
         const refreshRect = () => { rect = section.getBoundingClientRect(); };
         window.addEventListener('resize', refreshRect, { passive: true });
-        window.addEventListener('scroll', refreshRect, { passive: true });
         const onMove = (e) => {
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
+          const x = e.clientX - rect.left, y = e.clientY - rect.top;
           overlayRef.current.style.background =
-            `radial-gradient(600px circle at ${x}px ${y}px, rgba(160,200,255,0.12), transparent 70%)`;
+            `radial-gradient(600px circle at ${x}px ${y}px, rgba(160,200,255,0.10), transparent 70%)`;
         };
         const onLeave = () => { overlayRef.current.style.background = 'none'; };
         section.addEventListener('mousemove', onMove, { passive: true });
@@ -1818,9 +1181,32 @@
           section.removeEventListener('mousemove', onMove);
           section.removeEventListener('mouseleave', onLeave);
           window.removeEventListener('resize', refreshRect);
-          window.removeEventListener('scroll', refreshRect);
         };
       }, []);
+
+      const handleSubmit = async () => {
+        if (!nameVal.trim() || !emailVal.trim()) {
+          setSubmitError('Please enter your name and email so we can follow up.');
+          return;
+        }
+        setSubmitError(''); setSubmitting(true);
+        try {
+          const body = new FormData();
+          body.append('action', 'fluentform_submit');
+          body.append('form_id', FLUENT_FORM_ID);
+          body.append('name',  nameVal.trim());
+          body.append('email', emailVal.trim());
+          body.append('event_date', dateInputRef.current?.value || '');
+          body.append('guest_count', guestVal.trim());
+          body.append('venue', venueVal.trim());
+          const res  = await fetch('https://intheevent.com/wp-admin/admin-ajax.php', { method: 'POST', body });
+          const json = await res.json();
+          if (json.success) { setSubmitted(true); }
+          else { setSubmitError(json.message || 'Something went wrong. Please try again.'); }
+        } catch {
+          setSubmitError('Could not reach the server. Please try again.');
+        } finally { setSubmitting(false); }
+      };
 
       return (
         <section className="cta-band reveal">
@@ -1829,7 +1215,7 @@
             <div className="inner">
               <div>
                 <div className="eyebrow">Don't See Your Venue?</div>
-                <div className="heading-hairline" />
+                <div className="heading-hairline" style={{ margin: '0 0 20px' }} />
                 <h2>We travel the production with you.</h2>
                 <p>
                   We've built shows in 30+ states. Tell us where, and our team will bring the rig,
@@ -1873,7 +1259,7 @@
                     </label>
                     <label className="form-field">
                       <i data-lucide="map-pin" />
-                      <input className="cta-input" value={venueVal} onChange={(e) => setVenueVal(e.target.value)} placeholder="Preferred venue or city" />
+                      <input className="cta-input" placeholder="Preferred venue or city" value={venueVal} onChange={(e) => setVenueVal(e.target.value)} />
                     </label>
                     {submitError && <p className="cta-error">{submitError}</p>}
                     <Button kind="filled" style={{ marginTop: 4 }} onClick={handleSubmit} disabled={submitting}>
@@ -1888,39 +1274,40 @@
       );
     };
 
+    // ═══════════════════════════════════════════════════════════
+    // Venue Modal — with gallery nav
+    // ═══════════════════════════════════════════════════════════
     const VenueModal = ({ v, onClose, onPlanHere }) => {
       const [photoIdx, setPhotoIdx] = React.useState(0);
 
       React.useEffect(() => { setPhotoIdx(0); }, [v]);
-
       React.useEffect(() => {
-        const onKey = (e) => { if (e.key === 'Escape') onClose(); };
-        if (v) window.addEventListener('keydown', onKey);
+        const onKey = (e) => {
+          if (!v) return;
+          if (e.key === 'Escape') onClose();
+          if (e.key === 'ArrowLeft')  setPhotoIdx(i => (i - 1 + gallery.length) % gallery.length);
+          if (e.key === 'ArrowRight') setPhotoIdx(i => (i + 1) % gallery.length);
+        };
+        window.addEventListener('keydown', onKey);
         return () => window.removeEventListener('keydown', onKey);
-      }, [v, onClose]);
+      }, [v]);
 
-      const PLACEHOLDERS = [
-        'assets/photos/lounge-white.jpg',
-        'assets/photos/rgb-tubes.jpg',
-        'assets/photos/stage-purple.jpg',
-      ];
+      const PLACEHOLDERS = ['assets/photos/lounge-white.jpg', 'assets/photos/rgb-tubes.jpg', 'assets/photos/stage-purple.jpg'];
       const gallery = v
-        ? v.galleryStyles
-          ? v.galleryStyles.map(g => `assets/photos/${g}`)
-          : [v.photo, ...PLACEHOLDERS]
+        ? v.gallery
+          ? v.gallery.map(resolvePhoto)
+          : v.galleryStyles
+            ? v.galleryStyles.map(g => `assets/photos/${g}`)
+            : [resolvePhoto(v.photo), ...PLACEHOLDERS]
         : [];
 
       return (
-        <div
-          className={`modal-backdrop ${v ? 'open' : ''}`}
-          onClick={onClose}
-          role="dialog"
-          aria-modal="true"
-          aria-label={v ? v.name : 'Venue detail'}
-        >
+        <div className={`modal-backdrop ${v ? 'open' : ''}`}
+          onClick={onClose} role="dialog" aria-modal="true"
+          aria-label={v ? v.name : 'Venue detail'}>
           <div className="modal-wrap" onClick={(e) => e.stopPropagation()}>
             <button className="close" onClick={onClose} aria-label="Close">
-              <i data-lucide="x" style={{ width: 16, height: 16 }} />
+              <i data-lucide="x" style={{ width: 15, height: 15 }} />
             </button>
             {v && (
               <div className="modal">
@@ -1972,12 +1359,11 @@
                         document.querySelector('.cta-band')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                       }, 280);
                     }}>Plan an Event Here</Button>
-                    <Button
-                      kind="outline"
+                    <Button kind="outline"
                       href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.address)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >Get Directions →</Button>
+                      target="_blank" rel="noopener noreferrer">
+                      Get Directions →
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -1987,10 +1373,137 @@
       );
     };
 
-    // =========================================================
-    // App — from Venues Page.html
-    // =========================================================
+    // ═══════════════════════════════════════════════════════════
+    // Tweaks Panel (dev tool — remove before launch)
+    // ═══════════════════════════════════════════════════════════
+    const TWEAKS_STYLE = `
+      .twk-panel{position:fixed;right:16px;bottom:16px;z-index:2147483646;width:260px;max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:rgba(250,249,247,.82);color:#29261b;-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);border:.5px solid rgba(255,255,255,.6);border-radius:14px;box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 12px 40px rgba(0,0,0,.18);font:11.5px/1.4 ui-sans-serif,system-ui,-apple-system,sans-serif;overflow:hidden}
+      .twk-hd{display:flex;align-items:center;justify-content:space-between;padding:10px 8px 10px 14px;cursor:move;user-select:none}
+      .twk-hd b{font-size:12px;font-weight:600}
+      .twk-x{appearance:none;border:0;background:transparent;color:rgba(41,38,27,.55);width:22px;height:22px;border-radius:6px;cursor:default;font-size:13px;line-height:1}
+      .twk-x:hover{background:rgba(0,0,0,.06);color:#29261b}
+      .twk-body{padding:2px 14px 14px;display:flex;flex-direction:column;gap:10px;overflow-y:auto}
+      .twk-sect{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(41,38,27,.45);padding:10px 0 0}
+      .twk-row{display:flex;flex-direction:column;gap:5px}
+      .twk-row-h{flex-direction:row;align-items:center;justify-content:space-between;gap:10px}
+      .twk-lbl{display:flex;justify-content:space-between;color:rgba(41,38,27,.72)}
+      .twk-lbl>span:first-child{font-weight:500}
+      .twk-toggle{position:relative;width:32px;height:18px;border:0;border-radius:999px;background:rgba(0,0,0,.15);transition:background .15s;cursor:default;padding:0}
+      .twk-toggle[data-on="1"]{background:#34c759}
+      .twk-toggle i{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+      .twk-toggle[data-on="1"] i{transform:translateX(14px)}
+      .twk-seg{position:relative;display:flex;padding:2px;border-radius:8px;background:rgba(0,0,0,.06);user-select:none}
+      .twk-seg-thumb{position:absolute;top:2px;bottom:2px;border-radius:6px;background:rgba(255,255,255,.9);box-shadow:0 1px 2px rgba(0,0,0,.12);transition:left .15s,width .15s}
+      .twk-seg button{appearance:none;position:relative;z-index:1;flex:1;border:0;background:transparent;color:inherit;font:inherit;font-weight:500;min-height:22px;border-radius:6px;cursor:default;padding:4px 6px}
+    `;
 
+    function TweaksPanel({ title = 'Tweaks', children }) {
+      const [open, setOpen] = React.useState(false);
+      const dragRef = React.useRef(null);
+      const offsetRef = React.useRef({ x: 16, y: 16 });
+      const PAD = 16;
+      const clamp = React.useCallback(() => {
+        const el = dragRef.current; if (!el) return;
+        const maxR = Math.max(PAD, window.innerWidth - el.offsetWidth - PAD);
+        const maxB = Math.max(PAD, window.innerHeight - el.offsetHeight - PAD);
+        offsetRef.current = {
+          x: Math.min(maxR, Math.max(PAD, offsetRef.current.x)),
+          y: Math.min(maxB, Math.max(PAD, offsetRef.current.y)),
+        };
+        el.style.right  = offsetRef.current.x + 'px';
+        el.style.bottom = offsetRef.current.y + 'px';
+      }, []);
+      React.useEffect(() => {
+        if (!open) return;
+        clamp();
+        const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(clamp) : null;
+        if (ro) ro.observe(document.documentElement);
+        else window.addEventListener('resize', clamp);
+        return () => { if (ro) ro.disconnect(); else window.removeEventListener('resize', clamp); };
+      }, [open, clamp]);
+      React.useEffect(() => {
+        const onMsg = (e) => {
+          const t = e?.data?.type;
+          if (t === '__activate_edit_mode')   setOpen(true);
+          if (t === '__deactivate_edit_mode') setOpen(false);
+        };
+        window.addEventListener('message', onMsg);
+        window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+        return () => window.removeEventListener('message', onMsg);
+      }, []);
+      const onDragStart = (e) => {
+        const el = dragRef.current; if (!el) return;
+        const r = el.getBoundingClientRect();
+        const sx = e.clientX, sy = e.clientY;
+        const sr = window.innerWidth - r.right, sb = window.innerHeight - r.bottom;
+        const move = (ev) => {
+          offsetRef.current = { x: sr - (ev.clientX - sx), y: sb - (ev.clientY - sy) };
+          clamp();
+        };
+        const up = () => { window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', up); };
+        window.addEventListener('mousemove', move);
+        window.addEventListener('mouseup', up);
+      };
+      if (!open) return null;
+      return (
+        <>
+          <style>{TWEAKS_STYLE}</style>
+          <div ref={dragRef} className="twk-panel" style={{ right: offsetRef.current.x, bottom: offsetRef.current.y }}>
+            <div className="twk-hd" onMouseDown={onDragStart}>
+              <b>{title}</b>
+              <button className="twk-x" onMouseDown={(e) => e.stopPropagation()}
+                onClick={() => { setOpen(false); window.parent.postMessage({ type: '__edit_mode_dismissed' }, '*'); }}>✕</button>
+            </div>
+            <div className="twk-body">{children}</div>
+          </div>
+        </>
+      );
+    }
+
+    function TweakSection({ label, children }) {
+      return <><div className="twk-sect">{label}</div>{children}</>;
+    }
+    function TweakToggle({ label, value, onChange }) {
+      return (
+        <div className="twk-row twk-row-h">
+          <div className="twk-lbl"><span>{label}</span></div>
+          <button type="button" className="twk-toggle" data-on={value ? '1' : '0'}
+            role="switch" aria-checked={!!value} onClick={() => onChange(!value)}><i /></button>
+        </div>
+      );
+    }
+    function TweakRadio({ label, value, options, onChange }) {
+      const opts = options.map((o) => typeof o === 'object' ? o : { value: o, label: o });
+      const idx  = Math.max(0, opts.findIndex((o) => o.value === value));
+      const n    = opts.length;
+      return (
+        <div className="twk-row">
+          <div className="twk-lbl"><span>{label}</span></div>
+          <div className="twk-seg">
+            <div className="twk-seg-thumb"
+              style={{ left: `calc(2px + ${idx} * (100% - 4px) / ${n})`, width: `calc((100% - 4px) / ${n})` }} />
+            {opts.map((o) => (
+              <button key={o.value} type="button" role="radio" aria-checked={o.value === value}
+                onClick={() => onChange(o.value)}>{o.label}</button>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    function useTweaks(defaults) {
+      const [values, setValues] = React.useState(defaults);
+      const setTweak = React.useCallback((key, val) => {
+        const edits = typeof key === 'object' ? key : { [key]: val };
+        setValues((prev) => ({ ...prev, ...edits }));
+        window.parent.postMessage({ type: '__edit_mode_set_keys', edits }, '*');
+      }, []);
+      return [values, setTweak];
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // App
+    // ═══════════════════════════════════════════════════════════
     const { useState, useEffect, useMemo } = React;
 
     const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
@@ -2000,13 +1513,13 @@
     }/*EDITMODE-END*/;
 
     function App() {
-      const [filter, setFilter] = useState('all');
-      const [selected, setSelected] = useState(null);
+      const [filter,       setFilter]       = useState('all');
+      const [selected,     setSelected]     = useState(null);
       const [prefillVenue, setPrefillVenue] = useState('');
-      const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+      const [tweaks,       setTweak]        = useTweaks(TWEAK_DEFAULTS);
 
       const featured = window.VENUES.find((v) => v.featured);
-      const others = window.VENUES.filter((v) => !v.featured);
+      const others   = window.VENUES.filter((v) => !v.featured);
 
       const filtered = useMemo(() => {
         if (filter === 'all') return others;
@@ -2019,11 +1532,9 @@
 
       useEffect(() => {
         const root = document.documentElement;
-        root.style.setProperty(
-          '--venues-grid-cols',
+        root.style.setProperty('--venues-grid-cols',
           tweaks.cardLayout === '2col' ? '2' :
-          tweaks.cardLayout === '4col' ? '4' : '3'
-        );
+          tweaks.cardLayout === '4col' ? '4' : '3');
       }, [tweaks.cardLayout]);
 
       useEffect(() => {
@@ -2031,14 +1542,12 @@
         return () => { document.body.style.overflow = ''; };
       }, [selected]);
 
+      const featuredCount = tweaks.showFeatured && filter === 'all' && featured ? 1 : 0;
+
       return (
         <>
           {tweaks.headerStyle !== 'minimal' && <VenuesHeader />}
-          <FilterBar
-            active={filter}
-            setActive={setFilter}
-            total={(tweaks.showFeatured && filter === 'all' ? 1 : 0) + filtered.length}
-          />
+          <FilterBar active={filter} setActive={setFilter} total={featuredCount + filtered.length} />
           {tweaks.showFeatured && featured && filter === 'all' && (
             <FeaturedVenue v={featured} onView={setSelected} />
           )}
@@ -2049,30 +1558,14 @@
 
           <TweaksPanel title="Tweaks">
             <TweakSection label="Layout">
-              <TweakToggle
-                label="Show featured venue"
-                value={tweaks.showFeatured}
-                onChange={(v) => setTweak('showFeatured', v)}
-              />
-              <TweakRadio
-                label="Header style"
-                value={tweaks.headerStyle}
+              <TweakToggle label="Show featured venue" value={tweaks.showFeatured}
+                onChange={(v) => setTweak('showFeatured', v)} />
+              <TweakRadio label="Header style" value={tweaks.headerStyle}
                 onChange={(v) => setTweak('headerStyle', v)}
-                options={[
-                  { value: 'photo', label: 'Photo' },
-                  { value: 'minimal', label: 'Off' },
-                ]}
-              />
-              <TweakRadio
-                label="Card grid"
-                value={tweaks.cardLayout}
+                options={[{ value: 'photo', label: 'Photo' }, { value: 'minimal', label: 'Off' }]} />
+              <TweakRadio label="Card grid" value={tweaks.cardLayout}
                 onChange={(v) => setTweak('cardLayout', v)}
-                options={[
-                  { value: '2col', label: '2 col' },
-                  { value: '3col', label: '3 col' },
-                  { value: '4col', label: '4 col' },
-                ]}
-              />
+                options={[{ value: '2col', label: '2 col' }, { value: '3col', label: '3 col' }, { value: '4col', label: '4 col' }]} />
             </TweakSection>
           </TweaksPanel>
         </>
@@ -2081,44 +1574,29 @@
 
     ReactDOM.createRoot(document.getElementById('root')).render(<App />);
 
-    // =========================================================
-    // Scroll reveal — IntersectionObserver
-    // =========================================================
+    // ── Scroll reveal ──────────────────────────────────────────
     (function initReveal() {
       const root = document.getElementById('root');
-      // Mark root BEFORE hiding so CSS only hides when JS is ready
       root.classList.add('js-reveal-ready');
-
-      const observe = () => {
-        const io = new IntersectionObserver((entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('in-view');
-              io.unobserve(entry.target);
-            }
-          });
-        }, { threshold: 0.18 });
-
-        document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
-      };
-
-      // Elements are rendered async by React, so observe after a tick
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      const observe = () => document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
       setTimeout(observe, 80);
-
-      // Re-observe when new elements appear (filter changes)
       const mo = new MutationObserver(() => {
         document.querySelectorAll('.reveal:not(.in-view)').forEach((el) => {
-          // Check if already being observed by checking for the flag
           if (!el.dataset.revealWatched) {
             el.dataset.revealWatched = '1';
             const io2 = new IntersectionObserver((entries) => {
               entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                  entry.target.classList.add('in-view');
-                  io2.unobserve(entry.target);
-                }
+                if (entry.isIntersecting) { entry.target.classList.add('in-view'); io2.unobserve(entry.target); }
               });
-            }, { threshold: 0.18 });
+            }, { threshold: 0.12 });
             io2.observe(el);
           }
         });

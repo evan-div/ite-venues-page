@@ -1,0 +1,268 @@
+/* =========================================================
+   In The Event — Design Tokens
+   Source: ite_brandguide.pdf (official brand guide)
+
+   NOTE: This file defines LIGHT-MODE defaults (white bg, navy text).
+   For dark-surface pages (venues, case studies) all tokens are
+   overridden by hardcoded values in the page CSS. Do NOT import
+   this file expecting dark-mode behavior — use it only as a
+   reference layer for light-surface marketing pages.
+   ========================================================= */
+
+/* ---- Webfont: ITC Avant Garde Gothic substitute ----
+   ITC Avant Garde Gothic is a commercial typeface not available
+   on Google Fonts. We substitute with Jost — a geometric sans
+   with near-identical proportions, circular 'O', high x-height,
+   and matching Book (400) / Medium (500) weights.
+   --> Replace with the real ITC Avant Garde Gothic webfont files
+       in fonts/ for final brand-accurate output. ---- */
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&display=swap');
+
+:root {
+  /* ======== CORE PALETTE (from brand guide p.9) ======== */
+  /* Primary: sage green, green pear, black, white */
+  --ite-black:         #000000;
+  --ite-white:         #FFFFFF;
+  --ite-green-pear:    #AAB947;
+  --ite-sage-green:    #7A8E46;
+
+  /* ---- Accent colors (use sparingly, per guide) ---- */
+  --ite-midnight-navy: #181930; /* accent dark */
+  --ite-tea-green:     #C3FF8A; /* accent light — confirmed live value */
+
+  /* ---- Brand gradient (green gradient, required for logo) ---- */
+  --ite-green-gradient: linear-gradient(135deg, #C3FF8A 0%, #AAB947 55%, #7A8E46 100%);
+  --ite-green-gradient-v: linear-gradient(180deg, #C3FF8A 0%, #AAB947 55%, #7A8E46 100%);
+
+  /* ======== SEMANTIC COLOR TOKENS ======== */
+  --bg:            var(--ite-white);
+  --bg-inverse:    var(--ite-midnight-navy);
+  --bg-subtle:     #F5F6EE;       /* tinted cream, derived from tea-green */
+  --bg-muted:      #EDEFE2;
+  --surface:       var(--ite-white);
+  --surface-dark:  var(--ite-midnight-navy);
+
+  --fg1:           var(--ite-midnight-navy);   /* primary text */
+  --fg2:           #4A4B60;                    /* secondary text */
+  --fg3:           #8A8B9B;                    /* tertiary / caption */
+  --fg-inverse:    var(--ite-white);
+  --fg-accent:     var(--ite-sage-green);
+
+  --border:        #E3E4D8;
+  --border-strong: #181930;
+  --divider:       rgba(24, 25, 48, 0.08);
+
+  --link:          var(--ite-sage-green);
+  --link-hover:    var(--ite-midnight-navy);
+
+  /* ======== TYPE SYSTEM ======== */
+  --font-sans:     'Jost', 'ITC Avant Garde Gothic', 'Avant Garde', 'Futura', 'Century Gothic', system-ui, sans-serif;
+  --font-display:  var(--font-sans); /* same family; differentiated by weight+case */
+  --font-body:     var(--font-sans);
+  --font-mono:     'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+
+  /* Weights — brand uses Book (400) and Medium (500) */
+  --fw-book:    400;
+  --fw-medium:  500;
+  --fw-bold:    700;
+
+  /* Type scale — designed for web; display sizes use uppercase + wide tracking */
+  --fs-display-xl: 88px;
+  --fs-display-l:  64px;
+  --fs-display-m:  48px;
+  --fs-h1:         40px;
+  --fs-h2:         32px;
+  --fs-h3:         24px;
+  --fs-h4:         20px;
+  --fs-body-l:     18px;
+  --fs-body:       16px;
+  --fs-body-s:     14px;
+  --fs-caption:    12px;
+  --fs-eyebrow:    11px;
+
+  /* Line heights */
+  --lh-tight:  1.05;
+  --lh-snug:   1.2;
+  --lh-normal: 1.5;
+  --lh-loose:  1.7;
+
+  /* Tracking — the wordmark and guide headings use letters-spaced uppercase */
+  --tracking-wide:    0.22em;   /* section labels, eyebrows */
+  --tracking-medium:  0.12em;   /* display headings */
+  --tracking-normal:  0.01em;
+  --tracking-tight:   -0.01em;
+
+  /* ======== SPACING ======== */
+  --space-0:   0;
+  --space-1:   4px;
+  --space-2:   8px;
+  --space-3:   12px;
+  --space-4:   16px;
+  --space-5:   24px;
+  --space-6:   32px;
+  --space-7:   48px;
+  --space-8:   64px;
+  --space-9:   96px;
+  --space-10: 128px;
+
+  /* ======== RADII ======== */
+  /* Brand feels modern + restrained — small radii preferred;
+     pill only for badges/buttons in specific cases */
+  --radius-none: 0;
+  --radius-sm:   2px;
+  --radius-md:   4px;
+  --radius-lg:   8px;
+  --radius-xl:  16px;
+  --radius-pill: 999px;
+
+  /* ======== SHADOWS ======== */
+  --shadow-sm:  0 1px 2px rgba(24, 25, 48, 0.06);
+  --shadow-md:  0 4px 12px rgba(24, 25, 48, 0.08);
+  --shadow-lg:  0 12px 32px rgba(24, 25, 48, 0.12);
+  --shadow-xl:  0 24px 60px rgba(24, 25, 48, 0.18);
+  --shadow-inset: inset 0 1px 0 rgba(255,255,255,0.08);
+
+  /* ======== MOTION ======== */
+  --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast:   120ms;
+  --dur-base:   220ms;
+  --dur-slow:   420ms;
+
+  /* ======== LAYOUT ======== */
+  --container-max: 1240px;
+  --container-gutter: 32px;
+}
+
+/* ======== BASE ELEMENT STYLES ======== */
+
+html, body {
+  background: var(--bg);
+  color: var(--fg1);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-normal);
+  font-weight: var(--fw-book);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Display / heading system — uppercase + letter-spaced per brand */
+h1, .h1 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-h1);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-medium);
+  text-transform: uppercase;
+  color: var(--fg1);
+  margin: 0;
+}
+
+h2, .h2 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-h2);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tracking-medium);
+  text-transform: uppercase;
+  color: var(--fg1);
+  margin: 0;
+}
+
+h3, .h3 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--fg1);
+  margin: 0;
+}
+
+h4, .h4 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-h4);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--fg1);
+  margin: 0;
+}
+
+/* Display — the extra-large, spaced-out headline treatment
+   like the cover of the brand guide ("B R A N D  G U I D E") */
+.display-xl {
+  font-family: var(--font-display);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-display-xl);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-medium);
+  text-transform: uppercase;
+}
+.display-l {
+  font-family: var(--font-display);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-display-l);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-medium);
+  text-transform: uppercase;
+}
+.display-m {
+  font-family: var(--font-display);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-display-m);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-medium);
+  text-transform: uppercase;
+}
+
+/* Eyebrow / category label — very common in the brand guide
+   (e.g. "A B O U T", "O U R  T O N E") */
+.eyebrow {
+  font-family: var(--font-display);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--fg2);
+}
+
+/* Body text */
+p, .body {
+  font-family: var(--font-body);
+  font-weight: var(--fw-book);
+  font-size: var(--fs-body);
+  line-height: var(--lh-loose);
+  color: var(--fg1);
+  margin: 0;
+}
+.body-l { font-size: var(--fs-body-l); line-height: var(--lh-loose); }
+.body-s { font-size: var(--fs-body-s); line-height: var(--lh-normal); color: var(--fg2); }
+.caption { font-size: var(--fs-caption); line-height: var(--lh-normal); color: var(--fg3); }
+
+a {
+  color: var(--link);
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+a:hover { color: var(--link-hover); }
+
+code, pre, .mono {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+}
+
+/* Utility */
+.uppercase { text-transform: uppercase; letter-spacing: var(--tracking-wide); }
+.on-dark   { color: var(--fg-inverse); }
+.on-dark .eyebrow,
+.on-dark p { color: rgba(255,255,255,0.78); }
+.gradient-text {
+  background: var(--ite-green-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}

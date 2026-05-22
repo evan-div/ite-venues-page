@@ -1,0 +1,1144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=1440" />
+  <title>Glass Effect Explorer — In The Event</title>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&display=swap" />
+
+  <style>
+    @font-face { font-family: 'ITC-AvantGarde-Local'; src: url('../../fonts/BT-Book.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'ITC-AvantGarde-Local'; src: url('../../fonts/AvantGarde-Medium.woff2') format('woff2'); font-weight: 500; font-style: normal; font-display: swap; }
+
+    :root {
+      --dark:  #080809;
+      --navy:  #1c1f2e;
+      --green: #C3FF8A;
+      --grey:  #8a8d99;
+      --font:  'ITC-AvantGarde-Local', 'Century Gothic', 'Jost', Arial, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--dark);
+      color: #fff;
+      font-family: var(--font);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       GLASS PANEL — reads CSS custom props set per-instance via
+       React inline styles. Pseudo-elements inherit from parent.
+    ═══════════════════════════════════════════════════════════ */
+    .glass-panel {
+      position: relative;
+      background: rgba(255,255,255, var(--fill, 0.08));
+      backdrop-filter: blur(var(--blur, 16px));
+      -webkit-backdrop-filter: blur(var(--blur, 16px));
+      border-radius: var(--radius, 8px);
+      box-shadow:
+        0 8px 32px rgba(0,0,0,0.28),
+        inset 0 1px 0 rgba(255,255,255,0.08);
+      transition: background 0.15s, backdrop-filter 0.15s;
+    }
+    /* Prismatic color ring */
+    .glass-panel::before {
+      content: '';
+      position: absolute; inset: 0;
+      border-radius: inherit;
+      border: 1px solid transparent;
+      background: conic-gradient(
+        from 0deg,
+        rgba(195,255,138, var(--distortion, 0.18)) 0deg,
+        rgba(160,200,255, var(--distortion, 0.18)) 60deg,
+        rgba(255,200,160, var(--distortion, 0.18)) 120deg,
+        rgba(195,255,138, var(--distortion, 0.18)) 180deg,
+        rgba(180,160,255, var(--distortion, 0.18)) 240deg,
+        rgba(255,230,140, var(--distortion, 0.18)) 300deg,
+        rgba(195,255,138, var(--distortion, 0.18)) 360deg
+      ) border-box;
+      -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: destination-out;
+      mask-composite: exclude;
+      pointer-events: none;
+      z-index: 0;
+    }
+    /* Reflection arc */
+    .glass-panel::after {
+      content: '';
+      position: absolute; inset: 0;
+      border-radius: inherit;
+      border: 1px solid transparent;
+      background: linear-gradient(
+        135deg,
+        rgba(255,255,255, var(--reflection, 0.55)) 0%,
+        rgba(255,255,255, 0.08) 30%,
+        transparent 55%,
+        rgba(0,0,0, 0.12) 100%
+      ) border-box;
+      -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: destination-out;
+      mask-composite: exclude;
+      pointer-events: none;
+      z-index: 0;
+    }
+    /* Content sits above pseudo-elements */
+    .glass-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       PAGE HEADER
+    ═══════════════════════════════════════════════════════════ */
+    .page-header {
+      padding: 72px 64px 56px;
+      border-bottom: 1px solid rgba(195,255,138,0.12);
+    }
+    .page-header .eyebrow {
+      font-family: var(--font); font-weight: 500; font-size: 11px;
+      letter-spacing: 0.32em; text-transform: uppercase;
+      color: var(--green); margin-bottom: 16px;
+    }
+    .page-header h1 {
+      font-family: var(--font); font-weight: 500;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      letter-spacing: 0.08em; text-transform: uppercase;
+      line-height: 1.05; color: #fff; margin-bottom: 16px;
+    }
+    .page-header h1 .accent { color: var(--green); }
+    .page-header .lead {
+      font-size: 15px; color: rgba(255,255,255,0.65);
+      max-width: 62ch; line-height: 1.65;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       CARDS SCENE
+    ═══════════════════════════════════════════════════════════ */
+    .scene {
+      position: relative;
+      padding: 72px 64px 56px;
+      overflow: hidden;
+    }
+    .scene-bg {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(180deg, rgba(8,8,9,0.45) 0%, rgba(8,8,9,0.82) 100%),
+        url('https://intheevent.com/wp-content/uploads/2026/05/GrandAmerica1.png');
+      background-size: cover; background-position: center;
+      filter: blur(2px) brightness(0.55);
+      transform: scale(1.05);
+      z-index: 0;
+    }
+    .scene-inner {
+      position: relative; z-index: 1;
+    }
+    .cards-row {
+      display: flex; gap: 20px; align-items: flex-start;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       CARD COLUMN
+    ═══════════════════════════════════════════════════════════ */
+    .demo-col {
+      flex: 1; min-width: 0;
+      display: flex; flex-direction: column; gap: 0;
+    }
+    .demo-label {
+      font-family: var(--font); font-weight: 500; font-size: 10px;
+      letter-spacing: 0.28em; text-transform: uppercase;
+      color: var(--green); margin-bottom: 10px;
+    }
+    .demo-tag {
+      font-family: var(--font); font-size: 10px;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(255,255,255,0.42); margin-bottom: 14px;
+      line-height: 1.4;
+    }
+
+    /* The card frame that holds the photo bg + glass panel */
+    .card-frame {
+      width: 100%;
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      flex-direction: column;
+    }
+    .card-photo-area { aspect-ratio: 4 / 3; position: relative; }
+    .card-photo-area .city-tag {
+      position: absolute; top: 12px; left: 12px;
+      font-family: var(--font); font-weight: 500; font-size: 8px;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: #fff; padding: 5px 10px;
+      background: rgba(0,0,0,0.52); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      border-radius: 999px; border: 1px solid rgba(195,255,138,0.30);
+      z-index: 2;
+    }
+    .card-frame .photo-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(8,8,9,0.05) 0%,
+        rgba(8,8,9,0.15) 45%,
+        rgba(8,8,9,0.25) 100%
+      );
+    }
+    /* Glass info panel — sits in lower portion of card, flat top corners */
+    .card-frame .glass-panel {
+      padding: 14px 16px 16px;
+      border-radius: 0 0 var(--radius, 8px) var(--radius, 8px);
+      transition:
+        backdrop-filter 480ms cubic-bezier(0.22, 1, 0.36, 1),
+        -webkit-backdrop-filter 480ms cubic-bezier(0.22, 1, 0.36, 1),
+        background 480ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Focus sharpening + fill amplify on hover */
+    .card-frame:hover .glass-panel {
+      backdrop-filter: blur(7px);
+      -webkit-backdrop-filter: blur(7px);
+      background: rgba(255,255,255, calc(var(--fill, 0.08) + 0.05));
+    }
+
+    /* Capacity pill — appears on hover above glass panel */
+    .card-photo-area .cap-tag {
+      position: absolute; bottom: 12px; right: 12px;
+      font-family: var(--font); font-weight: 500; font-size: 9px;
+      letter-spacing: 0.20em; text-transform: uppercase;
+      color: #fff; padding: 5px 10px;
+      background: rgba(0,0,0,0.52); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      border-radius: 999px; border: 1px solid rgba(195,255,138,0.35);
+      display: flex; align-items: center; gap: 5px;
+      z-index: 3; opacity: 0; transform: translateY(4px);
+      transition: opacity 480ms cubic-bezier(0.22,1,0.36,1), transform 480ms cubic-bezier(0.22,1,0.36,1);
+      pointer-events: none;
+    }
+    .card-frame:hover .cap-tag { opacity: 1; transform: translateY(0); }
+    .card-frame .cap-tag svg { width: 10px; height: 10px; color: var(--green); }
+
+    /* ── Venues preview grid ── */
+    .venues-preview-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    /* ── Global glass controls ── */
+    .glass-controls {
+      margin-top: 28px;
+      display: flex; align-items: flex-end; gap: 24px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      padding: 18px 24px;
+    }
+    .glass-controls .ctrl-group { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+    .glass-controls .ctrl-meta { display: flex; justify-content: space-between; }
+    .glass-controls .ctrl-label {
+      font-family: var(--font); font-size: 9px; font-weight: 500;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: rgba(255,255,255,0.40);
+    }
+    .glass-controls .ctrl-val {
+      font-family: var(--font); font-size: 10px;
+      color: var(--green); font-variant-numeric: tabular-nums;
+    }
+    .glass-controls .reset-btn { flex-shrink: 0; align-self: flex-end; }
+
+    /* Subtle card lift — same duration and easing as glass panel */
+    .card-frame {
+      transition: transform 480ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .card-frame:hover { transform: translateY(-4px); }
+    .card-frame .venue-name {
+      font-family: var(--font); font-weight: 500; font-size: 11px;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: #fff; line-height: 1.25; margin-bottom: 6px;
+    }
+    .card-frame .address {
+      font-size: 10px; color: rgba(255,255,255,0.55);
+      display: flex; align-items: flex-start; gap: 4px;
+      line-height: 1.4; margin-bottom: 10px;
+    }
+    .card-frame .address svg { width: 10px; height: 10px; color: var(--green); flex-shrink: 0; margin-top: 1px; }
+    .card-frame .card-footer {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .card-frame .style-pill {
+      font-family: var(--font); font-size: 9px;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--green);
+      border: 1px solid rgba(195,255,138,0.5); border-radius: 999px;
+      padding: 2px 8px;
+    }
+    .card-frame .view-text {
+      font-family: var(--font); font-weight: 500; font-size: 9px;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       CONTROLS
+    ═══════════════════════════════════════════════════════════ */
+    .controls {
+      padding: 16px 0 0;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .slider-row {
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .slider-meta {
+      display: flex; justify-content: space-between; align-items: baseline;
+    }
+    .slider-label {
+      font-family: var(--font); font-weight: 500; font-size: 9px;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: rgba(255,255,255,0.50);
+    }
+    .slider-val {
+      font-family: var(--font); font-size: 10px;
+      color: var(--green); letter-spacing: 0.04em;
+      font-variant-numeric: tabular-nums;
+    }
+    input[type="range"].glass-slider {
+      -webkit-appearance: none; appearance: none;
+      width: 100%; height: 3px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.14);
+      outline: none; cursor: pointer;
+    }
+    input[type="range"].glass-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 2px rgba(195,255,138,0.25);
+      cursor: pointer;
+      transition: transform 0.12s;
+    }
+    input[type="range"].glass-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+    input[type="range"].glass-slider::-moz-range-thumb {
+      width: 12px; height: 12px; border-radius: 50%;
+      background: var(--green); border: none; cursor: pointer;
+    }
+    .reset-btn {
+      margin-top: 4px;
+      font-family: var(--font); font-weight: 500; font-size: 9px;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      background: none; border: none; cursor: pointer; padding: 0;
+      text-align: left;
+      transition: color 0.15s;
+    }
+    .reset-btn:hover { color: var(--green); }
+
+    /* ═══════════════════════════════════════════════════════════
+       CONFIG READOUT
+    ═══════════════════════════════════════════════════════════ */
+    .config-code {
+      margin-top: 10px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+      font-size: 9.5px;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.8;
+      white-space: pre;
+    }
+    .config-code .v { color: var(--green); }
+
+    /* ═══════════════════════════════════════════════════════════
+       DIVIDER
+    ═══════════════════════════════════════════════════════════ */
+    .section-divider {
+      display: flex; align-items: center; gap: 20px;
+      padding: 0 64px;
+      margin: 0;
+    }
+    .section-divider .line {
+      flex: 1; height: 1px; background: rgba(195,255,138,0.15);
+    }
+    .section-divider .label {
+      font-family: var(--font); font-size: 10px; font-weight: 500;
+      letter-spacing: 0.28em; text-transform: uppercase;
+      color: rgba(195,255,138,0.4);
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       RECOMMENDATIONS
+    ═══════════════════════════════════════════════════════════ */
+    .rec-section {
+      padding: 72px 64px 96px;
+      background: var(--navy);
+    }
+    .rec-header {
+      margin-bottom: 48px;
+    }
+    .rec-header .eyebrow {
+      font-family: var(--font); font-weight: 500; font-size: 11px;
+      letter-spacing: 0.32em; text-transform: uppercase;
+      color: var(--green); margin-bottom: 14px;
+    }
+    .rec-header h2 {
+      font-family: var(--font); font-weight: 500;
+      font-size: clamp(1.4rem, 2.2vw, 2rem);
+      letter-spacing: 0.10em; text-transform: uppercase;
+      color: #fff; line-height: 1.2;
+    }
+    .rec-header p {
+      margin-top: 14px; font-size: 15px;
+      color: rgba(255,255,255,0.62); max-width: 60ch; line-height: 1.7;
+    }
+    .rec-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .rec-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 8px;
+      padding: 28px 28px 24px;
+    }
+    .rec-card:first-child {
+      grid-column: 1 / -1;
+      background: rgba(195,255,138,0.04);
+      border-color: rgba(195,255,138,0.20);
+    }
+    .rec-number {
+      font-family: var(--font); font-weight: 500; font-size: 11px;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--green); margin-bottom: 10px;
+    }
+    .rec-card h3 {
+      font-family: var(--font); font-weight: 500; font-size: 15px;
+      letter-spacing: 0.10em; text-transform: uppercase;
+      color: #fff; margin-bottom: 10px; line-height: 1.3;
+    }
+    .rec-card p {
+      font-size: 14px; color: rgba(255,255,255,0.68); line-height: 1.7; margin-bottom: 16px;
+    }
+    .rec-config {
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .rec-chip {
+      font-family: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+      font-size: 10px;
+      color: var(--green);
+      background: rgba(195,255,138,0.08);
+      border: 1px solid rgba(195,255,138,0.25);
+      border-radius: 4px;
+      padding: 3px 8px;
+    }
+    .rec-chip .key { color: rgba(255,255,255,0.45); }
+
+    /* Interaction recs */
+    .interaction-section {
+      padding: 56px 64px 80px;
+      background: var(--dark);
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+    .interaction-section .eyebrow {
+      font-family: var(--font); font-weight: 500; font-size: 11px;
+      letter-spacing: 0.32em; text-transform: uppercase;
+      color: var(--green); margin-bottom: 14px;
+    }
+    .interaction-section h2 {
+      font-family: var(--font); font-weight: 500;
+      font-size: clamp(1.4rem, 2.2vw, 2rem);
+      letter-spacing: 0.10em; text-transform: uppercase;
+      color: #fff; margin-bottom: 40px; line-height: 1.2;
+    }
+    .interaction-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    }
+    .int-card {
+      border-top: 2px solid rgba(195,255,138,0.30);
+      padding-top: 20px;
+    }
+    .int-card h4 {
+      font-family: var(--font); font-weight: 500; font-size: 12px;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: #fff; margin-bottom: 10px;
+    }
+    .int-card p {
+      font-size: 14px; color: rgba(255,255,255,0.62); line-height: 1.65; margin-bottom: 14px;
+    }
+    .int-code {
+      font-family: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+      font-size: 10.5px;
+      color: rgba(255,255,255,0.42);
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 4px;
+      padding: 8px 10px;
+      line-height: 1.7;
+    }
+    .int-code .prop { color: var(--green); }
+    .int-code .val  { color: rgba(160,200,255,0.9); }
+
+    /* ═══════════════════════════════════════════════════════════
+       INTERACTION DEMOS
+    ═══════════════════════════════════════════════════════════ */
+    .int-demo-wrap { margin-bottom: 18px; display: flex; justify-content: center; }
+    .int-demo-sep  { height: 1px; background: rgba(255,255,255,0.07); margin: 0 0 16px; }
+
+    .int-card-sm {
+      width: 150px; height: 190px;
+      position: relative; border-radius: 8px; overflow: hidden;
+      background-size: cover; background-position: center;
+      cursor: pointer;
+    }
+    .int-card-sm .vname {
+      font-family: var(--font); font-size: 10px; font-weight: 500;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: #fff; margin-bottom: 3px;
+    }
+    .int-card-sm .vcity  { font-size: 9px; color: rgba(255,255,255,0.52); margin-bottom: 6px; }
+    .int-card-sm .vstyle {
+      font-family: var(--font); font-size: 8px;
+      letter-spacing: 0.10em; text-transform: uppercase;
+      color: var(--green);
+      border: 1px solid rgba(195,255,138,0.45); border-radius: 999px;
+      padding: 2px 6px; display: inline-block;
+    }
+    .demo-hint {
+      text-align: center; margin-top: 7px;
+      font-family: var(--font); font-size: 9px; font-weight: 500;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: rgba(255,255,255,0.28);
+    }
+
+    /* Demo 1 — fill amplify (CSS only) */
+    .demo-fill .glass-panel {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 10px 12px 12px; border-radius: 0 0 8px 8px;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      transition: background 220ms ease;
+    }
+    .demo-fill:hover .glass-panel { background: rgba(255,255,255,0.18); }
+
+    /* Demo 2 — focus sharpening (CSS only) */
+    .demo-sharpen .glass-panel {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 10px 12px 12px; border-radius: 0 0 8px 8px;
+      background: rgba(255,255,255,0.10);
+      backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
+      transition: backdrop-filter 350ms ease, -webkit-backdrop-filter 350ms ease;
+    }
+    .demo-sharpen:hover .glass-panel {
+      backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px);
+    }
+
+    /* Demo 3 — modal blur-in */
+    .int-modal-stage { position: relative; }
+    .int-modal-overlay {
+      position: absolute; inset: 0;
+      background: rgba(8,8,9,0.88); backdrop-filter: blur(4px);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 10;
+      animation: intModalIn 280ms cubic-bezier(0.22,1,0.36,1);
+    }
+    @keyframes intModalIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .int-modal-panel {
+      width: 82%; padding: 12px 14px;
+      border-radius: 8px;
+      animation: intBlurIn 320ms ease-out forwards;
+    }
+    @keyframes intBlurIn {
+      from { backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px);
+             background: rgba(255,255,255,0); }
+      to   { backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+             background: rgba(255,255,255,0.10); }
+    }
+    .int-modal-title {
+      font-family: var(--font); font-size: 10px; font-weight: 500;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: #fff; text-align: center; margin-bottom: 5px;
+    }
+    .int-modal-tap {
+      font-family: var(--font); font-size: 8px; text-transform: uppercase;
+      letter-spacing: 0.14em; color: rgba(255,255,255,0.38);
+      text-align: center;
+    }
+    .int-open-btn {
+      display: block; width: 100%; margin-top: 8px;
+      font-family: var(--font); font-size: 9px; font-weight: 500;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--green); background: rgba(195,255,138,0.08);
+      border: 1px solid rgba(195,255,138,0.30); border-radius: 6px;
+      padding: 7px 0; cursor: pointer; transition: background 160ms;
+    }
+    .int-open-btn:hover { background: rgba(195,255,138,0.15); }
+
+    /* Demo 4 — glass chips */
+    .int-chips-bar {
+      display: flex; gap: 6px; flex-wrap: wrap;
+      padding: 14px 12px;
+      background: var(--navy);
+      border-radius: 8px; border: 1px solid rgba(255,255,255,0.06);
+    }
+    .int-chip-glass {
+      font-family: var(--font); font-weight: 500; font-size: 9px;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      padding: 5px 10px; border-radius: 999px; cursor: pointer;
+      transition: all 200ms ease;
+    }
+    .int-chip-glass.inactive {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(195,255,138,0.28); color: var(--green);
+    }
+    .int-chip-glass.active-chip {
+      background: var(--green); color: var(--dark);
+      border: 1px solid var(--green);
+    }
+
+    /* Demo 6 — reduced motion */
+    .int-motion-card { transition: transform 220ms ease; }
+    .int-motion-card.motion-on:hover  { transform: translateY(-3px); }
+    .int-motion-card.motion-off       { transition: none; }
+    .int-motion-card.motion-off:hover { transform: none; }
+    .int-motion-card .glass-panel {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 10px 12px 12px; border-radius: 0 0 8px 8px;
+    }
+    .int-motion-card.motion-on .glass-panel   { transition: background 220ms ease; }
+    .int-motion-card.motion-on:hover .glass-panel { background: rgba(255,255,255,0.18) !important; }
+    .int-motion-card.motion-off .glass-panel  { transition: none; }
+    .int-motion-toggle-row {
+      display: flex; align-items: center; justify-content: space-between; margin-top: 10px;
+    }
+    .int-motion-label {
+      font-family: var(--font); font-size: 9px; font-weight: 500;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(255,255,255,0.40);
+    }
+    .int-toggle {
+      position: relative; width: 28px; height: 16px;
+      border: none; border-radius: 999px;
+      background: rgba(255,255,255,0.14);
+      cursor: pointer; padding: 0; flex-shrink: 0;
+      transition: background 0.15s;
+    }
+    .int-toggle.on { background: #34c759; }
+    .int-toggle i {
+      position: absolute; top: 2px; left: 2px;
+      width: 12px; height: 12px; border-radius: 50%;
+      background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.25);
+      transition: transform 0.15s; display: block;
+    }
+    .int-toggle.on i { transform: translateX(12px); }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useMemo, useRef } = React;
+
+    // ── Interaction demo sub-components ─────────────────────────
+
+    function DemoModal() {
+      const [open, setOpen] = useState(false);
+      return (
+        <div className="int-demo-wrap">
+          <div style={{ width: 150 }}>
+            <div className="int-modal-stage">
+              <div className="int-card-sm"
+                   style={{ backgroundImage: `url(https://intheevent.com/wp-content/uploads/2026/05/SnowpineLodge.jpg)` }}>
+                <div style={{ position:'absolute', bottom:0, left:0, right:0, padding:'10px 12px 12px',
+                              borderRadius:'0 0 8px 8px', background:'rgba(255,255,255,0.08)',
+                              backdropFilter:'blur(16px)', WebkitBackdropFilter:'blur(16px)' }}>
+                  <div className="vname">Snowpine Lodge</div>
+                  <div className="vcity">Alta, UT</div>
+                  <div className="vstyle">Mountain Lodge</div>
+                </div>
+              </div>
+              {open && (
+                <div className="int-modal-overlay" onClick={() => setOpen(false)}>
+                  <div className="int-modal-panel glass-panel"
+                       style={{ '--blur':'10px', '--fill':0.10, '--reflection':0.55, '--distortion':0.18, '--radius':'8px' }}>
+                    <div className="glass-content">
+                      <div className="int-modal-title">Snowpine Lodge</div>
+                      <div className="int-modal-tap">Tap to close</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+            <button className="int-open-btn" onClick={() => setOpen(true)}>Open Modal →</button>
+            <div className="demo-hint">{open ? 'Tap overlay to close' : 'Click to open'}</div>
+          </div>
+        </div>
+      );
+    }
+
+    function DemoChips() {
+      const [active, setActive] = useState('All');
+      const chips = ['All', 'SLC', 'Mountain', 'Jackson'];
+      return (
+        <div className="int-demo-wrap">
+          <div>
+            <div className="int-chips-bar">
+              {chips.map((c) => (
+                <button key={c}
+                  className={`int-chip-glass ${active === c ? 'active-chip' : 'inactive'}`}
+                  onClick={() => setActive(c)}>{c}</button>
+              ))}
+            </div>
+            <div className="demo-hint">Click to switch</div>
+          </div>
+        </div>
+      );
+    }
+
+    function DemoSpotlight() {
+      const cardRef   = useRef(null);
+      const overlayRef = useRef(null);
+      const [dist, setDist] = useState(0.18);
+      const onMove = (e) => {
+        const rect = cardRef.current.getBoundingClientRect();
+        overlayRef.current.style.background =
+          `radial-gradient(80px circle at ${e.clientX - rect.left}px ${e.clientY - rect.top}px, rgba(160,200,255,0.22), transparent 70%)`;
+        setDist(0.44);
+      };
+      const onLeave = () => {
+        overlayRef.current.style.background = 'none';
+        setDist(0.18);
+      };
+      return (
+        <div className="int-demo-wrap">
+          <div>
+            <div ref={cardRef} className="int-card-sm"
+                 style={{ backgroundImage:`url(https://intheevent.com/wp-content/uploads/2026/05/ThanksgivingPoint.jpg)`, cursor:'crosshair' }}
+                 onMouseMove={onMove} onMouseLeave={onLeave}>
+              <div ref={overlayRef} style={{ position:'absolute', inset:0, pointerEvents:'none', zIndex:1, transition:'background 0.08s' }} />
+              <div className="glass-panel"
+                   style={{ position:'absolute', bottom:0, left:0, right:0, padding:'10px 12px 12px',
+                            borderRadius:'0 0 8px 8px', zIndex:2,
+                            '--blur':'14px', '--fill':0.09, '--reflection':0.55,
+                            '--distortion':dist, '--radius':'8px' }}>
+                <div className="glass-content" style={{ position:'relative', zIndex:1 }}>
+                  <div className="vname">Thanksgiving Point</div>
+                  <div className="vcity">Lehi, UT</div>
+                  <div className="vstyle">Event Campus</div>
+                </div>
+              </div>
+            </div>
+            <div className="demo-hint">Move cursor over card</div>
+          </div>
+        </div>
+      );
+    }
+
+    function DemoMotion() {
+      const [reduced, setReduced] = useState(false);
+      return (
+        <div className="int-demo-wrap">
+          <div style={{ width: 150 }}>
+            <div className={`int-card-sm int-motion-card ${reduced ? 'motion-off' : 'motion-on'}`}
+                 style={{ backgroundImage:`url(https://intheevent.com/wp-content/uploads/2026/05/SoldierHollow.jpg)` }}>
+              <div className="glass-panel"
+                   style={{ background:'rgba(255,255,255,0.08)', backdropFilter:'blur(16px)', WebkitBackdropFilter:'blur(16px)' }}>
+                <div className="glass-content">
+                  <div className="vname">Soldier Hollow</div>
+                  <div className="vcity">Midway, UT</div>
+                  <div className="vstyle">Olympic Venue</div>
+                </div>
+              </div>
+            </div>
+            <div className="int-motion-toggle-row">
+              <span className="int-motion-label">Reduce motion</span>
+              <button className={`int-toggle ${reduced ? 'on' : ''}`} onClick={() => setReduced(!reduced)}><i /></button>
+            </div>
+            <div className="demo-hint">{reduced ? 'Animations off' : 'Hover the card'}</div>
+          </div>
+        </div>
+      );
+    }
+
+    // ── Venue data (6 cards, 2 rows) ────────────────────────────
+    const VENUES = [
+      { id: 'salt-palace',   photo: 'https://intheevent.com/wp-content/uploads/2026/05/SaltPalaceConventionCenter2-scaled.jpg', venue: 'Salt Palace Convention Center',  city: 'Salt Lake City, UT', address: '90 SW Temple, Salt Lake City, UT 84101',            style: 'Convention Center',  capacity: '5,000+' },
+      { id: 'hyatt',         photo: 'https://intheevent.com/wp-content/uploads/2026/05/HyattRegency2.jpg',                     venue: 'Hyatt Regency Salt Lake City',    city: 'Salt Lake City, UT', address: '170 S West Temple St, Salt Lake City, UT 84101',  style: 'Convention Hotel',   capacity: '2,875'  },
+      { id: 'little-america',photo: 'https://intheevent.com/wp-content/uploads/2026/05/LittleAmerica1.jpg',                    venue: 'Little America Hotel',            city: 'Salt Lake City, UT', address: '500 South Main St, Salt Lake City, UT 84101',     style: 'Full-Service Hotel', capacity: '1,200'  },
+      { id: 'hilton',        photo: 'https://intheevent.com/wp-content/uploads/2026/05/SLC_Hilton1.jpg',                       venue: 'Hilton Salt Lake City Center',     city: 'Salt Lake City, UT', address: '255 S West Temple, Salt Lake City, UT 84101',     style: 'Convention Hotel',   capacity: '1,000'  },
+      { id: 'le-meridien',   photo: 'https://intheevent.com/wp-content/uploads/2026/05/LeMeridien1.jpeg',                      venue: 'Le Méridien Salt Lake City',      city: 'Salt Lake City, UT', address: '131 S 300 W, Salt Lake City, UT 84101',           style: 'Boutique Hotel',     capacity: '350'    },
+      { id: 'marriott',      photo: 'https://intheevent.com/wp-content/uploads/2026/05/MarriottDowntown1.jpeg',                 venue: 'Salt Lake Marriott Downtown',     city: 'Salt Lake City, UT', address: '75 South West Temple, Salt Lake City, UT 84101', style: 'Full-Service Hotel', capacity: '800'    },
+    ];
+
+    const STANDARD = { blur: 16, fill: 0.08, reflection: 0.55, distortion: 0.18 };
+
+    const SLIDERS = [
+      { key: 'blur',       label: 'Blur',       min: 4,    max: 32,   step: 1,    fmt: (v) => `${v}px`      },
+      { key: 'fill',       label: 'Fill',       min: 0.01, max: 0.24, step: 0.01, fmt: (v) => v.toFixed(2)  },
+      { key: 'reflection', label: 'Reflection', min: 0,    max: 1,    step: 0.01, fmt: (v) => v.toFixed(2)  },
+      { key: 'distortion', label: 'Distortion', min: 0,    max: 0.60, step: 0.01, fmt: (v) => v.toFixed(2)  },
+    ];
+
+    // ── Venue card ───────────────────────────────────────────────
+    function VenueCard({ v, glassStyle }) {
+      return (
+        <div className="card-frame" style={{ backgroundImage: `url(${v.photo})` }}>
+          <div className="photo-overlay" />
+          <div className="card-photo-area">
+            <div className="city-tag">{v.city}</div>
+            <div className="cap-tag">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+              Up to {v.capacity}
+            </div>
+          </div>
+          <div className="glass-panel" style={glassStyle}>
+            <div className="glass-content">
+              <div className="venue-name">{v.venue}</div>
+              <div className="address">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+                </svg>
+                <span>{v.address}</span>
+              </div>
+              <div className="card-footer">
+                <span className="style-pill">{v.style}</span>
+                <span className="view-text">View Venue →</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ── Global glass controls ────────────────────────────────────
+    function GlassControls({ glass, setGlass }) {
+      return (
+        <div className="glass-controls">
+          {SLIDERS.map(({ key, label, min, max, step, fmt }) => (
+            <div key={key} className="ctrl-group">
+              <div className="ctrl-meta">
+                <span className="ctrl-label">{label}</span>
+                <span className="ctrl-val">{fmt(glass[key])}</span>
+              </div>
+              <input type="range" className="glass-slider"
+                min={min} max={max} step={step} value={glass[key]}
+                onChange={(e) => setGlass((prev) => ({ ...prev, [key]: Number(e.target.value) }))} />
+            </div>
+          ))}
+          <button className="reset-btn" onClick={() => setGlass({ ...STANDARD })}>↺ Standard</button>
+        </div>
+      );
+    }
+
+    // ── App ─────────────────────────────────────────────────────
+    function App() {
+      const [glass, setGlass] = useState({ ...STANDARD });
+
+      const glassStyle = {
+        '--blur':        `${glass.blur}px`,
+        '--fill':        glass.fill,
+        '--reflection':  glass.reflection,
+        '--distortion':  glass.distortion,
+        '--radius':      '8px',
+      };
+
+      return (
+        <>
+          {/* Page header */}
+          <header className="page-header">
+            <div className="eyebrow">Design System · Glass Effects</div>
+            <h1>Standard glass<br />on the <span className="accent">venues page</span>.</h1>
+            <p className="lead">
+              Six SLC venues rendered with Standard glass on the info panel.
+              Use the sliders below the grid to tune all cards simultaneously.
+              Hover any card to see the capacity pill and focus-sharpening in action.
+            </p>
+          </header>
+
+          {/* Cards scene */}
+          <section className="scene">
+            <div className="scene-bg" />
+            <div className="scene-inner">
+              <div className="venues-preview-grid">
+                {VENUES.map((v) => <VenueCard key={v.id} v={v} glassStyle={glassStyle} />)}
+              </div>
+              <GlassControls glass={glass} setGlass={setGlass} />
+            </div>
+          </section>
+
+          <div className="section-divider">
+            <div className="line" />
+            <div className="label">Application Recommendations</div>
+            <div className="line" />
+          </div>
+
+          {/* Recommendations */}
+          <section className="rec-section">
+            <div className="rec-header">
+              <div className="eyebrow">Where to apply</div>
+              <h2>Five surfaces on the venues page</h2>
+              <p>
+                Glass works best where it has something behind it — a photo or textured dark
+                background. These are the five highest-impact placement opportunities.
+              </p>
+            </div>
+            <div className="rec-grid">
+              <div className="rec-card">
+                <div className="rec-number">01 · Priority</div>
+                <h3>Venue Card Info Panel</h3>
+                <p>
+                  Replace the solid <code>#111116</code> info section at the bottom of each venue card
+                  with a glass panel. The photo bleeds through the blur, creating natural depth and
+                  reinforcing that each card is about a place. Use <strong>Standard</strong> — it's
+                  legible at small sizes without competing with the photo.
+                </p>
+                <div className="rec-config">
+                  <span className="rec-chip"><span className="key">blur </span>16px</span>
+                  <span className="rec-chip"><span className="key">fill </span>0.08</span>
+                  <span className="rec-chip"><span className="key">refl </span>0.55</span>
+                  <span className="rec-chip"><span className="key">dist </span>0.18</span>
+                  <span className="rec-chip"><span className="key">r </span>0 0 8px 8px</span>
+                </div>
+              </div>
+
+              <div className="rec-card">
+                <div className="rec-number">02</div>
+                <h3>Featured Venue Right Panel</h3>
+                <p>
+                  The <code>.featured-card .body</code> is currently solid navy. Replacing it with
+                  <strong> Featured</strong> glass creates visual continuity with the photo panel on
+                  the left — you see the photo bleeding into the content area, making it feel less
+                  boxed. Pair with a 1px green-tinted border instead of the current white one.
+                </p>
+                <div className="rec-config">
+                  <span className="rec-chip"><span className="key">blur </span>22px</span>
+                  <span className="rec-chip"><span className="key">fill </span>0.10</span>
+                  <span className="rec-chip"><span className="key">refl </span>0.62</span>
+                  <span className="rec-chip"><span className="key">dist </span>0.28</span>
+                </div>
+              </div>
+
+              <div className="rec-card">
+                <div className="rec-number">03</div>
+                <h3>CTA Inquiry Card</h3>
+                <p>
+                  The <code>.cta-inquiry-card</code> already has a cursor spotlight behind it —
+                  glass will make that ambient light visible through the panel. Use <strong>Vivid</strong>
+                  for the prismatic border: it signals "premium" and gives the form a different material
+                  feel from the surrounding section.
+                </p>
+                <div className="rec-config">
+                  <span className="rec-chip"><span className="key">blur </span>14px</span>
+                  <span className="rec-chip"><span className="key">fill </span>0.09</span>
+                  <span className="rec-chip"><span className="key">refl </span>0.55</span>
+                  <span className="rec-chip"><span className="key">dist </span>0.50</span>
+                </div>
+              </div>
+
+              <div className="rec-card">
+                <div className="rec-number">04</div>
+                <h3>Venue Modal Spec Tiles</h3>
+                <p>
+                  The four spec boxes inside the modal (<code>.modal .spec</code>) are currently
+                  dark bordered tiles. <strong>Whisper</strong> glass softens them without risking
+                  legibility — the blur is low enough that text stays crisp, and the faint prismatic
+                  border adds polish without drawing attention away from the spec values.
+                </p>
+                <div className="rec-config">
+                  <span className="rec-chip"><span className="key">blur </span>10px</span>
+                  <span className="rec-chip"><span className="key">fill </span>0.04</span>
+                  <span className="rec-chip"><span className="key">refl </span>0.38</span>
+                  <span className="rec-chip"><span className="key">dist </span>0.08</span>
+                </div>
+              </div>
+
+              <div className="rec-card">
+                <div className="rec-number">05</div>
+                <h3>Page Header Stat Strip</h3>
+                <p>
+                  The three meta stats (49 Venues · Coverage · Established) sit below the H1 on a
+                  transparent dark background. Wrapping them in a <strong>Whisper</strong> glass
+                  container above the border-top separator frames the stats cleanly and echoes the
+                  brief-card treatment used on case study heroes.
+                </p>
+                <div className="rec-config">
+                  <span className="rec-chip"><span className="key">blur </span>10px</span>
+                  <span className="rec-chip"><span className="key">fill </span>0.05</span>
+                  <span className="rec-chip"><span className="key">refl </span>0.40</span>
+                  <span className="rec-chip"><span className="key">dist </span>0.10</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Interaction recommendations */}
+          <section className="interaction-section">
+            <div className="eyebrow">Motion &amp; Interaction</div>
+            <h2>How glass should move</h2>
+            <div className="interaction-grid">
+              <div className="int-card">
+                <div className="int-demo-wrap">
+                  <div>
+                    <div className="int-card-sm demo-fill"
+                         style={{ backgroundImage:`url(https://intheevent.com/wp-content/uploads/2026/05/GallivanCenter.jpg)` }}>
+                      <div className="glass-panel">
+                        <div className="glass-content">
+                          <div className="vname">Gallivan Center</div>
+                          <div className="vcity">Salt Lake City, UT</div>
+                          <div className="vstyle">Urban Plaza</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="demo-hint">Hover the card</div>
+                  </div>
+                </div>
+                <div className="int-demo-sep" />
+                <h4>Card hover — fill amplify</h4>
+                <p>
+                  On venue card hover, animate the glass fill from resting to a slightly higher
+                  opacity. Combined with the existing lift + border glow, this gives the glass
+                  surface a "brightening" feel as if a light passed over it.
+                </p>
+                <div className="int-code">
+                  .venue-card:hover .glass-panel {'{'}<br />
+                  {'  '}<span className="prop">background</span>: <span className="val">rgba(255,255,255,.18)</span>;<br />
+                  {'  '}<span className="prop">transition</span>: <span className="val">220ms ease</span>;<br />
+                  {'}'}
+                </div>
+              </div>
+
+              <div className="int-card">
+                <div className="int-demo-wrap">
+                  <div>
+                    <div className="int-card-sm demo-sharpen"
+                         style={{ backgroundImage:`url(https://intheevent.com/wp-content/uploads/2026/05/DeerValleyResort.jpg)` }}>
+                      <div className="glass-panel">
+                        <div className="glass-content">
+                          <div className="vname">Deer Valley Resort</div>
+                          <div className="vcity">Park City, UT</div>
+                          <div className="vstyle">Ski Resort</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="demo-hint">Hover the card</div>
+                  </div>
+                </div>
+                <div className="int-demo-sep" />
+                <h4>Featured card — focus sharpening</h4>
+                <p>
+                  When hovering the featured venue card, reduce blur slightly — the glass sharpens
+                  as if you're leaning in. Pairs naturally with the existing photo brightness lift.
+                  Don't animate too fast; 350ms feels intentional.
+                </p>
+                <div className="int-code">
+                  .featured-card:hover .glass-panel {'{'}<br />
+                  {'  '}<span className="prop">backdrop-filter</span>: <span className="val">blur(8px)</span>;<br />
+                  {'  '}<span className="prop">transition</span>: <span className="val">350ms ease</span>;<br />
+                  {'}'}
+                </div>
+              </div>
+
+              <div className="int-card">
+                <DemoModal />
+                <div className="int-demo-sep" />
+                <h4>Modal open — blur in</h4>
+                <p>
+                  Animate the modal's glass panels from 0 blur to their resting value as the
+                  modal slides in. Use a 280ms cubic-bezier ease-out. This makes the glass feel like
+                  it's condensing rather than just appearing.
+                </p>
+                <div className="int-code">
+                  @keyframes blurIn {'{'}<br />
+                  {'  '}from {'{ '}<span className="prop">backdrop-filter</span>: <span className="val">blur(0)</span>{' }'}<br />
+                  {'  '}to {'{ '}<span className="prop">backdrop-filter</span>: <span className="val">blur(10px)</span>{' }'}<br />
+                  {'}'}<br />
+                  .modal.open .glass-panel {'{'}<br />
+                  {'  '}animation: <span className="val">blurIn 280ms ease-out</span>;<br />
+                  {'}'}
+                </div>
+              </div>
+
+              <div className="int-card">
+                <DemoChips />
+                <div className="int-demo-sep" />
+                <h4>Filter chip — solid to glass</h4>
+                <p>
+                  Inactive chips are currently a solid green outline. Making them glass
+                  (blur: 10, fill: 0.05) lightens them against the navy filter bar. The active
+                  chip stays fully solid green — contrast between glass and solid signals selection.
+                </p>
+                <div className="int-code">
+                  .chip:not(.active) {'{'}<br />
+                  {'  '}<span className="prop">backdrop-filter</span>: <span className="val">blur(10px)</span>;<br />
+                  {'  '}<span className="prop">background</span>: <span className="val">rgba(255,255,255,.05)</span>;<br />
+                  {'}'}
+                </div>
+              </div>
+
+              <div className="int-card">
+                <DemoSpotlight />
+                <div className="int-demo-sep" />
+                <h4>Cursor spotlight synergy</h4>
+                <p>
+                  The cursor spotlight emits a cool-blue radial gradient. Move over the card above
+                  to see the prismatic border react — distortion jumps from 0.18 → 0.44 under
+                  the light, making the conic ring visible through the border.
+                </p>
+                <div className="int-code">
+                  onMouseMove: {'{'}<br />
+                  {'  '}<span className="prop">--distortion</span>: <span className="val">0.44</span>;<br />
+                  {'}'}<br />
+                  onMouseLeave: {'{'}<br />
+                  {'  '}<span className="prop">--distortion</span>: <span className="val">0.18</span>;<br />
+                  {'}'}
+                </div>
+              </div>
+
+              <div className="int-card">
+                <DemoMotion />
+                <div className="int-demo-sep" />
+                <h4>Accessibility: prefer-reduced-motion</h4>
+                <p>
+                  Toggle the switch above to simulate reduced-motion preference. Hover the card
+                  in each state — with motion on, it lifts and brightens; with motion off, all
+                  transitions are cut and the static glass remains.
+                </p>
+                <div className="int-code">
+                  @media (prefers-reduced-motion: reduce) {'{'}<br />
+                  {'  '}.glass-panel {'{'}<br />
+                  {'    '}<span className="prop">transition</span>: <span className="val">none</span>;<br />
+                  {'    '}<span className="prop">animation</span>: <span className="val">none</span>;<br />
+                  {'  }'}<br />
+                  {'}'}
+                </div>
+              </div>
+            </div>
+          </section>
+        </>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>

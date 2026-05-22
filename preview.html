@@ -1,0 +1,2064 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=1280" />
+  <meta name="description" content="Venues In The Event knows inside out — rigged, staged, and floraled across Salt Lake City, Utah County, and mountain resorts." />
+  <title>Venues — In The Event</title>
+
+  <!-- CDN dependencies (require internet, no server needed) -->
+  <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js" crossorigin="anonymous"></script>
+
+  <style>
+    /* =========================================================
+       colors_and_type.css
+       ========================================================= */
+    @import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&display=swap');
+
+    :root {
+      --ite-black:         #000000;
+      --ite-white:         #FFFFFF;
+      --ite-green-pear:    #AAB947;
+      --ite-sage-green:    #7A8E46;
+      --ite-midnight-navy: #181930;
+      --ite-tea-green:     #C7DA84;
+      --ite-green-gradient: linear-gradient(135deg, #C7DA84 0%, #AAB947 55%, #7A8E46 100%);
+      --ite-green-gradient-v: linear-gradient(180deg, #C7DA84 0%, #AAB947 55%, #7A8E46 100%);
+
+      --bg:            var(--ite-white);
+      --bg-inverse:    var(--ite-midnight-navy);
+      --bg-subtle:     #F5F6EE;
+      --bg-muted:      #EDEFE2;
+      --surface:       var(--ite-white);
+      --surface-dark:  var(--ite-midnight-navy);
+
+      --fg1:           var(--ite-midnight-navy);
+      --fg2:           #4A4B60;
+      --fg3:           #8A8B9B;
+      --fg-inverse:    var(--ite-white);
+      --fg-accent:     var(--ite-sage-green);
+
+      --border:        #E3E4D8;
+      --border-strong: #181930;
+      --divider:       rgba(24, 25, 48, 0.08);
+
+      --link:          var(--ite-sage-green);
+      --link-hover:    var(--ite-midnight-navy);
+
+      --font-sans:     'Jost', 'ITC Avant Garde Gothic', 'Avant Garde', 'Futura', 'Century Gothic', system-ui, sans-serif;
+      --font-display:  var(--font-sans);
+      --font-body:     var(--font-sans);
+      --font-mono:     'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+
+      --fw-book:    400;
+      --fw-medium:  500;
+      --fw-bold:    700;
+
+      --fs-display-xl: 88px;
+      --fs-display-l:  64px;
+      --fs-display-m:  48px;
+      --fs-h1:         40px;
+      --fs-h2:         32px;
+      --fs-h3:         24px;
+      --fs-h4:         20px;
+      --fs-body-l:     18px;
+      --fs-body:       16px;
+      --fs-body-s:     14px;
+      --fs-caption:    12px;
+      --fs-eyebrow:    11px;
+
+      --lh-tight:  1.05;
+      --lh-snug:   1.2;
+      --lh-normal: 1.5;
+      --lh-loose:  1.7;
+
+      --tracking-wide:    0.22em;
+      --tracking-medium:  0.12em;
+      --tracking-normal:  0.01em;
+      --tracking-tight:   -0.01em;
+
+      --space-0:   0;
+      --space-1:   4px;
+      --space-2:   8px;
+      --space-3:   12px;
+      --space-4:   16px;
+      --space-5:   24px;
+      --space-6:   32px;
+      --space-7:   48px;
+      --space-8:   64px;
+      --space-9:   96px;
+      --space-10: 128px;
+
+      --radius-none: 0;
+      --radius-sm:   2px;
+      --radius-md:   4px;
+      --radius-lg:   8px;
+      --radius-xl:  16px;
+      --radius-pill: 999px;
+
+      --shadow-sm:  0 1px 2px rgba(24, 25, 48, 0.06);
+      --shadow-md:  0 4px 12px rgba(24, 25, 48, 0.08);
+      --shadow-lg:  0 12px 32px rgba(24, 25, 48, 0.12);
+      --shadow-xl:  0 24px 60px rgba(24, 25, 48, 0.18);
+      --shadow-inset: inset 0 1px 0 rgba(255,255,255,0.08);
+
+      --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-fast:   120ms;
+      --dur-base:   220ms;
+      --dur-slow:   420ms;
+
+      --container-max: 1240px;
+      --container-gutter: 32px;
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--fg1);
+      font-family: var(--font-body);
+      font-size: var(--fs-body);
+      line-height: var(--lh-normal);
+      font-weight: var(--fw-book);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    h1, .h1 {
+      font-family: var(--font-display);
+      font-weight: var(--fw-medium);
+      font-size: var(--fs-h1);
+      line-height: var(--lh-tight);
+      letter-spacing: var(--tracking-medium);
+      text-transform: uppercase;
+      color: var(--fg1);
+      margin: 0;
+    }
+    h2, .h2 {
+      font-family: var(--font-display);
+      font-weight: var(--fw-medium);
+      font-size: var(--fs-h2);
+      line-height: var(--lh-snug);
+      letter-spacing: var(--tracking-medium);
+      text-transform: uppercase;
+      color: var(--fg1);
+      margin: 0;
+    }
+    h3, .h3 {
+      font-family: var(--font-display);
+      font-weight: var(--fw-medium);
+      font-size: var(--fs-h3);
+      line-height: var(--lh-snug);
+      letter-spacing: var(--tracking-wide);
+      text-transform: uppercase;
+      color: var(--fg1);
+      margin: 0;
+    }
+    h4, .h4 {
+      font-family: var(--font-display);
+      font-weight: var(--fw-medium);
+      font-size: var(--fs-h4);
+      line-height: var(--lh-snug);
+      letter-spacing: var(--tracking-wide);
+      text-transform: uppercase;
+      color: var(--fg1);
+      margin: 0;
+    }
+
+    .display-xl {
+      font-family: var(--font-display);
+      font-weight: var(--fw-medium);
+      font-size: var(--fs-display-xl);
+      line-height: var(--lh-tight);
+      letter-spacing: var(--tracking-medium);
+      text-transform: uppercase;
+    }
+    .display-l {
+      font-family: var(--font-display);
+      font-weight: var(--fw-medium);
+      font-size: var(--fs-display-l);
+      line-height: var(--lh-tight);
+      letter-spacing: var(--tracking-medium);
+      text-transform: uppercase;
+    }
+    .display-m {
+      font-family: var(--font-display);
+      font-weight: var(--fw-medium);
+      font-size: var(--fs-display-m);
+      line-height: var(--lh-tight);
+      letter-spacing: var(--tracking-medium);
+      text-transform: uppercase;
+    }
+
+    .eyebrow {
+      font-family: var(--font-display);
+      font-weight: var(--fw-medium);
+      font-size: var(--fs-eyebrow);
+      letter-spacing: var(--tracking-wide);
+      text-transform: uppercase;
+      color: var(--fg2);
+    }
+
+    p, .body {
+      font-family: var(--font-body);
+      font-weight: var(--fw-book);
+      font-size: var(--fs-body);
+      line-height: var(--lh-loose);
+      color: var(--fg1);
+      margin: 0;
+    }
+    .body-l { font-size: var(--fs-body-l); line-height: var(--lh-loose); }
+    .body-s { font-size: var(--fs-body-s); line-height: var(--lh-normal); color: var(--fg2); }
+    .caption { font-size: var(--fs-caption); line-height: var(--lh-normal); color: var(--fg3); }
+
+    a {
+      color: var(--link);
+      text-decoration: none;
+      transition: color var(--dur-fast) var(--ease-out);
+    }
+    a:hover { color: var(--link-hover); }
+
+    code, pre, .mono {
+      font-family: var(--font-mono);
+      font-size: 0.92em;
+    }
+
+    .uppercase { text-transform: uppercase; letter-spacing: var(--tracking-wide); }
+    .on-dark   { color: var(--fg-inverse); }
+    .on-dark .eyebrow,
+    .on-dark p { color: rgba(255,255,255,0.78); }
+    .gradient-text {
+      background: var(--ite-green-gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    /* =========================================================
+       kit.css
+       ========================================================= */
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+
+    .container { max-width: 1240px; margin: 0 auto; padding: 0 32px; }
+
+    .section { padding: 96px 0; }
+    .section.tight { padding: 64px 0; }
+    .section.dark { background: var(--ite-midnight-navy); color: #fff; }
+    .section.subtle { background: #F5F6EE; }
+
+    .eyebrow {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--fg2);
+      margin: 0 0 8px;
+    }
+    .section.dark .eyebrow { color: var(--ite-tea-green); }
+
+    .heading-hairline {
+      height: 1px;
+      background: var(--divider);
+      margin: 8px 0 18px;
+      width: 72px;
+    }
+    .section.dark .heading-hairline { background: rgba(255,255,255,0.3); }
+
+    .display {
+      font-family: var(--font-display);
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      line-height: 1.05;
+      margin: 0;
+    }
+    .display.xl { font-size: 72px; }
+    .display.l  { font-size: 56px; }
+    .display.m  { font-size: 40px; }
+    .display.s  { font-size: 28px; }
+
+    .body-l { font-size: 18px; line-height: 1.7; color: var(--fg1); max-width: 60ch; }
+    .section.dark .body-l { color: rgba(255,255,255,0.8); }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font-display);
+      font-weight: 500; font-size: 12px;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      padding: 16px 28px;
+      border-radius: 4px; border: 1px solid transparent;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 180ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .btn.primary { background: var(--ite-midnight-navy); color: #fff; }
+    .btn.primary:hover { background: #000; transform: translateY(-1px); }
+    .btn.secondary { background: transparent; color: var(--ite-midnight-navy); border-color: var(--ite-midnight-navy); }
+    .btn.secondary:hover { background: var(--ite-midnight-navy); color: #fff; }
+    .btn.gradient { background: transparent; color: #fff; border-color: rgba(255,255,255,0.8); }
+    .btn.gradient:hover { background: #fff; color: var(--ite-midnight-navy); border-color: #fff; }
+    .btn.ghost { background: transparent; color: var(--ite-sage-green); padding: 0; letter-spacing: 0.2em; border: 0; }
+    .btn.ghost:hover { color: var(--ite-midnight-navy); }
+    .section.dark .btn.secondary,
+    .hero .btn.secondary { color: #fff; border-color: rgba(255,255,255,0.7); }
+    .section.dark .btn.secondary:hover,
+    .hero .btn.secondary:hover { background: #fff; color: var(--ite-midnight-navy); border-color: #fff; }
+
+    /* Navigation */
+    .nav {
+      position: sticky; top: 0; z-index: 40;
+      padding: 18px 32px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--divider);
+    }
+    .nav.dark {
+      background: rgba(24, 25, 48, 0.92);
+      border-bottom-color: rgba(255,255,255,0.1);
+    }
+    .nav .brand { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+    .nav .brand img { height: 26px; display: block; }
+    .nav .links { display: flex; gap: 28px; }
+    .nav a {
+      font-family: var(--font-display);
+      font-weight: 500; font-size: 11px;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--fg1); cursor: pointer;
+    }
+    .nav.dark a { color: #fff; }
+    .nav a.active { color: var(--ite-sage-green); }
+    .nav.dark a.active { color: var(--ite-tea-green); }
+    .nav a:hover { color: var(--ite-sage-green); }
+
+    /* Hero */
+    .hero {
+      position: relative;
+      min-height: 620px;
+      display: flex; align-items: center;
+      background: var(--ite-midnight-navy);
+      overflow: hidden;
+    }
+    .hero .photo {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(180deg, rgba(24,25,48,0.25) 0%, rgba(24,25,48,0.70) 100%),
+        url('assets/photos/stage-purple.jpg');
+      background-size: cover;
+      background-position: center;
+    }
+    .hero .container { position: relative; color: #fff; padding-top: 80px; padding-bottom: 80px; }
+    .hero .display { color: #fff; max-width: 16ch; }
+    .hero .lead { color: rgba(255,255,255,0.78); max-width: 56ch; margin: 24px 0 36px; font-size: 19px; line-height: 1.6; }
+    .hero .eyebrow { color: var(--ite-tea-green); }
+    .hero .actions { display: flex; gap: 14px; flex-wrap: wrap; }
+    .hero .stats {
+      display: grid; grid-template-columns: repeat(3, auto);
+      gap: 56px;
+      margin-top: 80px;
+      padding-top: 40px;
+      border-top: 1px solid rgba(255,255,255,0.15);
+    }
+    .hero .stats .n { font-family: var(--font-display); font-weight: 500; font-size: 44px; letter-spacing: 0.04em; color: #fff; }
+    .hero .stats .n .grad { background: var(--ite-green-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .hero .stats .l { font-family: var(--font-display); font-weight: 500; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-top: 4px; }
+
+    /* Services */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-top: 48px;
+    }
+    .service {
+      background: #fff;
+      padding: 32px 24px 36px;
+      min-height: 220px;
+      display: flex; flex-direction: column; gap: 12px;
+      cursor: pointer;
+      transition: background 200ms;
+    }
+    .service:hover { background: #F5F6EE; }
+    .service .icon { width: 28px; height: 28px; color: var(--ite-sage-green); }
+    .service .name { font-family: var(--font-display); font-weight: 500; font-size: 14px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg1); }
+    .service .desc { font-size: 14px; line-height: 1.6; color: var(--fg2); }
+    .service .more { font-family: var(--font-display); font-weight: 500; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ite-sage-green); margin-top: auto; }
+
+    /* Work grid */
+    .work-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 40px; }
+    .work-card { cursor: pointer; transition: transform 220ms; }
+    .work-card:hover { transform: translateY(-4px); }
+    .work-card .media { height: 360px; border-radius: 4px; overflow: hidden; position: relative; }
+    .work-card .media { background-size: cover; background-position: center; }
+    .work-card.a .media { background-image: url('assets/photos/stage-purple.jpg'); }
+    .work-card.b .media { background-image: url('assets/photos/gala-green.jpg'); }
+    .work-card.c .media { background-image: url('assets/photos/lounge-white.jpg'); }
+    .work-card.d .media { background-image: url('assets/photos/rgb-tubes.jpg'); }
+    .work-card .tag { position: absolute; top: 16px; left: 16px; font-family: var(--font-display); font-weight: 500; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: #fff; padding: 6px 12px; background: rgba(0,0,0,0.28); border-radius: 2px; }
+    .work-card .meta { padding-top: 16px; display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
+    .work-card .title { font-family: var(--font-display); font-weight: 500; font-size: 18px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .work-card .year { font-family: var(--font-mono); font-size: 12px; color: var(--fg3); flex-shrink: 0; }
+    .work-card .desc { color: var(--fg2); font-size: 14px; margin-top: 8px; }
+
+    /* Case detail */
+    .case-hero { height: 480px; border-radius: 4px; overflow: hidden; display:flex; align-items:flex-end; padding: 32px; color: #fff; position: relative; background-size: cover; background-position: center; }
+    .case-hero::before { content:''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(24,25,48,0.1) 0%, rgba(24,25,48,0.75) 100%); }
+    .case-hero > * { position: relative; z-index: 1; }
+    .case-hero.a { background-image: url('assets/photos/stage-purple.jpg'); }
+    .case-hero.b { background-image: url('assets/photos/gala-green.jpg'); }
+    .case-hero.c { background-image: url('assets/photos/lounge-white.jpg'); }
+    .case-hero.d { background-image: url('assets/photos/rgb-tubes.jpg'); }
+    .case-hero .tag { background: var(--ite-tea-green); color: var(--ite-midnight-navy); padding: 6px 12px; border-radius: 2px; font-family: var(--font-display); font-weight: 500; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; display: inline-block; margin-bottom: 16px; }
+    .case-hero h1 { font-family: var(--font-display); font-weight: 500; font-size: 56px; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.05; margin: 0; color: #fff; max-width: 18ch; }
+
+    .case-details { display: grid; grid-template-columns: 1fr 2fr; gap: 64px; margin-top: 48px; }
+    .case-specs { display: flex; flex-direction: column; gap: 16px; }
+    .spec { display: grid; grid-template-columns: 120px 1fr; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--divider); font-size: 14px; }
+    .spec dt { font-family: var(--font-display); font-weight: 500; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--fg3); }
+    .spec dd { margin: 0; color: var(--fg1); }
+
+    /* Testimonial */
+    .testimonial { text-align: center; max-width: 900px; margin: 0 auto; }
+    .testimonial .quote { font-family: var(--font-display); font-weight: 500; font-size: 32px; letter-spacing: 0.04em; line-height: 1.3; color: #fff; text-transform: none; }
+    .testimonial .attrib { margin-top: 32px; font-family: var(--font-display); font-weight: 500; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ite-tea-green); }
+
+    /* Form */
+    .form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 760px; margin-top: 32px; }
+    .form .full { grid-column: 1 / -1; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label { font-family: var(--font-display); font-weight: 500; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--fg2); }
+    .field input, .field select, .field textarea {
+      font-family: var(--font-body); font-size: 15px;
+      padding: 14px 16px; border: 1px solid var(--border); border-radius: 4px;
+      background: #fff; color: var(--fg1);
+      transition: border-color 120ms;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      outline: none; border-color: var(--ite-midnight-navy);
+    }
+
+    /* Footer */
+    .footer { background: var(--ite-midnight-navy); color: #fff; padding: 80px 0 40px; }
+    .footer .cols { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; }
+    .footer h4 { font-family: var(--font-display); font-weight: 500; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ite-tea-green); margin: 0 0 18px; }
+    .footer ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+    .footer a { color: rgba(255,255,255,0.85); font-size: 14px; }
+    .footer a:hover { color: var(--ite-tea-green); }
+    .footer .brand-block img { height: 48px; margin-bottom: 16px; }
+    .footer .lead { color: rgba(255,255,255,0.7); font-size: 14px; line-height: 1.7; max-width: 36ch; }
+    .footer .fine { margin-top: 56px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.12); display: flex; justify-content: space-between; font-size: 12px; color: rgba(255,255,255,0.5); font-family: var(--font-mono); }
+
+    /* Utility */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+    .inline { display: inline; }
+
+    /* =========================================================
+       venues.css
+       ========================================================= */
+
+    /* Page-level header */
+    .page-header {
+      background: var(--ite-midnight-navy);
+      color: #fff;
+      padding: 120px 0 96px;
+      position: relative;
+      overflow: hidden;
+    }
+    .page-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(180deg, rgba(24,25,48,0.55) 0%, rgba(24,25,48,0.92) 100%),
+        url('assets/photos/gala-green.jpg');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.7;
+    }
+    .page-header .container { position: relative; }
+    .page-header .breadcrumb {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--ite-tea-green);
+      margin-bottom: 18px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .page-header .breadcrumb a { color: rgba(255,255,255,0.7); cursor: pointer; }
+    .page-header .breadcrumb a:hover { color: var(--ite-tea-green); }
+    .page-header .breadcrumb .sep { color: rgba(255,255,255,0.35); }
+    .page-header h1 {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 84px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      line-height: 1.0;
+      margin: 0;
+      color: #fff;
+      max-width: 14ch;
+    }
+    .page-header h1 .grad {
+      background: var(--ite-green-gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .page-header .lead {
+      color: rgba(255,255,255,0.82);
+      max-width: 60ch;
+      margin: 32px 0 0;
+      font-size: 19px;
+      line-height: 1.65;
+    }
+    .page-header .meta {
+      margin-top: 48px;
+      display: flex;
+      gap: 64px;
+      padding-top: 32px;
+      border-top: 1px solid rgba(255,255,255,0.18);
+    }
+    .page-header .meta .item .l {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 6px;
+    }
+    .page-header .meta .item .v {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 16px;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: #fff;
+    }
+
+    /* Filter bar */
+    .filter-bar {
+      position: sticky;
+      top: var(--ite-nav-height, 71px);
+      z-index: 30;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--divider);
+      padding: 18px 0;
+    }
+    .filter-bar .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+    }
+    .filter-bar .chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .chip {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      padding: 9px 16px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--fg2);
+      background: #fff;
+      cursor: pointer;
+      transition: all 160ms cubic-bezier(0.22,1,0.36,1);
+      white-space: nowrap;
+    }
+    .chip:hover { border-color: var(--ite-sage-green); color: var(--ite-sage-green); }
+    .chip.active {
+      background: var(--ite-midnight-navy);
+      color: #fff;
+      border-color: var(--ite-midnight-navy);
+    }
+    .chip .ct {
+      margin-left: 6px;
+      color: var(--fg3);
+      font-size: 9px;
+    }
+    .chip.active .ct { color: rgba(255,255,255,0.55); }
+
+    .filter-bar .count {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--fg3);
+      white-space: nowrap;
+    }
+    .filter-bar .count strong { color: var(--ite-midnight-navy); font-weight: 500; }
+
+    /* Featured venue */
+    .featured-section { padding: 80px 0 32px; }
+    .featured-card {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 0;
+      background: var(--ite-midnight-navy);
+      color: #fff;
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 24px 80px -32px rgba(24,25,48,0.35);
+    }
+    .featured-card .photo {
+      position: relative;
+      min-height: 560px;
+      background-size: cover;
+      background-position: center;
+    }
+    .featured-card .photo .overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(24,25,48,0.0) 40%, rgba(24,25,48,0.45) 100%);
+    }
+    .featured-card .photo .badge {
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: var(--ite-green-gradient);
+      color: var(--ite-midnight-navy);
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 10px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      border-radius: 2px;
+    }
+    .featured-card .photo .badge svg { width: 14px; height: 14px; }
+    .featured-card .photo .thumbs {
+      position: absolute;
+      bottom: 24px;
+      left: 24px;
+      display: flex;
+      gap: 8px;
+    }
+    .featured-card .photo .thumb {
+      width: 64px;
+      height: 64px;
+      background-size: cover;
+      background-position: center;
+      border-radius: 2px;
+      border: 1px solid rgba(255,255,255,0.3);
+      cursor: pointer;
+      opacity: 0.65;
+      transition: opacity 160ms;
+    }
+    .featured-card .photo .thumb:hover,
+    .featured-card .photo .thumb.active { opacity: 1; border-color: #fff; }
+
+    .featured-card .body {
+      padding: 56px 56px 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .featured-card .eyebrow { color: var(--ite-tea-green); margin: 0; }
+    .featured-card .heading-hairline { background: rgba(255,255,255,0.4); }
+    .featured-card h2 {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 38px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      line-height: 1.1;
+      margin: 0;
+      color: #fff;
+    }
+    .featured-card .desc {
+      font-size: 16px;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.78);
+    }
+    .featured-card .specs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px 32px;
+      padding: 24px 0;
+      border-top: 1px solid rgba(255,255,255,0.15);
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+    }
+    .featured-card .spec .l {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .featured-card .spec .l svg { width: 12px; height: 12px; color: var(--ite-tea-green); }
+    .featured-card .spec .v {
+      font-family: var(--font-body);
+      font-size: 15px;
+      color: #fff;
+    }
+    .featured-card .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: auto;
+    }
+
+    /* Venues grid */
+    .venues-section { padding: 32px 0 96px; }
+    .venues-section .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 40px;
+      gap: 32px;
+    }
+    .venues-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 36px 28px;
+    }
+
+    .venue-card {
+      cursor: pointer;
+      transition: transform 220ms cubic-bezier(0.22,1,0.36,1);
+      display: flex;
+      flex-direction: column;
+    }
+    .venue-card:hover { transform: translateY(-4px); }
+    .venue-card .media {
+      position: relative;
+      aspect-ratio: 4 / 3;
+      border-radius: 4px;
+      overflow: hidden;
+      background-color: #1f2030;
+      background-size: cover;
+      background-position: center;
+    }
+    .venue-card .media::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(24,25,48,0) 50%, rgba(24,25,48,0.55) 100%);
+      opacity: 0;
+      transition: opacity 220ms;
+    }
+    .venue-card:hover .media::after { opacity: 1; }
+    .venue-card .city-tag {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 9px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: #fff;
+      padding: 6px 10px;
+      background: rgba(0,0,0,0.42);
+      backdrop-filter: blur(6px);
+      border-radius: 2px;
+      z-index: 2;
+    }
+    .venue-card .cap-tag {
+      position: absolute;
+      bottom: 14px;
+      right: 14px;
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 9px;
+      letter-spacing: 0.20em;
+      text-transform: uppercase;
+      color: #fff;
+      padding: 6px 10px;
+      background: rgba(24,25,48,0.55);
+      backdrop-filter: blur(6px);
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 2;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 220ms, transform 220ms;
+    }
+    .venue-card:hover .cap-tag { opacity: 1; transform: translateY(0); }
+    .venue-card .cap-tag svg { width: 11px; height: 11px; color: var(--ite-tea-green); }
+
+    .venue-card .info {
+      padding: 18px 0 0;
+    }
+    .venue-card .name {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 16px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--fg1);
+      line-height: 1.25;
+      margin: 0;
+    }
+    .venue-card .address {
+      font-size: 13px;
+      color: var(--fg2);
+      margin-top: 6px;
+      line-height: 1.55;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    .venue-card .address svg {
+      width: 13px;
+      height: 13px;
+      color: var(--ite-sage-green);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .venue-card .row-bottom {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--divider);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .venue-card .style {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 10px;
+      letter-spacing: 0.20em;
+      text-transform: uppercase;
+      color: var(--fg3);
+    }
+    .venue-card .view {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--ite-sage-green);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: gap 180ms, color 180ms;
+    }
+    .venue-card:hover .view { color: var(--ite-midnight-navy); gap: 8px; }
+    .venue-card .view svg { width: 12px; height: 12px; }
+
+    /* CTA band */
+    .cta-band {
+      background: var(--ite-midnight-navy);
+      color: #fff;
+      padding: 96px 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-band::before {
+      content: '';
+      position: absolute;
+      right: -120px;
+      top: -120px;
+      width: 480px;
+      height: 480px;
+      background: var(--ite-green-gradient);
+      border-radius: 50%;
+      opacity: 0.18;
+      filter: blur(40px);
+    }
+    .cta-band .inner {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+    .cta-band h2 {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 48px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      line-height: 1.1;
+      margin: 0;
+      color: #fff;
+    }
+    .cta-band p {
+      color: rgba(255,255,255,0.78);
+      font-size: 17px;
+      line-height: 1.7;
+      margin: 24px 0 0;
+      max-width: 52ch;
+    }
+    .cta-band .actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .cta-band .sister {
+      margin-top: 20px;
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+    }
+    .cta-band .sister a { color: var(--ite-tea-green); cursor: pointer; }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(24,25,48,0.7);
+      backdrop-filter: blur(6px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 220ms;
+    }
+    .modal-backdrop.open { opacity: 1; pointer-events: auto; }
+    .modal {
+      background: #fff;
+      border-radius: 4px;
+      max-width: 880px;
+      width: 100%;
+      max-height: 90vh;
+      overflow: auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      transform: translateY(12px);
+      transition: transform 280ms cubic-bezier(0.22,1,0.36,1);
+    }
+    .modal-backdrop.open .modal { transform: translateY(0); }
+    .modal .ph {
+      min-height: 480px;
+      background-size: cover;
+      background-position: center;
+    }
+    .modal .body { padding: 40px 40px 32px; display: flex; flex-direction: column; gap: 18px; }
+    .modal h3 {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 26px;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      margin: 0;
+      line-height: 1.15;
+    }
+    .modal .addr { font-size: 14px; color: var(--fg2); display: flex; gap: 6px; align-items: flex-start; }
+    .modal .addr svg { width: 14px; height: 14px; color: var(--ite-sage-green); margin-top: 2px; }
+    .modal .desc { font-size: 14px; line-height: 1.7; color: var(--fg1); }
+    .modal .specs { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 8px; }
+    .modal .spec { padding: 12px 0; border-top: 1px solid var(--divider); }
+    .modal .spec .l { font-family: var(--font-display); font-weight: 500; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--fg3); }
+    .modal .spec .v { font-size: 14px; color: var(--fg1); margin-top: 4px; }
+    .modal .close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid var(--border);
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 2;
+    }
+    .modal .close:hover { background: #fff; }
+    .modal .actions { display: flex; gap: 10px; margin-top: 8px; }
+    .modal-wrap { position: relative; max-width: 880px; width: 100%; }
+
+    /* Responsive — tablet */
+    @media (max-width: 1024px) {
+      .featured-card { grid-template-columns: 1fr; }
+      .featured-card .photo { min-height: 380px; }
+      .venues-grid { grid-template-columns: repeat(2, 1fr) !important; }
+      .page-header h1 { font-size: 64px; }
+      .modal { grid-template-columns: 1fr; }
+      .modal .ph { min-height: 280px; }
+    }
+
+    /* Responsive — mobile */
+    @media (max-width: 640px) {
+      .page-header { padding: 80px 0 64px; }
+      .page-header h1 { font-size: 44px; }
+      .page-header .meta { gap: 32px; flex-wrap: wrap; }
+      .featured-card .body { padding: 36px 28px 32px; }
+      .featured-card h2 { font-size: 28px; }
+      .venues-grid { grid-template-columns: 1fr !important; }
+      .cta-band .inner { grid-template-columns: 1fr; gap: 40px; }
+      .cta-band h2 { font-size: 36px; }
+      .modal-backdrop { padding: 16px; }
+      .modal .body { padding: 28px 24px 24px; }
+    }
+
+    /* Focus styles */
+    .venue-card:focus-visible {
+      outline: 2px solid var(--ite-sage-green);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+    .chip:focus-visible {
+      outline: 2px solid var(--ite-sage-green);
+      outline-offset: 2px;
+    }
+
+    /* Dynamic grid columns via CSS var */
+    .venues-grid {
+      grid-template-columns: repeat(var(--venues-grid-cols, 3), 1fr) !important;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- venues-data.js inlined -->
+  <script>
+    const VENUES = [
+      {
+        id: 'grand-america',
+        name: 'The Grand America Hotel',
+        city: 'Salt Lake City, UT',
+        region: 'slc',
+        address: '555 S Main St, Salt Lake City, UT 84111',
+        photo: 'assets/photos/v-grand-america.jpg',
+        style: 'Luxury Ballroom',
+        capacity: '1,200',
+        sqft: '24,000 sq ft',
+        ceiling: "21' clear",
+        powerNote: '3-phase, generator-ready',
+        desc: 'Five-star European-styled property anchoring downtown Salt Lake. The Grand Ballroom seats 1,200 for plated dinners and pairs with seven satellite ballrooms for breakouts, gala receptions, and multi-day conferences. We have rigged, staged, and floraled this room more than fifty times.',
+        galleryStyles: ['v-grand-america.jpg', 'v-uccu-center.jpg', 'v-uvu-evergrowing.jpg', 'v-monson-center.jpg'],
+        featured: true,
+      },
+      {
+        id: 'salt-palace',
+        name: 'Salt Palace Convention Center',
+        city: 'Salt Lake City, UT',
+        region: 'slc',
+        address: '100 SW Temple, Salt Lake City, UT 84101',
+        photo: 'assets/photos/v-salt-palace.jpg',
+        style: 'Convention Center',
+        capacity: '5,000+',
+        sqft: '515,000 sq ft',
+        ceiling: "30' clear",
+        desc: 'Utah’s flagship convention space. We program the Salt Palace dozens of times a year — main stage, breakouts, exhibit halls, and outdoor activations on the plaza.',
+      },
+      {
+        id: 'monson-center',
+        name: 'The Thomas S. Monson Center',
+        city: 'Salt Lake City, UT',
+        region: 'slc',
+        address: '411 E South Temple, Salt Lake City, UT 84111',
+        photo: 'assets/photos/v-monson-center.jpg',
+        style: 'Historic Mansion',
+        capacity: '180',
+        sqft: '6,400 sq ft',
+        ceiling: "14' parlor",
+        desc: 'Restored 1898 mansion with intimate parlors, a grand staircase, and a tented south lawn. Ideal for board dinners, private receptions, and editorial brand activations.',
+      },
+      {
+        id: 'uccu-center',
+        name: 'UCCU Center',
+        city: 'Orem, UT',
+        region: 'utah-county',
+        address: '800 W University Pkwy, Orem, UT 84058',
+        photo: 'assets/photos/v-uccu-center.jpg',
+        style: 'Arena',
+        capacity: '8,500',
+        sqft: 'Arena floor + concourse',
+        ceiling: "55' grid",
+        desc: 'UVU’s 8,500-seat arena. Black-out capable for full theatrical galas — we transformed the room for the President’s Scholarship Ball with crystal rigging and a 360° runway.',
+      },
+      {
+        id: 'kingsbury-hall',
+        name: 'Kingsbury Hall',
+        city: 'Salt Lake City, UT',
+        region: 'slc',
+        address: '1395 Presidents Cir, Salt Lake City, UT 84112',
+        photo: 'assets/photos/v-kingsbury-hall.jpg',
+        style: 'Theater',
+        capacity: '1,900',
+        sqft: 'Proscenium house',
+        ceiling: "Fly tower",
+        desc: 'University of Utah’s historic proscenium theater. House lighting, fly tower, and orchestra pit make this a natural fit for keynotes, performances, and award shows.',
+      },
+      {
+        id: 'st-regis-deer-valley',
+        name: 'St. Regis Deer Valley',
+        city: 'Park City, UT',
+        region: 'mountain',
+        address: '2300 Deer Valley Dr E, Park City, UT 84060',
+        photo: 'assets/photos/v-naiop.jpg',
+        style: 'Mountain Resort',
+        capacity: '400',
+        sqft: '14,000 sq ft indoor + decks',
+        ceiling: "18' great room",
+        desc: 'Slope-side luxury with a vaulted great room, multiple terraces, and unforgettable winter views. We’ve produced executive retreats and weddings here through every season.',
+      },
+      {
+        id: 'montage-deer-valley',
+        name: 'Montage Deer Valley',
+        city: 'Park City, UT',
+        region: 'mountain',
+        address: '9100 Marsac Ave, Park City, UT 84060',
+        photo: 'assets/photos/v-uvu-evergrowing.jpg',
+        style: 'Mountain Resort',
+        capacity: '650',
+        sqft: '22,000 sq ft',
+        ceiling: "20'",
+        desc: 'Empire Pass mountain resort with the largest ballroom in Park City. We rig and floral the Empire Ballroom for galas and conferences nationally.',
+      },
+      {
+        id: 'waldorf-park-city',
+        name: 'Waldorf Astoria Park City',
+        city: 'Park City, UT',
+        region: 'mountain',
+        address: '2100 W Frostwood Blvd, Park City, UT 84098',
+        photo: 'assets/photos/venue-waldorf-park-city.jpg',
+        style: 'Mountain Resort',
+        capacity: '300',
+        sqft: '8,200 sq ft',
+        ceiling: "16'",
+        desc: 'Canyons-side property at the base of the gondola. Polished ballroom, exterior plazas, and a private lounge — strong for incentive trips and brand summits.',
+      },
+      {
+        id: 'stein-eriksen',
+        name: 'Stein Eriksen Lodge',
+        city: 'Park City, UT',
+        region: 'mountain',
+        address: '7700 Stein Way, Park City, UT 84060',
+        photo: 'assets/photos/venue-stein-eriksen.jpg',
+        style: 'Mountain Lodge',
+        capacity: '350',
+        sqft: '10,500 sq ft',
+        ceiling: "Vaulted timber",
+        desc: 'Norwegian-style mountain lodge with timber-framed ballrooms and Silver Lake views. A perennial favorite for incentive groups and intimate galas.',
+      },
+      {
+        id: 'snowbasin',
+        name: 'Snowbasin Resort',
+        city: 'Huntsville, UT',
+        region: 'mountain',
+        address: '3925 Snow Basin Rd, Huntsville, UT 84317',
+        photo: 'assets/photos/v-snowbasin.jpg',
+        style: 'Ski Resort',
+        capacity: '900',
+        sqft: 'Needles Lodge + base',
+        ceiling: "Open timber",
+        desc: 'Olympic-legacy ski resort. Mid-mountain Needles Lodge unlocks a gondola-arrival reception unlike anything else in the state.',
+      },
+      {
+        id: 'four-seasons-jackson',
+        name: 'Four Seasons Jackson Hole',
+        city: 'Jackson, WY',
+        region: 'mountain',
+        address: '7680 Granite Loop Rd, Teton Village, WY 83025',
+        photo: 'assets/photos/venue-four-seasons-jackson.jpg',
+        style: 'Mountain Resort',
+        capacity: '500',
+        sqft: '12,000 sq ft',
+        ceiling: "22' great room",
+        desc: 'Teton Village luxury, walking distance to the tram. We travel a full crew for incentive groups, brand summits, and destination weddings.',
+      },
+      {
+        id: 'amangani',
+        name: 'Amangani',
+        city: 'Jackson, WY',
+        region: 'mountain',
+        address: '5000 N Spring Gulch Rd, Jackson, WY 83001',
+        photo: 'assets/photos/venue-amangani.jpg',
+        style: 'Resort',
+        capacity: '180',
+        sqft: 'Indoor + butte terrace',
+        ceiling: "Stone + glass",
+        desc: 'Sandstone resort perched on a butte over Jackson Hole. Intimate scale, cinematic horizon — perfect for executive retreats and small destination events.',
+      },
+      {
+        id: 'sundance',
+        name: 'Sundance Mountain Resort',
+        city: 'Sundance, UT',
+        region: 'mountain',
+        address: 'N Fork Rd 8841, Sundance, UT 84604',
+        photo: 'assets/photos/v-stgeorge.jpg',
+        style: 'Mountain Resort',
+        capacity: '450',
+        sqft: 'Tree Room + decks',
+        ceiling: 'Open timber',
+        desc: 'Robert Redford’s artist-driven retreat at the base of Mount Timpanogos. Multiple intimate venues spread across a creek-side campus.',
+      },
+    ];
+
+    window.VENUES = VENUES;
+  </script>
+
+  <!-- All JSX: Shell, TweaksPanel, Venues, and App — in one Babel block -->
+  <script type="text/babel">
+    // =========================================================
+    // Shell.jsx — Primitives, Nav, Footer
+    // =========================================================
+
+    const Eyebrow = ({ children }) => (<div className="eyebrow">{children}</div>);
+    const HeadingHairline = () => <div className="heading-hairline" />;
+    const SectionHeading = ({ eyebrow, title, size = 'm' }) => (
+      <header>
+        {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
+        <HeadingHairline />
+        <h2 className={`display ${size}`}>{title}</h2>
+      </header>
+    );
+    const Button = ({ kind = 'primary', children, onClick, href, style }) => {
+      const Tag = href ? 'a' : 'button';
+      return (
+        <Tag className={`btn ${kind}`} onClick={onClick} href={href} style={style}>
+          {children}
+        </Tag>
+      );
+    };
+
+    const NAV_ITEMS = [
+      ['services', 'Services'],
+      ['work', 'Work'],
+      ['venues', 'Venues'],
+      ['rentals', 'Rentals'],
+      ['about', 'About'],
+      ['contact', 'Contact'],
+    ];
+
+    const Nav = ({ active = 'venues' }) => (
+      <nav className="nav">
+        <div className="brand">
+          <img src="assets/logo-horizontal-official.svg" alt="In The Event" />
+        </div>
+        <div className="links">
+          {NAV_ITEMS.map(([key, label]) => (
+            <a key={key} className={active === key ? 'active' : ''}>{label}</a>
+          ))}
+        </div>
+        <Button kind="primary">Start a project</Button>
+      </nav>
+    );
+
+    const Footer = () => (
+      <footer className="footer">
+        <div className="container">
+          <div className="cols">
+            <div className="brand-block">
+              <img src="assets/logo-stack-official.svg" alt="In The Event"
+                   style={{ filter: 'invert(1) brightness(1.15)', height: 120 }} />
+              <p className="lead">
+                Bridging creative design and technical execution, from Salt Lake City to events nationwide.
+              </p>
+            </div>
+            <div>
+              <h4>Services</h4>
+              <ul>
+                <li><a>Design</a></li><li><a>Production</a></li><li><a>Florals</a></li>
+                <li><a>Audio &amp; Video</a></li><li><a>Rentals</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4>Company</h4>
+              <ul>
+                <li><a>About</a></li><li><a>Work</a></li>
+                <li><a>Venues</a></li><li><a>Contact</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4>Contact</h4>
+              <ul>
+                <li><a href="mailto:info@intheevent.com">info@intheevent.com</a></li>
+                <li><a href="tel:18018861144">801.886.1144</a></li>
+                <li>3008 S 300 W</li>
+                <li>Salt Lake City, UT 84115</li>
+              </ul>
+            </div>
+          </div>
+          <div className="fine">
+            <div>© 2026 In The Event, LLC · All rights reserved</div>
+            <div>Est. 2007 · ITE · Business Jaunt · Mannequin Rental Co.</div>
+          </div>
+        </div>
+      </footer>
+    );
+
+    // =========================================================
+    // tweaks-panel.jsx — TweaksPanel and controls
+    // =========================================================
+
+    const __TWEAKS_STYLE = `
+      .twk-panel{position:fixed;right:16px;bottom:16px;z-index:2147483646;width:280px;
+        max-height:calc(100vh - 32px);display:flex;flex-direction:column;
+        background:rgba(250,249,247,.78);color:#29261b;
+        -webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);
+        border:.5px solid rgba(255,255,255,.6);border-radius:14px;
+        box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 12px 40px rgba(0,0,0,.18);
+        font:11.5px/1.4 ui-sans-serif,system-ui,-apple-system,sans-serif;overflow:hidden}
+      .twk-hd{display:flex;align-items:center;justify-content:space-between;
+        padding:10px 8px 10px 14px;cursor:move;user-select:none}
+      .twk-hd b{font-size:12px;font-weight:600;letter-spacing:.01em}
+      .twk-x{appearance:none;border:0;background:transparent;color:rgba(41,38,27,.55);
+        width:22px;height:22px;border-radius:6px;cursor:default;font-size:13px;line-height:1}
+      .twk-x:hover{background:rgba(0,0,0,.06);color:#29261b}
+      .twk-body{padding:2px 14px 14px;display:flex;flex-direction:column;gap:10px;
+        overflow-y:auto;overflow-x:hidden;min-height:0;
+        scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.15) transparent}
+      .twk-body::-webkit-scrollbar{width:8px}
+      .twk-body::-webkit-scrollbar-track{background:transparent;margin:2px}
+      .twk-body::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:4px;
+        border:2px solid transparent;background-clip:content-box}
+      .twk-body::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.25);
+        border:2px solid transparent;background-clip:content-box}
+      .twk-row{display:flex;flex-direction:column;gap:5px}
+      .twk-row-h{flex-direction:row;align-items:center;justify-content:space-between;gap:10px}
+      .twk-lbl{display:flex;justify-content:space-between;align-items:baseline;
+        color:rgba(41,38,27,.72)}
+      .twk-lbl>span:first-child{font-weight:500}
+      .twk-val{color:rgba(41,38,27,.5);font-variant-numeric:tabular-nums}
+      .twk-sect{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+        color:rgba(41,38,27,.45);padding:10px 0 0}
+      .twk-sect:first-child{padding-top:0}
+      .twk-field{appearance:none;width:100%;height:26px;padding:0 8px;
+        border:.5px solid rgba(0,0,0,.1);border-radius:7px;
+        background:rgba(255,255,255,.6);color:inherit;font:inherit;outline:none}
+      .twk-field:focus{border-color:rgba(0,0,0,.25);background:rgba(255,255,255,.85)}
+      select.twk-field{padding-right:22px;
+        background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='rgba(0,0,0,.5)' d='M0 0h10L5 6z'/></svg>");
+        background-repeat:no-repeat;background-position:right 8px center}
+      .twk-slider{appearance:none;-webkit-appearance:none;width:100%;height:4px;margin:6px 0;
+        border-radius:999px;background:rgba(0,0,0,.12);outline:none}
+      .twk-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+        width:14px;height:14px;border-radius:50%;background:#fff;
+        border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+      .twk-slider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;
+        background:#fff;border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+      .twk-seg{position:relative;display:flex;padding:2px;border-radius:8px;
+        background:rgba(0,0,0,.06);user-select:none}
+      .twk-seg-thumb{position:absolute;top:2px;bottom:2px;border-radius:6px;
+        background:rgba(255,255,255,.9);box-shadow:0 1px 2px rgba(0,0,0,.12);
+        transition:left .15s cubic-bezier(.3,.7,.4,1),width .15s}
+      .twk-seg.dragging .twk-seg-thumb{transition:none}
+      .twk-seg button{appearance:none;position:relative;z-index:1;flex:1;border:0;
+        background:transparent;color:inherit;font:inherit;font-weight:500;min-height:22px;
+        border-radius:6px;cursor:default;padding:4px 6px;line-height:1.2;
+        overflow-wrap:anywhere}
+      .twk-toggle{position:relative;width:32px;height:18px;border:0;border-radius:999px;
+        background:rgba(0,0,0,.15);transition:background .15s;cursor:default;padding:0}
+      .twk-toggle[data-on="1"]{background:#34c759}
+      .twk-toggle i{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;
+        background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+      .twk-toggle[data-on="1"] i{transform:translateX(14px)}
+      .twk-num{display:flex;align-items:center;height:26px;padding:0 0 0 8px;
+        border:.5px solid rgba(0,0,0,.1);border-radius:7px;background:rgba(255,255,255,.6)}
+      .twk-num-lbl{font-weight:500;color:rgba(41,38,27,.6);cursor:ew-resize;
+        user-select:none;padding-right:8px}
+      .twk-num input{flex:1;min-width:0;height:100%;border:0;background:transparent;
+        font:inherit;font-variant-numeric:tabular-nums;text-align:right;padding:0 8px 0 0;
+        outline:none;color:inherit;-moz-appearance:textfield}
+      .twk-num input::-webkit-inner-spin-button,.twk-num input::-webkit-outer-spin-button{
+        -webkit-appearance:none;margin:0}
+      .twk-num-unit{padding-right:8px;color:rgba(41,38,27,.45)}
+      .twk-btn{appearance:none;height:26px;padding:0 12px;border:0;border-radius:7px;
+        background:rgba(0,0,0,.78);color:#fff;font:inherit;font-weight:500;cursor:default}
+      .twk-btn:hover{background:rgba(0,0,0,.88)}
+      .twk-btn.secondary{background:rgba(0,0,0,.06);color:inherit}
+      .twk-btn.secondary:hover{background:rgba(0,0,0,.1)}
+      .twk-swatch{appearance:none;-webkit-appearance:none;width:56px;height:22px;
+        border:.5px solid rgba(0,0,0,.1);border-radius:6px;padding:0;cursor:default;
+        background:transparent;flex-shrink:0}
+      .twk-swatch::-webkit-color-swatch-wrapper{padding:0}
+      .twk-swatch::-webkit-color-swatch{border:0;border-radius:5.5px}
+      .twk-swatch::-moz-color-swatch{border:0;border-radius:5.5px}
+    `;
+
+    function useTweaks(defaults) {
+      const [values, setValues] = React.useState(defaults);
+      const setTweak = React.useCallback((keyOrEdits, val) => {
+        const edits = typeof keyOrEdits === 'object' && keyOrEdits !== null
+          ? keyOrEdits : { [keyOrEdits]: val };
+        setValues((prev) => ({ ...prev, ...edits }));
+        window.parent.postMessage({ type: '__edit_mode_set_keys', edits }, '*');
+      }, []);
+      return [values, setTweak];
+    }
+
+    function TweaksPanel({ title = 'Tweaks', children }) {
+      const [open, setOpen] = React.useState(false);
+      const dragRef = React.useRef(null);
+      const offsetRef = React.useRef({ x: 16, y: 16 });
+      const PAD = 16;
+
+      const clampToViewport = React.useCallback(() => {
+        const panel = dragRef.current;
+        if (!panel) return;
+        const w = panel.offsetWidth, h = panel.offsetHeight;
+        const maxRight = Math.max(PAD, window.innerWidth - w - PAD);
+        const maxBottom = Math.max(PAD, window.innerHeight - h - PAD);
+        offsetRef.current = {
+          x: Math.min(maxRight, Math.max(PAD, offsetRef.current.x)),
+          y: Math.min(maxBottom, Math.max(PAD, offsetRef.current.y)),
+        };
+        panel.style.right = offsetRef.current.x + 'px';
+        panel.style.bottom = offsetRef.current.y + 'px';
+      }, []);
+
+      React.useEffect(() => {
+        if (!open) return;
+        clampToViewport();
+        if (typeof ResizeObserver === 'undefined') {
+          window.addEventListener('resize', clampToViewport);
+          return () => window.removeEventListener('resize', clampToViewport);
+        }
+        const ro = new ResizeObserver(clampToViewport);
+        ro.observe(document.documentElement);
+        return () => ro.disconnect();
+      }, [open, clampToViewport]);
+
+      React.useEffect(() => {
+        const onMsg = (e) => {
+          const t = e && e.data && e.data.type;
+          if (t === '__activate_edit_mode') setOpen(true);
+          else if (t === '__deactivate_edit_mode') setOpen(false);
+        };
+        window.addEventListener('message', onMsg);
+        window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+        return () => window.removeEventListener('message', onMsg);
+      }, []);
+
+      const dismiss = () => {
+        setOpen(false);
+        window.parent.postMessage({ type: '__edit_mode_dismissed' }, '*');
+      };
+
+      const onDragStart = (e) => {
+        const panel = dragRef.current;
+        if (!panel) return;
+        const r = panel.getBoundingClientRect();
+        const sx = e.clientX, sy = e.clientY;
+        const startRight = window.innerWidth - r.right;
+        const startBottom = window.innerHeight - r.bottom;
+        const move = (ev) => {
+          offsetRef.current = {
+            x: startRight - (ev.clientX - sx),
+            y: startBottom - (ev.clientY - sy),
+          };
+          clampToViewport();
+        };
+        const up = () => {
+          window.removeEventListener('mousemove', move);
+          window.removeEventListener('mouseup', up);
+        };
+        window.addEventListener('mousemove', move);
+        window.addEventListener('mouseup', up);
+      };
+
+      if (!open) return null;
+      return (
+        <>
+          <style>{__TWEAKS_STYLE}</style>
+          <div ref={dragRef} className="twk-panel"
+               style={{ right: offsetRef.current.x, bottom: offsetRef.current.y }}>
+            <div className="twk-hd" onMouseDown={onDragStart}>
+              <b>{title}</b>
+              <button className="twk-x" aria-label="Close tweaks"
+                      onMouseDown={(e) => e.stopPropagation()}
+                      onClick={dismiss}>✕</button>
+            </div>
+            <div className="twk-body">{children}</div>
+          </div>
+        </>
+      );
+    }
+
+    function TweakSection({ label, children }) {
+      return (
+        <>
+          <div className="twk-sect">{label}</div>
+          {children}
+        </>
+      );
+    }
+
+    function TweakRow({ label, value, children, inline = false }) {
+      return (
+        <div className={inline ? 'twk-row twk-row-h' : 'twk-row'}>
+          <div className="twk-lbl">
+            <span>{label}</span>
+            {value != null && <span className="twk-val">{value}</span>}
+          </div>
+          {children}
+        </div>
+      );
+    }
+
+    function TweakSlider({ label, value, min = 0, max = 100, step = 1, unit = '', onChange }) {
+      return (
+        <TweakRow label={label} value={`${value}${unit}`}>
+          <input type="range" className="twk-slider" min={min} max={max} step={step}
+                 value={value} onChange={(e) => onChange(Number(e.target.value))} />
+        </TweakRow>
+      );
+    }
+
+    function TweakToggle({ label, value, onChange }) {
+      return (
+        <div className="twk-row twk-row-h">
+          <div className="twk-lbl"><span>{label}</span></div>
+          <button type="button" className="twk-toggle" data-on={value ? '1' : '0'}
+                  role="switch" aria-checked={!!value}
+                  onClick={() => onChange(!value)}><i /></button>
+        </div>
+      );
+    }
+
+    function TweakRadio({ label, value, options, onChange }) {
+      const trackRef = React.useRef(null);
+      const [dragging, setDragging] = React.useState(false);
+      const opts = options.map((o) => (typeof o === 'object' ? o : { value: o, label: o }));
+      const idx = Math.max(0, opts.findIndex((o) => o.value === value));
+      const n = opts.length;
+      const valueRef = React.useRef(value);
+      valueRef.current = value;
+
+      const segAt = (clientX) => {
+        const r = trackRef.current.getBoundingClientRect();
+        const inner = r.width - 4;
+        const i = Math.floor(((clientX - r.left - 2) / inner) * n);
+        return opts[Math.max(0, Math.min(n - 1, i))].value;
+      };
+
+      const onPointerDown = (e) => {
+        setDragging(true);
+        const v0 = segAt(e.clientX);
+        if (v0 !== valueRef.current) onChange(v0);
+        const move = (ev) => {
+          if (!trackRef.current) return;
+          const v = segAt(ev.clientX);
+          if (v !== valueRef.current) onChange(v);
+        };
+        const up = () => {
+          setDragging(false);
+          window.removeEventListener('pointermove', move);
+          window.removeEventListener('pointerup', up);
+        };
+        window.addEventListener('pointermove', move);
+        window.addEventListener('pointerup', up);
+      };
+
+      return (
+        <TweakRow label={label}>
+          <div ref={trackRef} role="radiogroup" onPointerDown={onPointerDown}
+               className={dragging ? 'twk-seg dragging' : 'twk-seg'}>
+            <div className="twk-seg-thumb"
+                 style={{ left: `calc(2px + ${idx} * (100% - 4px) / ${n})`,
+                          width: `calc((100% - 4px) / ${n})` }} />
+            {opts.map((o) => (
+              <button key={o.value} type="button" role="radio" aria-checked={o.value === value}>
+                {o.label}
+              </button>
+            ))}
+          </div>
+        </TweakRow>
+      );
+    }
+
+    function TweakSelect({ label, value, options, onChange }) {
+      return (
+        <TweakRow label={label}>
+          <select className="twk-field" value={value} onChange={(e) => onChange(e.target.value)}>
+            {options.map((o) => {
+              const v = typeof o === 'object' ? o.value : o;
+              const l = typeof o === 'object' ? o.label : o;
+              return <option key={v} value={v}>{l}</option>;
+            })}
+          </select>
+        </TweakRow>
+      );
+    }
+
+    function TweakText({ label, value, placeholder, onChange }) {
+      return (
+        <TweakRow label={label}>
+          <input className="twk-field" type="text" value={value} placeholder={placeholder}
+                 onChange={(e) => onChange(e.target.value)} />
+        </TweakRow>
+      );
+    }
+
+    function TweakNumber({ label, value, min, max, step = 1, unit = '', onChange }) {
+      const clamp = (n) => {
+        if (min != null && n < min) return min;
+        if (max != null && n > max) return max;
+        return n;
+      };
+      const startRef = React.useRef({ x: 0, val: 0 });
+      const onScrubStart = (e) => {
+        e.preventDefault();
+        startRef.current = { x: e.clientX, val: value };
+        const decimals = (String(step).split('.')[1] || '').length;
+        const move = (ev) => {
+          const dx = ev.clientX - startRef.current.x;
+          const raw = startRef.current.val + dx * step;
+          const snapped = Math.round(raw / step) * step;
+          onChange(clamp(Number(snapped.toFixed(decimals))));
+        };
+        const up = () => {
+          window.removeEventListener('pointermove', move);
+          window.removeEventListener('pointerup', up);
+        };
+        window.addEventListener('pointermove', move);
+        window.addEventListener('pointerup', up);
+      };
+      return (
+        <div className="twk-num">
+          <span className="twk-num-lbl" onPointerDown={onScrubStart}>{label}</span>
+          <input type="number" value={value} min={min} max={max} step={step}
+                 onChange={(e) => onChange(clamp(Number(e.target.value)))} />
+          {unit && <span className="twk-num-unit">{unit}</span>}
+        </div>
+      );
+    }
+
+    function TweakColor({ label, value, onChange }) {
+      return (
+        <div className="twk-row twk-row-h">
+          <div className="twk-lbl"><span>{label}</span></div>
+          <input type="color" className="twk-swatch" value={value}
+                 onChange={(e) => onChange(e.target.value)} />
+        </div>
+      );
+    }
+
+    function TweakButton({ label, onClick, secondary = false }) {
+      return (
+        <button type="button" className={secondary ? 'twk-btn secondary' : 'twk-btn'}
+                onClick={onClick}>{label}</button>
+      );
+    }
+
+    // =========================================================
+    // Venues.jsx — Page components
+    // =========================================================
+
+    const VenuesHeader = () => (
+      <header className="page-header">
+        <div className="container">
+          <div className="breadcrumb">
+            <a href="/">Home</a>
+            <span className="sep">/</span>
+            <span>Venues</span>
+          </div>
+          <h1>Venues we <span className="grad">know inside out</span>.</h1>
+          <p className="lead">
+            We have rigged, staged, and floraled every room on this list — most of them many times over.
+            Pick the venue you love, and we'll bring the production playbook with us.
+          </p>
+          <div className="meta">
+            <div className="item">
+              <div className="l">Curated</div>
+              <div className="v">13 Venues</div>
+            </div>
+            <div className="item">
+              <div className="l">Coverage</div>
+              <div className="v">Utah · Wyoming · Nationwide</div>
+            </div>
+            <div className="item">
+              <div className="l">Established</div>
+              <div className="v">2007 · ITE</div>
+            </div>
+          </div>
+        </div>
+      </header>
+    );
+
+    const FILTERS = [
+      { id: 'all',          label: 'All Venues' },
+      { id: 'slc',          label: 'Salt Lake City' },
+      { id: 'utah-county',  label: 'Utah County' },
+      { id: 'mountain',     label: 'Mountain Resorts' },
+    ];
+
+    const FilterBar = ({ active, setActive, total }) => {
+      const counts = React.useMemo(() => {
+        const map = { all: window.VENUES.length };
+        window.VENUES.forEach((v) => { map[v.region] = (map[v.region] || 0) + 1; });
+        return map;
+      }, []);
+      return (
+        <div className="filter-bar">
+          <div className="container">
+            <div className="row">
+              <div className="chips">
+                {FILTERS.map((f) => (
+                  <button
+                    key={f.id}
+                    className={`chip ${active === f.id ? 'active' : ''}`}
+                    onClick={() => setActive(f.id)}
+                  >
+                    {f.label}
+                    <span className="ct">{counts[f.id] || 0}</span>
+                  </button>
+                ))}
+              </div>
+              <div className="count">
+                Showing <strong>{total}</strong> of <strong>{window.VENUES.length}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    const FeaturedVenue = ({ v, onView }) => {
+      const [activeIdx, setActiveIdx] = React.useState(0);
+      const photo = `assets/photos/${v.galleryStyles[activeIdx]}`;
+      return (
+        <section className="featured-section">
+          <div className="container">
+            <div className="featured-card">
+              <div className="photo" style={{ backgroundImage: `url(${photo})` }}>
+                <div className="overlay" />
+                <div className="badge">
+                  <i data-lucide="star" />
+                  Featured Partner
+                </div>
+                <div className="thumbs">
+                  {v.galleryStyles.map((g, i) => (
+                    <div
+                      key={g}
+                      className={`thumb ${i === activeIdx ? 'active' : ''}`}
+                      style={{ backgroundImage: `url(assets/photos/${g})` }}
+                      onClick={() => setActiveIdx(i)}
+                    />
+                  ))}
+                </div>
+              </div>
+              <div className="body">
+                <div className="eyebrow">Venue Spotlight</div>
+                <div className="heading-hairline" />
+                <h2>{v.name}</h2>
+                <div className="desc">{v.desc}</div>
+                <div className="specs">
+                  <div className="spec">
+                    <div className="l"><i data-lucide="map-pin" />Location</div>
+                    <div className="v">{v.city}</div>
+                  </div>
+                  <div className="spec">
+                    <div className="l"><i data-lucide="users" />Capacity</div>
+                    <div className="v">{v.capacity} guests</div>
+                  </div>
+                  <div className="spec">
+                    <div className="l"><i data-lucide="ruler" />Footprint</div>
+                    <div className="v">{v.sqft}</div>
+                  </div>
+                  <div className="spec">
+                    <div className="l"><i data-lucide="move-vertical" />Ceiling</div>
+                    <div className="v">{v.ceiling}</div>
+                  </div>
+                </div>
+                <div className="actions">
+                  <Button kind="gradient" onClick={() => onView(v)}>View Venue</Button>
+                  <Button kind="ghost">Book a Walk-Through →</Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+    };
+
+    const VenueCard = ({ v, onClick }) => (
+      <div
+        className="venue-card"
+        onClick={onClick}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(); } }}
+        tabIndex={0}
+        role="button"
+        aria-label={`View ${v.name}`}
+      >
+        <div className="media" style={{ backgroundImage: `url(${v.photo})` }}>
+          <div className="city-tag">{v.city}</div>
+          <div className="cap-tag">
+            <i data-lucide="users" />
+            Up to {v.capacity}
+          </div>
+        </div>
+        <div className="info">
+          <h3 className="name">{v.name}</h3>
+          <div className="address">
+            <i data-lucide="map-pin" />
+            <span>{v.address}</span>
+          </div>
+          <div className="row-bottom">
+            <span className="style">{v.style}</span>
+            <span className="view">
+              View Venue
+              <i data-lucide="arrow-right" />
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+
+    const VenuesGrid = ({ list, onSelect }) => (
+      <section className="venues-section">
+        <div className="container">
+          <div className="section-head">
+            <div>
+              <Eyebrow>The Full List</Eyebrow>
+              <HeadingHairline />
+              <h2 className="display m">All venues</h2>
+            </div>
+            <p className="body-l" style={{ margin: 0, maxWidth: '36ch', fontSize: 14 }}>
+              Sorted by frequency of recent ITE production work. Don't see your venue? We work nationwide.
+            </p>
+          </div>
+          <div className="venues-grid">
+            {list.map((v) => (
+              <VenueCard key={v.id} v={v} onClick={() => onSelect(v)} />
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+
+    const VenueCTA = () => (
+      <section className="cta-band">
+        <div className="container">
+          <div className="inner">
+            <div>
+              <Eyebrow>Don't See Your Venue?</Eyebrow>
+              <HeadingHairline />
+              <h2>We travel the production with you.</h2>
+              <p>
+                We've built shows in 30+ states. Tell us where, and our team will bring the rig,
+                the rentals, and the crew. Out-of-state or out-of-country logistics flow through our
+                sister company.
+              </p>
+              <div className="actions" style={{ marginTop: 32 }}>
+                <Button kind="gradient">Start a Project</Button>
+                <Button kind="ghost" style={{ color: '#C7DA84' }}>Talk to an Account Lead →</Button>
+              </div>
+              <div className="sister">
+                International? <a>Visit Business Jaunt →</a>
+              </div>
+            </div>
+            <div style={{
+              padding: 32,
+              border: '1px solid rgba(255,255,255,0.18)',
+              borderRadius: 4,
+              background: 'rgba(255,255,255,0.04)'
+            }}>
+              <div className="eyebrow" style={{ color: '#C7DA84' }}>Quick Inquiry</div>
+              <div className="heading-hairline" style={{ background: 'rgba(255,255,255,0.3)' }} />
+              <h3 style={{
+                fontFamily: 'var(--font-display)',
+                fontWeight: 500,
+                fontSize: 22,
+                letterSpacing: '0.10em',
+                textTransform: 'uppercase',
+                margin: '0 0 20px',
+                color: '#fff',
+              }}>
+                Tell us about your event
+              </h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                {[
+                  ['calendar', 'Event date'],
+                  ['users', 'Estimated guest count'],
+                  ['map-pin', 'Preferred venue or city'],
+                ].map(([icon, label]) => (
+                  <div key={label} style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 12,
+                    padding: '12px 14px',
+                    background: 'rgba(255,255,255,0.06)',
+                    border: '1px solid rgba(255,255,255,0.14)',
+                    borderRadius: 4,
+                    color: 'rgba(255,255,255,0.6)',
+                    fontFamily: 'var(--font-body)',
+                    fontSize: 14,
+                  }}>
+                    <i data-lucide={icon} style={{ width: 16, height: 16, color: '#C7DA84' }} />
+                    {label}
+                  </div>
+                ))}
+                <Button kind="gradient" style={{ marginTop: 4 }}>Request a Quote</Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+
+    const VenueModal = ({ v, onClose }) => {
+      React.useEffect(() => {
+        const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+        if (v) window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+      }, [v, onClose]);
+
+      return (
+        <div
+          className={`modal-backdrop ${v ? 'open' : ''}`}
+          onClick={onClose}
+          role="dialog"
+          aria-modal="true"
+          aria-label={v ? v.name : 'Venue detail'}
+        >
+          <div className="modal-wrap" onClick={(e) => e.stopPropagation()}>
+            <button className="close" onClick={onClose} aria-label="Close">
+              <i data-lucide="x" style={{ width: 16, height: 16 }} />
+            </button>
+            {v && (
+              <div className="modal">
+                <div className="ph" style={{ backgroundImage: `url(${v.photo})` }} />
+                <div className="body">
+                  <div className="eyebrow">{v.style}</div>
+                  <h3>{v.name}</h3>
+                  <div className="addr">
+                    <i data-lucide="map-pin" />
+                    <span>{v.address}</span>
+                  </div>
+                  <p className="desc">{v.desc}</p>
+                  <div className="specs">
+                    <div className="spec"><div className="l">Capacity</div><div className="v">Up to {v.capacity} guests</div></div>
+                    <div className="spec"><div className="l">Footprint</div><div className="v">{v.sqft}</div></div>
+                    <div className="spec"><div className="l">Ceiling</div><div className="v">{v.ceiling}</div></div>
+                    <div className="spec"><div className="l">Region</div><div className="v">{v.city}</div></div>
+                  </div>
+                  <div className="actions">
+                    <Button kind="primary">Plan an Event Here</Button>
+                    <Button kind="ghost">Get Directions →</Button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    };
+
+    // =========================================================
+    // App — from Venues Page.html
+    // =========================================================
+
+    const { useState, useEffect, useMemo } = React;
+
+    const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+      "showFeatured": true,
+      "headerStyle": "photo",
+      "cardLayout": "3col"
+    }/*EDITMODE-END*/;
+
+    function App() {
+      const [filter, setFilter] = useState('all');
+      const [selected, setSelected] = useState(null);
+      const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+      const featured = window.VENUES.find((v) => v.featured);
+      const others = window.VENUES.filter((v) => !v.featured);
+
+      const filtered = useMemo(() => {
+        if (filter === 'all') return others;
+        return others.filter((v) => v.region === filter);
+      }, [filter, others]);
+
+      useEffect(() => {
+        if (window.lucide) window.lucide.createIcons();
+      });
+
+      useEffect(() => {
+        const root = document.documentElement;
+        root.style.setProperty(
+          '--venues-grid-cols',
+          tweaks.cardLayout === '2col' ? '2' :
+          tweaks.cardLayout === '4col' ? '4' : '3'
+        );
+      }, [tweaks.cardLayout]);
+
+      useEffect(() => {
+        document.body.style.overflow = selected ? 'hidden' : '';
+        return () => { document.body.style.overflow = ''; };
+      }, [selected]);
+
+      return (
+        <>
+          {tweaks.headerStyle !== 'minimal' && <VenuesHeader />}
+          <FilterBar
+            active={filter}
+            setActive={setFilter}
+            total={(tweaks.showFeatured && filter === 'all' ? 1 : 0) + filtered.length}
+          />
+          {tweaks.showFeatured && featured && filter === 'all' && (
+            <FeaturedVenue v={featured} onView={setSelected} />
+          )}
+          <VenuesGrid list={filtered} onSelect={setSelected} />
+          <VenueCTA />
+
+          <VenueModal v={selected} onClose={() => setSelected(null)} />
+
+          <TweaksPanel title="Tweaks">
+            <TweakSection label="Layout">
+              <TweakToggle
+                label="Show featured venue"
+                value={tweaks.showFeatured}
+                onChange={(v) => setTweak('showFeatured', v)}
+              />
+              <TweakRadio
+                label="Header style"
+                value={tweaks.headerStyle}
+                onChange={(v) => setTweak('headerStyle', v)}
+                options={[
+                  { value: 'photo', label: 'Photo' },
+                  { value: 'minimal', label: 'Off' },
+                ]}
+              />
+              <TweakRadio
+                label="Card grid"
+                value={tweaks.cardLayout}
+                onChange={(v) => setTweak('cardLayout', v)}
+                options={[
+                  { value: '2col', label: '2 col' },
+                  { value: '3col', label: '3 col' },
+                  { value: '4col', label: '4 col' },
+                ]}
+              />
+            </TweakSection>
+          </TweaksPanel>
+        </>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
