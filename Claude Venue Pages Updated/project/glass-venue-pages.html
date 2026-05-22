@@ -197,7 +197,9 @@
       background: var(--navy);
       border-bottom: 1px solid rgba(195,255,138,0.15);
       padding: 14px 0;
+      transition: background 500ms var(--ease-out);
     }
+    .filter-bar.scrolled { background: var(--dark); }
     .filter-bar .row {
       display: flex; align-items: center;
       justify-content: space-between; gap: 32px;
@@ -1005,8 +1007,19 @@
         window.VENUES.forEach((v) => { map[v.region] = (map[v.region] || 0) + 1; });
         return map;
       }, []);
+      const barRef = React.useRef(null);
+      React.useEffect(() => {
+        const target = document.querySelector('.venues-section');
+        if (!target || !barRef.current) return;
+        const obs = new IntersectionObserver(
+          ([entry]) => barRef.current?.classList.toggle('scrolled', entry.isIntersecting),
+          { threshold: 0, rootMargin: '-64px 0px 0px 0px' }
+        );
+        obs.observe(target);
+        return () => obs.disconnect();
+      }, []);
       return (
-        <div className="filter-bar">
+        <div className="filter-bar" ref={barRef}>
           <div className="container">
             <div className="row">
               <div className="chips">
