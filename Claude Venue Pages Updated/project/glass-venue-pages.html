@@ -1009,14 +1009,15 @@
       }, []);
       const barRef = React.useRef(null);
       React.useEffect(() => {
-        const target = document.querySelector('.venues-section');
-        if (!target || !barRef.current) return;
-        const obs = new IntersectionObserver(
-          ([entry]) => barRef.current?.classList.toggle('scrolled', entry.isIntersecting),
-          { threshold: 0, rootMargin: '-64px 0px 0px 0px' }
-        );
-        obs.observe(target);
-        return () => obs.disconnect();
+        const venuesSection = document.querySelector('.venues-section');
+        if (!venuesSection || !barRef.current) return;
+        const update = () => {
+          const top = venuesSection.getBoundingClientRect().top;
+          barRef.current?.classList.toggle('scrolled', top <= 64);
+        };
+        update();
+        window.addEventListener('scroll', update, { passive: true });
+        return () => window.removeEventListener('scroll', update);
       }, []);
       return (
         <div className="filter-bar" ref={barRef}>
