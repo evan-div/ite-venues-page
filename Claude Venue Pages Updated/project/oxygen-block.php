@@ -1195,10 +1195,9 @@ echo "<script>window.ITE_FF_NONCE = '" . esc_js($ite_ff_nonce) . "';</script>";
         };
       }, []);
 
-      const turnstileRef     = React.useRef(null);
+      const turnstileRef      = React.useRef(null);
       const turnstileWidgetId = React.useRef(null);
-      const tokenResolveRef  = React.useRef(null);
-      const tokenRejectRef   = React.useRef(null);
+      const [tsToken, setTsToken] = React.useState('');
 
       React.useEffect(() => {
         const init = () => {
@@ -1206,14 +1205,12 @@ echo "<script>window.ITE_FF_NONCE = '" . esc_js($ite_ff_nonce) . "';</script>";
           turnstileWidgetId.current = window.turnstile.render(turnstileRef.current, {
             sitekey: '0x4AAAAAACBtsPaqU9Y2R1ng',
             size: 'invisible',
-            execution: 'execute',
-            callback: (token) => {
-              if (tokenResolveRef.current) { tokenResolveRef.current(token); tokenResolveRef.current = null; tokenRejectRef.current = null; }
+            callback: (token) => setTsToken(token),
+            'expired-callback': () => {
+              setTsToken('');
+              window.turnstile.reset(turnstileWidgetId.current);
             },
-            'error-callback': () => {
-              if (tokenRejectRef.current) { tokenRejectRef.current(new Error('Turnstile error')); tokenResolveRef.current = null; tokenRejectRef.current = null; }
-            },
-            'expired-callback': () => { window.turnstile.reset(turnstileWidgetId.current); },
+            'error-callback': () => setTsToken(''),
           });
         };
         if (window.turnstile) { init(); }
@@ -1223,25 +1220,22 @@ echo "<script>window.ITE_FF_NONCE = '" . esc_js($ite_ff_nonce) . "';</script>";
         }
       }, []);
 
-      const getTurnstileToken = () => new Promise((resolve, reject) => {
-        tokenResolveRef.current = resolve;
-        tokenRejectRef.current  = reject;
-        window.turnstile.execute(turnstileWidgetId.current);
-      });
-
       const handleSubmit = async () => {
         if (!nameVal.trim() || !emailVal.trim()) {
           setSubmitError('Please enter your name and email so we can follow up.');
           return;
         }
+        if (!tsToken) {
+          setSubmitError('Security check still loading — please wait a moment and try again.');
+          return;
+        }
         setSubmitError(''); setSubmitting(true);
         try {
-          const token = await getTurnstileToken();
           const body = new FormData();
           body.append('action', 'fluentform_submit');
           body.append('form_id', FLUENT_FORM_ID);
           body.append('_fluentform_' + FLUENT_FORM_ID + '_fluentformpro_submit', window.ITE_FF_NONCE || '');
-          body.append('cf-turnstile-response', token);
+          body.append('cf-turnstile-response', tsToken);
           body.append('name',  nameVal.trim());
           body.append('email', emailVal.trim());
           body.append('event_date', dateInputRef.current?.value || '');
@@ -1252,11 +1246,11 @@ echo "<script>window.ITE_FF_NONCE = '" . esc_js($ite_ff_nonce) . "';</script>";
           if (json.success) { setSubmitted(true); }
           else {
             setSubmitError(json.message || 'Something went wrong. Please try again.');
-            window.turnstile.reset(turnstileWidgetId.current);
+            setTsToken('');
+            if (turnstileWidgetId.current != null) window.turnstile.reset(turnstileWidgetId.current);
           }
         } catch {
-          setSubmitError('Verification failed. Please try again.');
-          window.turnstile.reset(turnstileWidgetId.current);
+          setSubmitError('Could not reach the server. Please try again.');
         } finally { setSubmitting(false); }
       };
 
