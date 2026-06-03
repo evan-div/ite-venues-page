@@ -1,3 +1,8 @@
+<?php
+// Generate Fluent Forms nonce and expose to React
+$ite_ff_nonce = wp_create_nonce('fluentform-nonce');
+echo "<script>window.ITE_FF_NONCE = '" . esc_js($ite_ff_nonce) . "';</script>";
+?>
 <?php ob_start(); ?>
 <!-- CDN: React 18, Babel, Lucide, Flatpickr — must load before text/babel script -->
 <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
@@ -1199,6 +1204,7 @@
           const body = new FormData();
           body.append('action', 'fluentform_submit');
           body.append('form_id', FLUENT_FORM_ID);
+          body.append('_fluentform_' + FLUENT_FORM_ID + '_fluentformpro_submit', window.ITE_FF_NONCE || '');
           body.append('name',  nameVal.trim());
           body.append('email', emailVal.trim());
           body.append('event_date', dateInputRef.current?.value || '');

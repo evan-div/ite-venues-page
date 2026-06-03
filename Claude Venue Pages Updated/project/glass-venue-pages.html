@@ -1198,6 +1198,7 @@
           const body = new FormData();
           body.append('action', 'fluentform_submit');
           body.append('form_id', FLUENT_FORM_ID);
+          body.append('_fluentform_' + FLUENT_FORM_ID + '_fluentformpro_submit', window.ITE_FF_NONCE || '');
           body.append('name',  nameVal.trim());
           body.append('email', emailVal.trim());
           body.append('event_date', dateInputRef.current?.value || '');
