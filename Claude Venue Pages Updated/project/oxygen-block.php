@@ -1307,7 +1307,7 @@ echo "<script>window.ITE_FF_NONCE = '" . esc_js($ite_ff_nonce) . "';</script>";
                       <i data-lucide="map-pin" />
                       <input className="cta-input" placeholder="Preferred venue or city" value={venueVal} onChange={(e) => setVenueVal(e.target.value)} />
                     </label>
-                    <div ref={turnstileRef} style={{ display: 'none' }} />
+                    <div ref={turnstileRef} style={{ position: 'absolute', width: '1px', height: '1px', overflow: 'hidden', opacity: 0, pointerEvents: 'none' }} />
                     {submitError && <p className="cta-error">{submitError}</p>}
                     <Button kind="filled" style={{ marginTop: 4 }} onClick={handleSubmit} disabled={submitting}>
                       {submitting ? 'Sending…' : 'Request a Quote'}
