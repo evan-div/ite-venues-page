@@ -1,6 +1,6 @@
 <?php
 // Generate Fluent Forms nonce and expose to React
-$ite_ff_nonce = wp_create_nonce('fluentform-nonce');
+$ite_ff_nonce = wp_create_nonce('fluentFormNonce');
 echo "<script>window.ITE_FF_NONCE = '" . esc_js($ite_ff_nonce) . "';</script>";
 ?>
 <?php ob_start(); ?>
