@@ -5,6 +5,7 @@
 <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css" />
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 <style>
     /* Fonts loaded globally by Oxygen — Jost as fallback via CDN */
@@ -1188,6 +1189,40 @@
         };
       }, []);
 
+      const turnstileRef     = React.useRef(null);
+      const turnstileWidgetId = React.useRef(null);
+      const tokenResolveRef  = React.useRef(null);
+      const tokenRejectRef   = React.useRef(null);
+
+      React.useEffect(() => {
+        const init = () => {
+          if (!window.turnstile || !turnstileRef.current || turnstileWidgetId.current != null) return;
+          turnstileWidgetId.current = window.turnstile.render(turnstileRef.current, {
+            sitekey: '0x4AAAAAACBtsPaqU9Y2R1ng',
+            size: 'invisible',
+            execution: 'execute',
+            callback: (token) => {
+              if (tokenResolveRef.current) { tokenResolveRef.current(token); tokenResolveRef.current = null; tokenRejectRef.current = null; }
+            },
+            'error-callback': () => {
+              if (tokenRejectRef.current) { tokenRejectRef.current(new Error('Turnstile error')); tokenResolveRef.current = null; tokenRejectRef.current = null; }
+            },
+            'expired-callback': () => { window.turnstile.reset(turnstileWidgetId.current); },
+          });
+        };
+        if (window.turnstile) { init(); }
+        else {
+          const iv = setInterval(() => { if (window.turnstile) { init(); clearInterval(iv); } }, 200);
+          return () => clearInterval(iv);
+        }
+      }, []);
+
+      const getTurnstileToken = () => new Promise((resolve, reject) => {
+        tokenResolveRef.current = resolve;
+        tokenRejectRef.current  = reject;
+        window.turnstile.execute(turnstileWidgetId.current);
+      });
+
       const handleSubmit = async () => {
         if (!nameVal.trim() || !emailVal.trim()) {
           setSubmitError('Please enter your name and email so we can follow up.');
@@ -1195,10 +1230,12 @@
         }
         setSubmitError(''); setSubmitting(true);
         try {
+          const token = await getTurnstileToken();
           const body = new FormData();
           body.append('action', 'fluentform_submit');
           body.append('form_id', FLUENT_FORM_ID);
           body.append('_fluentform_' + FLUENT_FORM_ID + '_fluentformpro_submit', window.ITE_FF_NONCE || '');
+          body.append('cf-turnstile-response', token);
           body.append('name',  nameVal.trim());
           body.append('email', emailVal.trim());
           body.append('event_date', dateInputRef.current?.value || '');
@@ -1207,9 +1244,13 @@
           const res  = await fetch('https://intheevent.com/wp-admin/admin-ajax.php', { method: 'POST', body });
           const json = await res.json();
           if (json.success) { setSubmitted(true); }
-          else { setSubmitError(json.message || 'Something went wrong. Please try again.'); }
+          else {
+            setSubmitError(json.message || 'Something went wrong. Please try again.');
+            window.turnstile.reset(turnstileWidgetId.current);
+          }
         } catch {
-          setSubmitError('Could not reach the server. Please try again.');
+          setSubmitError('Verification failed. Please try again.');
+          window.turnstile.reset(turnstileWidgetId.current);
         } finally { setSubmitting(false); }
       };
 
@@ -1266,6 +1307,7 @@
                       <i data-lucide="map-pin" />
                       <input className="cta-input" placeholder="Preferred venue or city" value={venueVal} onChange={(e) => setVenueVal(e.target.value)} />
                     </label>
+                    <div ref={turnstileRef} style={{ display: 'none' }} />
                     {submitError && <p className="cta-error">{submitError}</p>}
                     <Button kind="filled" style={{ marginTop: 4 }} onClick={handleSubmit} disabled={submitting}>
                       {submitting ? 'Sending…' : 'Request a Quote'}
