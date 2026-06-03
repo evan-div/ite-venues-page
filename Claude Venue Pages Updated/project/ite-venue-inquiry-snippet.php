@@ -13,7 +13,7 @@ function ite_handle_venue_inquiry() {
     }
 
     // ── Email notification ────────────────────────────────────────────
-    $to      = get_option('admin_email');
+    $to      = 'jn@intheevent.com';
     $subject = 'New Venue Inquiry: ' . $name;
     $body    = "<h2 style='margin:0 0 12px'>New Venue Inquiry</h2>
 <table cellpadding='6' cellspacing='0' style='border-collapse:collapse;font-family:sans-serif;font-size:14px'>
