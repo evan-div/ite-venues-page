@@ -1,8 +1,3 @@
-<?php
-// Generate Fluent Forms nonce and expose to React
-$ite_ff_nonce = wp_create_nonce('fluentFormNonce');
-echo "<script>window.ITE_FF_NONCE = '" . esc_js($ite_ff_nonce) . "';</script>";
-?>
 <?php ob_start(); ?>
 <!-- CDN: React 18, Babel, Lucide, Flatpickr — must load before text/babel script -->
 <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
@@ -11,7 +6,6 @@ echo "<script>window.ITE_FF_NONCE = '" . esc_js($ite_ff_nonce) . "';</script>";
 <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css" />
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 <style>
     /* Fonts loaded globally by Oxygen — Jost as fallback via CDN */
@@ -1153,7 +1147,6 @@ echo "<script>window.ITE_FF_NONCE = '" . esc_js($ite_ff_nonce) . "';</script>";
     // CTA Band — with working Flatpickr date picker
     // ═══════════════════════════════════════════════════════════
     const VenueCTA = ({ prefillVenue = '' }) => {
-      const FLUENT_FORM_ID = '17';
       const [nameVal,  setNameVal]  = React.useState('');
       const [emailVal, setEmailVal] = React.useState('');
       const [guestVal, setGuestVal] = React.useState('');
@@ -1195,60 +1188,24 @@ echo "<script>window.ITE_FF_NONCE = '" . esc_js($ite_ff_nonce) . "';</script>";
         };
       }, []);
 
-      const turnstileRef      = React.useRef(null);
-      const turnstileWidgetId = React.useRef(null);
-      const [tsToken, setTsToken] = React.useState('');
-
-      React.useEffect(() => {
-        const init = () => {
-          if (!window.turnstile || !turnstileRef.current || turnstileWidgetId.current != null) return;
-          turnstileWidgetId.current = window.turnstile.render(turnstileRef.current, {
-            sitekey: '0x4AAAAAACBtsPaqU9Y2R1ng',
-            appearance: 'interaction-only',
-            callback: (token) => setTsToken(token),
-            'expired-callback': () => {
-              setTsToken('');
-              window.turnstile.reset(turnstileWidgetId.current);
-            },
-            'error-callback': () => setTsToken(''),
-          });
-        };
-        if (window.turnstile) { init(); }
-        else {
-          const iv = setInterval(() => { if (window.turnstile) { init(); clearInterval(iv); } }, 200);
-          return () => clearInterval(iv);
-        }
-      }, []);
-
       const handleSubmit = async () => {
         if (!nameVal.trim() || !emailVal.trim()) {
           setSubmitError('Please enter your name and email so we can follow up.');
           return;
         }
-        if (!tsToken) {
-          setSubmitError('Security check still loading — please wait a moment and try again.');
-          return;
-        }
         setSubmitError(''); setSubmitting(true);
         try {
           const body = new FormData();
-          body.append('action', 'fluentform_submit');
-          body.append('form_id', FLUENT_FORM_ID);
-          body.append('_fluentform_' + FLUENT_FORM_ID + '_fluentformpro_submit', window.ITE_FF_NONCE || '');
-          body.append('cf-turnstile-response', tsToken);
-          body.append('name',  nameVal.trim());
-          body.append('email', emailVal.trim());
-          body.append('event_date', dateInputRef.current?.value || '');
+          body.append('action', 'ite_venue_inquiry');
+          body.append('name',        nameVal.trim());
+          body.append('email',       emailVal.trim());
+          body.append('event_date',  dateInputRef.current?.value || '');
           body.append('guest_count', guestVal.trim());
-          body.append('venue', venueVal.trim());
+          body.append('venue',       venueVal.trim());
           const res  = await fetch('https://intheevent.com/wp-admin/admin-ajax.php', { method: 'POST', body });
           const json = await res.json();
           if (json.success) { setSubmitted(true); }
-          else {
-            setSubmitError(json.message || 'Something went wrong. Please try again.');
-            setTsToken('');
-            if (turnstileWidgetId.current != null) window.turnstile.reset(turnstileWidgetId.current);
-          }
+          else { setSubmitError(json.message || 'Something went wrong. Please try again.'); }
         } catch {
           setSubmitError('Could not reach the server. Please try again.');
         } finally { setSubmitting(false); }
@@ -1307,7 +1264,6 @@ echo "<script>window.ITE_FF_NONCE = '" . esc_js($ite_ff_nonce) . "';</script>";
                       <i data-lucide="map-pin" />
                       <input className="cta-input" placeholder="Preferred venue or city" value={venueVal} onChange={(e) => setVenueVal(e.target.value)} />
                     </label>
-                    <div ref={turnstileRef} style={{ position: 'absolute', width: '1px', height: '1px', overflow: 'hidden', opacity: 0, pointerEvents: 'none' }} />
                     {submitError && <p className="cta-error">{submitError}</p>}
                     <Button kind="filled" style={{ marginTop: 4 }} onClick={handleSubmit} disabled={submitting}>
                       {submitting ? 'Sending…' : 'Request a Quote'}
