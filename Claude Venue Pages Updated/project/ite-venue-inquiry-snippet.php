@@ -54,7 +54,7 @@ function ite_handle_venue_inquiry() {
             'response'      => $response,
             'source_url'    => esc_url_raw($_SERVER['HTTP_REFERER'] ?? home_url()),
             'ip'            => sanitize_text_field($_SERVER['REMOTE_ADDR'] ?? ''),
-            'browser'       => sanitize_text_field($_SERVER['HTTP_USER_AGENT'] ?? ''),
+            'browser'       => substr( sanitize_text_field($_SERVER['HTTP_USER_AGENT'] ?? ''), 0, 255 ),
             'status'        => 'unread',
             'is_favourite'  => 0,
             'user_id'       => 0,
