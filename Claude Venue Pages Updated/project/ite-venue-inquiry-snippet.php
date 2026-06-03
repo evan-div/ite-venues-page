@@ -1,8 +1,3 @@
-<?php
-/**
- * ITE Venue Inquiry — custom AJAX endpoint
- * Paste this into Code Snippets (PHP, Run Everywhere) and activate.
- */
 add_action('wp_ajax_ite_venue_inquiry',        'ite_handle_venue_inquiry');
 add_action('wp_ajax_nopriv_ite_venue_inquiry', 'ite_handle_venue_inquiry');
 
