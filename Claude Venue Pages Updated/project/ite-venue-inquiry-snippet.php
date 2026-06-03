@@ -33,11 +33,11 @@ function ite_handle_venue_inquiry() {
     global $wpdb;
     $form_id  = 17;
     $response = wp_json_encode([
-        'name'        => $name,
+        'input_text'  => $name,
         'email'       => $email,
         'event_date'  => $event_date,
         'guest_count' => $guest_count,
-        'venue'       => $venue,
+        'the_venue'   => $venue,
     ]);
     $now = current_time('mysql');
     $wpdb->show_errors();
