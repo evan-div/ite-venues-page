@@ -45,6 +45,7 @@ function ite_handle_venue_inquiry() {
         'venue'       => $venue,
     ]);
     $now = current_time('mysql');
+    $wpdb->show_errors();
     $wpdb->insert(
         $wpdb->prefix . 'fluentform_submissions',
         [
@@ -56,12 +57,13 @@ function ite_handle_venue_inquiry() {
             'browser'       => sanitize_text_field($_SERVER['HTTP_USER_AGENT'] ?? ''),
             'status'        => 'unread',
             'is_favourite'  => 0,
-            'user_id'       => null,
+            'user_id'       => 0,
             'created_at'    => $now,
             'updated_at'    => $now,
         ]
     );
-    $insert_id = $wpdb->insert_id;
+    $insert_id  = $wpdb->insert_id;
+    $db_error   = $wpdb->last_error;
     if ( $insert_id ) {
         $form = $wpdb->get_row( $wpdb->prepare(
             "SELECT * FROM {$wpdb->prefix}fluentform_forms WHERE id = %d", $form_id
@@ -73,7 +75,7 @@ function ite_handle_venue_inquiry() {
 
     // ── Respond ───────────────────────────────────────────────────────
     if ( $sent ) {
-        wp_send_json(['success' => true]);
+        wp_send_json(['success' => true, 'db_insert_id' => $insert_id, 'db_error' => $db_error]);
     } else {
         wp_send_json(['success' => false, 'message' => 'Could not send your inquiry — please email us directly at ' . get_option('admin_email') . '.']);
     }
