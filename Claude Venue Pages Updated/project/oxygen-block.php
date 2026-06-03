@@ -1,7 +1,4 @@
-<?php
-// Oxygen Code Block — paste this entire file into an Oxygen Code Block element.
-// PHP echo bypasses WordPress sanitization so <script> tags are preserved.
-echo <<<'VENUESHTML'
+<?php ob_start(); ?>
 <!-- CDN: React 18, Babel, Lucide, Flatpickr — must load before text/babel script -->
 <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
@@ -1608,4 +1605,4 @@ echo <<<'VENUESHTML'
     })();
   </script>
 
-VENUESHTML;
+<?php echo ob_get_clean(); ?>
