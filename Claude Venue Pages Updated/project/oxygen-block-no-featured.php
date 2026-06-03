@@ -181,11 +181,14 @@
        FILTER BAR
     ═══════════════════════════════════════════════════════════ */
     .filter-bar {
-      position: sticky; top: 64px; z-index: 30;
+      position: relative; z-index: 30;
       background: var(--navy);
       border-bottom: 1px solid rgba(195,255,138,0.15);
       padding: 14px 0;
       transition: background 500ms var(--ease-out);
+    }
+    .filter-bar.bar-fixed {
+      position: fixed; left: 0; right: 0; z-index: 30;
     }
     .filter-bar.scrolled { background: var(--dark); }
     .filter-bar .row {
@@ -993,19 +996,43 @@
         window.VENUES.forEach((v) => { map[v.region] = (map[v.region] || 0) + 1; });
         return map;
       }, []);
-      const barRef = React.useRef(null);
+      const barRef     = React.useRef(null);
+      const spacerRef  = React.useRef(null);
       React.useEffect(() => {
-        const venuesSection = document.querySelector('.venues-section');
-        if (!venuesSection || !barRef.current) return;
+        const bar    = barRef.current;
+        const spacer = spacerRef.current;
+        if (!bar || !spacer) return;
+        let triggered = false;
+        let triggerY  = null;
         const update = () => {
-          const top = venuesSection.getBoundingClientRect().top;
-          barRef.current?.classList.toggle('scrolled', top <= 64);
+          if (triggerY === null) {
+            triggerY = bar.getBoundingClientRect().top + window.scrollY;
+          }
+          const navH = document.querySelector('header')?.offsetHeight || 0;
+          const past = window.scrollY + navH >= triggerY;
+          if (past && !triggered) {
+            spacer.style.height = bar.offsetHeight + 'px';
+            bar.style.top = navH + 'px';
+            bar.classList.add('bar-fixed', 'scrolled');
+            triggered = true;
+          } else if (!past && triggered) {
+            spacer.style.height = '0px';
+            bar.style.top = '';
+            bar.classList.remove('bar-fixed', 'scrolled');
+            triggered = false;
+          }
         };
         update();
         window.addEventListener('scroll', update, { passive: true });
-        return () => window.removeEventListener('scroll', update);
+        window.addEventListener('resize', () => { triggerY = null; update(); }, { passive: true });
+        return () => {
+          window.removeEventListener('scroll', update);
+          window.removeEventListener('resize', update);
+        };
       }, []);
       return (
+        <>
+        <div ref={spacerRef} style={{ height: 0 }} />
         <div className="filter-bar" ref={barRef}>
           <div className="container">
             <div className="row">
@@ -1025,6 +1052,7 @@
             </div>
           </div>
         </div>
+        </>
       );
     };
 
