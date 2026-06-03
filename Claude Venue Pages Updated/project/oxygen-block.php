@@ -1204,7 +1204,7 @@ echo "<script>window.ITE_FF_NONCE = '" . esc_js($ite_ff_nonce) . "';</script>";
           if (!window.turnstile || !turnstileRef.current || turnstileWidgetId.current != null) return;
           turnstileWidgetId.current = window.turnstile.render(turnstileRef.current, {
             sitekey: '0x4AAAAAACBtsPaqU9Y2R1ng',
-            size: 'invisible',
+            appearance: 'interaction-only',
             callback: (token) => setTsToken(token),
             'expired-callback': () => {
               setTsToken('');
