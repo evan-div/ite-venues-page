@@ -945,10 +945,15 @@
         let rect = section.getBoundingClientRect();
         const refreshRect = () => { rect = section.getBoundingClientRect(); };
         window.addEventListener('resize', refreshRect, { passive: true });
+        let rafId = null;
         const onMove = (e) => {
-          const x = e.clientX - rect.left, y = e.clientY - rect.top;
-          overlayRef.current.style.background =
-            `radial-gradient(600px circle at ${x}px ${y}px, rgba(160,200,255,0.10), transparent 70%)`;
+          if (rafId) return;
+          rafId = requestAnimationFrame(() => {
+            const x = e.clientX - rect.left, y = e.clientY - rect.top;
+            overlayRef.current.style.background =
+              `radial-gradient(600px circle at ${x}px ${y}px, rgba(160,200,255,0.10), transparent 70%)`;
+            rafId = null;
+          });
         };
         const onLeave = () => { overlayRef.current.style.background = 'none'; };
         section.addEventListener('mousemove', onMove, { passive: true });
@@ -1202,10 +1207,15 @@
         let rect = section.getBoundingClientRect();
         const refreshRect = () => { rect = section.getBoundingClientRect(); };
         window.addEventListener('resize', refreshRect, { passive: true });
+        let rafId = null;
         const onMove = (e) => {
-          const x = e.clientX - rect.left, y = e.clientY - rect.top;
-          overlayRef.current.style.background =
-            `radial-gradient(600px circle at ${x}px ${y}px, rgba(160,200,255,0.10), transparent 70%)`;
+          if (rafId) return;
+          rafId = requestAnimationFrame(() => {
+            const x = e.clientX - rect.left, y = e.clientY - rect.top;
+            overlayRef.current.style.background =
+              `radial-gradient(600px circle at ${x}px ${y}px, rgba(160,200,255,0.10), transparent 70%)`;
+            rafId = null;
+          });
         };
         const onLeave = () => { overlayRef.current.style.background = 'none'; };
         section.addEventListener('mousemove', onMove, { passive: true });
