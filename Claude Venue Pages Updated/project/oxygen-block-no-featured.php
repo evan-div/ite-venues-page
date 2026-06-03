@@ -1008,8 +1008,9 @@
           if (triggerY === null) {
             triggerY = bar.getBoundingClientRect().top + window.scrollY;
           }
-          const navH = document.querySelector('header')?.offsetHeight || 0;
-          const past = window.scrollY + navH >= triggerY;
+          const navEl  = document.querySelector('header, .ct-header, .site-header, #masthead, [class*="header"]');
+          const navH   = navEl ? navEl.getBoundingClientRect().bottom : 0;
+          const past   = window.scrollY + navH >= triggerY;
           if (past && !triggered) {
             spacer.style.height = bar.offsetHeight + 'px';
             bar.style.top = navH + 'px';
