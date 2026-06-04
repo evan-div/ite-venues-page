@@ -1560,8 +1560,8 @@
       const others   = window.VENUES.filter((v) => !v.featured);
 
       const filtered = useMemo(() => {
-        if (filter === 'all') return others;
-        return others.filter((v) => v.region === filter);
+        const list = filter === 'all' ? others : others.filter((v) => v.region === filter);
+        return list.slice().sort((a, b) => a.name.localeCompare(b.name));
       }, [filter, others]);
 
       useEffect(() => {
