@@ -3,8 +3,63 @@
    Source: ite_brandguide.pdf (official brand guide)
    ========================================================= */
 
-/* ---- Webfont: ITC Avant Garde Gothic via Adobe Fonts ---- */
-@import url('https://use.typekit.net/nrm5ftp.css');
+/* ---- Webfont: ITC Avant Garde Gothic (self-hosted) ---- */
+@font-face {
+  font-family: 'ITC Avant Garde Gothic';
+  src: url('fonts/ITC Avant Garde Gothic CE Book.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'ITC Avant Garde Gothic';
+  src: url('fonts/ITC Avant Garde Gothic CE Book Oblique.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'ITC Avant Garde Gothic';
+  src: url('fonts/ITC Avant Garde Gothic Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'ITC Avant Garde Gothic';
+  src: url('fonts/ITC Avant Garde Gothic Medium Oblique.otf') format('opentype');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'ITC Avant Garde Gothic';
+  src: url('fonts/ITC Avant Garde Gothic CE Demi.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'ITC Avant Garde Gothic';
+  src: url('fonts/ITC Avant Garde Gothic CE Demi Oblique.otf') format('opentype');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'ITC Avant Garde Gothic';
+  src: url('fonts/ITC Avant Garde Gothic Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'ITC Avant Garde Gothic';
+  src: url('fonts/ITC Avant Garde Gothic Bold Oblique.otf') format('opentype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
 
 :root {
   /* ======== CORE PALETTE (from brand guide p.9) ======== */
@@ -44,7 +99,7 @@
   --link-hover:    var(--ite-midnight-navy);
 
   /* ======== TYPE SYSTEM ======== */
-  --font-sans:     'itc-avant-garde-gothic-pro', 'ITC Avant Garde Gothic', 'Avant Garde', 'Century Gothic', system-ui, sans-serif;
+  --font-sans:     'ITC Avant Garde Gothic', 'Avant Garde', 'Century Gothic', system-ui, sans-serif;
   --font-display:  var(--font-sans); /* same family; differentiated by weight+case */
   --font-body:     var(--font-sans);
   --font-mono:     'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
