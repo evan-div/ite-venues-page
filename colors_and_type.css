@@ -3,14 +3,8 @@
    Source: ite_brandguide.pdf (official brand guide)
    ========================================================= */
 
-/* ---- Webfont: ITC Avant Garde Gothic substitute ----
-   ITC Avant Garde Gothic is a commercial typeface not available
-   on Google Fonts. We substitute with Jost — a geometric sans
-   with near-identical proportions, circular 'O', high x-height,
-   and matching Book (400) / Medium (500) weights.
-   --> Replace with the real ITC Avant Garde Gothic webfont files
-       in fonts/ for final brand-accurate output. ---- */
-@import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&display=swap');
+/* ---- Webfont: ITC Avant Garde Gothic via Adobe Fonts ---- */
+@import url('https://use.typekit.net/nrm5ftp.css');
 
 :root {
   /* ======== CORE PALETTE (from brand guide p.9) ======== */
@@ -50,7 +44,7 @@
   --link-hover:    var(--ite-midnight-navy);
 
   /* ======== TYPE SYSTEM ======== */
-  --font-sans:     'Jost', 'ITC Avant Garde Gothic', 'Avant Garde', 'Futura', 'Century Gothic', system-ui, sans-serif;
+  --font-sans:     'itc-avant-garde-gothic-pro', 'ITC Avant Garde Gothic', 'Avant Garde', 'Century Gothic', system-ui, sans-serif;
   --font-display:  var(--font-sans); /* same family; differentiated by weight+case */
   --font-body:     var(--font-sans);
   --font-mono:     'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
